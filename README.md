@@ -10,15 +10,21 @@ The current version of the database schema is below. Only the orange tables have
 
 Current issues being worked out related to the schema:
 
+Halim, you mentioned that at least one column could be of type enum (user_logs.type). So far I have gone with ids to tables of values in several places: log_events, employee_roles, payment_types, item_categories, destinations, mod_categories, and mod_groups)
+
+Some or all of these could be enum types. I went with tables as it is more universal in SQL and would allow the interface to add new values. Was this a good decision?
+
+Regarding users, login and auth:
+
 User currently includes these fields:  
-* id (primary key)
+* id (serial primary key)
 * password
-* pin
+* pin (unique)
 * display_name
 * first_name
 * last_name
-* role_id
-* is_active
+* role_id (role determining POS response and allowed actions)
+* is_active (Boolean, to mark employees no longer active)
 
 Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. The way that it is implemented in every system I've ever seen is by using a PIN. A user "logs in" upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders.
 
@@ -51,6 +57,10 @@ From the server/bartender terminals I'm trying to figure out the best plan. Here
     * Could cause problems if a user with inadequate access has to start a day
 3. When the manager closes a day the token is refreshed and is now ready for the next day
     * This would allow an employee to log in even if a manager hasn't logged in to start the day
+
+I am currently using an id as the primary key for users with a password for auth. It could be a username I suppose. Since thousands of records from checks to tickets to logs all have the user id I thought it might be more space efficient. Code could be refactored to change id to username if there was merit to it. A manager or user that was trying to log in from somewhere other than the restaurant terminals might find a username more easy to remember than their user id #.... but these are small cases compared to daily use. I suppose a username could be added in addition to an id as well.
+
+
   
 
 
