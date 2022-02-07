@@ -30,7 +30,7 @@ INSERT INTO item_categories (id, name)
 VALUES (1, 'Appetizer'),  (2, 'Soup'), (3, 'Salad'), (4, 'Entree'), (5, 'Addition'), (6, 'Desert'), (7, 'Favorites'), (8, 'Beverage'), (9, 'Beer'), (10, 'Wine'), (11, 'Liquor'), (12, 'Carryout'), (13, 'Delivery');
 
 INSERT INTO destinations (id, name)
-VALUES (1, 'Kitchen-hot'), (2, 'Kitchen-cold'),(3, 'Bar'), (4, 'No-send');
+VALUES (1, 'Kitchen-Hot'), (2, 'Kitchen-Cold'),(3, 'Bar'), (4, 'No-Send');
 
 INSERT INTO items (id, name, description, price, category_id, destination_id)
 VALUES (1,
