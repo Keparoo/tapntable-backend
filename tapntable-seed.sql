@@ -1,24 +1,28 @@
 --test users have the password "password"
+--test PINs: Server 1111, Bartender 2222, Manager 3333
 
 INSERT INTO user_roles (id, name)
 VALUES (1, 'trainee'), (2, 'dishwasher'), (3, 'maintenance'), (4, 'cook'), (5, 'host'), (6, 'server'), (7, 'bartender'), (8, 'head-server'), (9, 'bar-manager'), (10, 'chef') , (11, 'manager'), (12, 'owner');
 
-INSERT INTO users (id, display_name, password, first_name, last_name, role_id)
+INSERT INTO users (id, display_name, password, pin, first_name, last_name, role_id)
 VALUES (1,
 'Server',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+1111,
 'Server-First',
 'Server-Last',
 6),
 (2,
 'Bartender',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+2222,
 'Bartender-First',
 'Bartender-Last',
 7),
 (3,
 'Manager',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+3333,
 'Manager-First',
 'Manager-Last',
 11);

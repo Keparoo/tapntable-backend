@@ -4,6 +4,7 @@ CREATE TABLE user_roles (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
+COMMENT ON TABLE user_roles IS 'List of roles that determine user permissions';
 
 --User data. Display name is name shown on POS
 
@@ -11,11 +12,13 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   display_name VARCHAR(25) NOT NULL,
   password TEXT NOT NULL,
+  pin INTEGER NOT NULL UNIQUE,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   role_id INTEGER REFERENCES user_roles,
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
+COMMENT ON TABLE users IS 'List of users (employees) and their info';
 
 --Types of log events: clock-in, clock-out, cash-out, close-shift, close-day,
 --discount-item, discount-check
@@ -24,6 +27,7 @@ CREATE TABLE log_events (
 id SERIAL PRIMARY KEY,
 type VARCHAR(25) NOT NULL
 );
+COMMENT ON TABLE log_events IS 'Type of events to log';
 
 --Log of user events: clock-in, clock-out, cash-out, close-shift, close-day, and
 --logs of discounted items and checks.
@@ -35,6 +39,7 @@ log_event_id INTEGER REFERENCES log_events,
 timestamp TIMESTAMP NOT NULL,
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );
+COMMENT ON TABLE user_logs IS 'Log of user events including timeclock';
 
 --Descriptive categories for items sold
 
@@ -42,6 +47,7 @@ CREATE TABLE item_categories (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
+COMMENT ON TABLE item_categories IS 'Category of items for sale';
 
 --Station where the sent item is sent
 --Could be expanded to include printer address for each station
@@ -51,6 +57,7 @@ CREATE TABLE destinations (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
+COMMENT ON TABLE destinations IS 'Station where item is sent (kitchen, bar)';
 
 --Items that the restaurant sells & relevent info
 
@@ -64,6 +71,7 @@ destination_id INTEGER REFERENCES destinations,
 count INTEGER, CHECK (count >= 0), --NULL indicates unlimited (no count)
 is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
+COMMENT ON TABLE items IS 'List of items for sale & info';
 
 --Check for table / bar group
 
@@ -82,6 +90,7 @@ local_tax NUMERIC(6,2) CHECK (local_tax >= 0),
 state_tax NUMERIC(6,2) CHECK (state_tax >= 0),
 federal_tax NUMERIC(6,2) CHECK (federal_tax >= 0)
 );
+COMMENT ON TABLE checks IS 'List of all checks';
 
 --Batch of items sent as an order. A check may have many orders
 CREATE TABLE tickets (
@@ -89,6 +98,7 @@ id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 sent_at TIMESTAMP NOT NULL
 );
+COMMENT ON TABLE tickets IS 'Batch of items ordered sent to destinations';
 
 --Item ordered and and relevent info: seat #, mods (currently item_note)
 
@@ -104,6 +114,7 @@ delivered_at TIMESTAMP,
 item_note VARCHAR(30),
 item_discount_id INTEGER --This will eventually point to discount table
 );
+COMMENT ON TABLE item_ordered IS 'Item ordered with modifications and info';
 
 --Types of payment: Cash, MC, Visa, Amex etc
 
@@ -111,6 +122,7 @@ CREATE TABLE payment_types (
 id SERIAL PRIMARY KEY,
 type VARCHAR(15) NOT NULL
 );
+COMMENT ON TABLE payment_types IS 'Cash, Visa, MC, etc';
 
 --A payment applied to a check. A check may have many payments
 
@@ -121,6 +133,7 @@ payment_type_id INTEGER REFERENCES payment_types,
 tip_amt NUMERIC(6,2) CHECK (tip_amt >= 0),
 sub_total NUMERIC(10,2) CHECK (sub_total >= 0)
 );
+COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
 --Static Data about a restaurant
 
@@ -138,3 +151,4 @@ state_tax_rate NUMERIC(6,3) CHECK (state_tax_rate >= 0 AND state_tax_rate <= 100
 federal_tax_rate NUMERIC(6,3) CHECK (federal_tax_rate >= 0 AND federal_tax_rate <= 100),
 week_start_mon BOOLEAN NOT NULL DEFAULT TRUE
 );
+COMMENT ON TABLE restaurant_info IS 'Restaurant info including tax rates';
