@@ -122,7 +122,7 @@ class User {
                   display_name AS "displayName",
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  role,
+                  role_id,
                   is_active AS "isActive"
            FROM users
            ORDER BY id`
