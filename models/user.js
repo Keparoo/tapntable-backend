@@ -14,27 +14,28 @@ const { BCRYPT_WORK_FACTOR } = require('../config.js');
 /** Related functions for users. */
 
 class User {
-	/** authenticate user with id, password.
+	/** authenticate user with username, password.
    *
-   * Returns { id, displayName, pin, first_name, last_name, role, isActive }
+   * Returns { id, username, pin, displayName, first_name, last_name, role, isActive }
    *
    * Throws UnauthorizedError is user not found or wrong password.
    **/
 
-	static async authenticate(id, password) {
+	static async authenticate(username, password) {
 		// try to find the user first
 		const result = await db.query(
 			`SELECT id,
-                  display_name AS "displayName",
-                  password,
-                  pin,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  role,
-                  is_active AS "isActive"
+              username,
+              password,
+              pin,
+              display_name AS "displayName",
+              first_name AS "firstName",
+              last_name AS "lastName",
+              role,
+              is_active AS "isActive"
            FROM users
-           WHERE id = $1`,
-			[ id ]
+           WHERE username = $1`,
+			[ username ]
 		);
 
 		const user = result.rows[0];
@@ -48,18 +49,19 @@ class User {
 			}
 		}
 
-		throw new UnauthorizedError('Invalid id/password');
+		throw new UnauthorizedError('Invalid username/password');
 	}
 
 	/** Register user with data.
    *
-   * Returns { id, pin, displayName, firstName, lastName, role, isActive }
+   * Returns { id, username, pin, displayName, firstName, lastName, role, isActive }
    *
    * Throws BadRequestError on duplicates.
    **/
 
 	static async register({
 		id,
+		username,
 		password,
 		pin,
 		displayName,
@@ -69,21 +71,21 @@ class User {
 		isActive
 	}) {
 		const duplicateCheck = await db.query(
-			`SELECT id
+			`SELECT username
            FROM users
-           WHERE id = $1`,
-			[ id ]
+           WHERE username = $1`,
+			[ username ]
 		);
 
 		if (duplicateCheck.rows[0]) {
-			throw new BadRequestError(`Duplicate id: ${id}`);
+			throw new BadRequestError(`Duplicate username: ${username}`);
 		}
 
 		const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
 		const result = await db.query(
 			`INSERT INTO users
-           (id,
+           (username,
             password,
             pin,
             display_name
@@ -92,9 +94,9 @@ class User {
             role,
             is_active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
+           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
 			[
-				id,
+				username,
 				hashedPassword,
 				pin,
 				displayName,
@@ -112,18 +114,19 @@ class User {
 
 	/** Find all users.
    *
-   * Returns [{ id, displayName, pin, firstName, lastName, role, isActive }, ...]
+   * Returns [{ id, username, pin, displayName, firstName, lastName, role, isActive }, ...]
    **/
 
 	static async findAll() {
 		const result = await db.query(
 			`SELECT id,
-                  pin,
-                  display_name AS "displayName",
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  role_id,
-                  is_active AS "isActive"
+              username,
+              pin,
+              display_name AS "displayName",
+              first_name AS "firstName",
+              last_name AS "lastName",
+              role_id,
+              is_active AS "isActive"
            FROM users
            ORDER BY id`
 		);
@@ -133,15 +136,16 @@ class User {
 
 	/** Given a username, return data about user.
    *
-   * Returns { id, pin, displayName, firstName, lastName, role, jobs }
+   * Returns { id, username, pin, displayName, firstName, lastName, role, jobs }
    *   where jobs is { id, title, company_handle, company_name, state }
    *
    * Throws NotFoundError if user not found.
    **/
 
-	// static async get(id) {
+	// static async get(username) {
 	// 	const userRes = await db.query(
 	// 		`SELECT id,
+	//                 username,
 	//                 pin,
 	//                 display_name AS "displayName",
 	//                 first_name AS "firstName",
@@ -155,7 +159,7 @@ class User {
 
 	// 	const user = userRes.rows[0];
 
-	// 	if (!user) throw new NotFoundError(`No user: ${id}`);
+	// 	if (!user) throw new NotFoundError(`No user: ${username}`);
 
 	// 	const userApplicationsRes = await db.query(
 	// 		`SELECT a.job_id
