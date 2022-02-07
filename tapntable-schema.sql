@@ -10,9 +10,10 @@ COMMENT ON TABLE user_roles IS 'List of roles that determine user permissions';
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  display_name VARCHAR(25) NOT NULL,
+  username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   pin INTEGER NOT NULL UNIQUE,
+  display_name VARCHAR(15) NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   role_id INTEGER REFERENCES user_roles,

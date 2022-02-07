@@ -18,6 +18,7 @@ Regarding users, login and auth:
 
 User currently includes these fields:  
 * id (serial primary key)
+* username (unique)
 * password
 * pin (unique)
 * display_name
@@ -37,7 +38,7 @@ Users that don't create orders (cooks for instance) only punch in and out. They 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
 
 Thus, I'm working out some authenitcation questions:
-Logging in from an office computer username/password (or in this case id/password) makes sense.
+Logging in from an office computer or remotely a username/password makes sense.
 
 From the server/bartender terminals I'm trying to figure out the best plan. Here are a few possible solutions:
 
@@ -57,8 +58,6 @@ From the server/bartender terminals I'm trying to figure out the best plan. Here
     * Could cause problems if a user with inadequate access has to start a day
 3. When the manager closes a day the token is refreshed and is now ready for the next day
     * This would allow an employee to log in even if a manager hasn't logged in to start the day
-
-I am currently using an id as the primary key for users with a password for auth. It could be a username I suppose. Since thousands of records from checks to tickets to logs all have the user id I thought it might be more space efficient. Code could be refactored to change id to username if there was merit to it. A manager or user that was trying to log in from somewhere other than the restaurant terminals might find a username more easy to remember than their user id #.... but these are small cases compared to daily use. I suppose a username could be added in addition to an id as well.
 
 
   
