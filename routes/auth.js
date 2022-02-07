@@ -12,7 +12,7 @@ const userAuthSchema = require('../schemas/userAuth.json');
 const userRegisterSchema = require('../schemas/userRegister.json');
 const { BadRequestError } = require('../expressError');
 
-/** POST /auth/token:  { username, password } => { token }
+/** POST /auth/token:  { id, password } => { token }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
@@ -27,8 +27,8 @@ router.post('/token', async function(req, res, next) {
 			throw new BadRequestError(errs);
 		}
 
-		const { username, password } = req.body;
-		const user = await User.authenticate(username, password);
+		const { id, password } = req.body;
+		const user = await User.authenticate(id, password);
 		const token = createToken(user);
 		return res.json({ token });
 	} catch (err) {
@@ -38,7 +38,7 @@ router.post('/token', async function(req, res, next) {
 
 /** POST /auth/register:   { user } => { token }
  *
- * user must include { username, password, firstName, lastName, email }
+ * user must include { id, password, firstName, lastName, role, isActive }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *

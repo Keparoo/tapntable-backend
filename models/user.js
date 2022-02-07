@@ -14,25 +14,27 @@ const { BCRYPT_WORK_FACTOR } = require('../config.js');
 /** Related functions for users. */
 
 class User {
-	/** authenticate user with displayName, password.
+	/** authenticate user with id, password.
    *
-   * Returns { displayName, first_name, last_name, role, isActive }
+   * Returns { id, displayName, pin, first_name, last_name, role, isActive }
    *
    * Throws UnauthorizedError is user not found or wrong password.
    **/
 
-	static async authenticate(displayName, password) {
+	static async authenticate(id, password) {
 		// try to find the user first
 		const result = await db.query(
-			`SELECT display_name AS "displayName",
+			`SELECT id,
+                  display_name AS "displayName",
                   password,
+                  pin,
                   first_name AS "firstName",
                   last_name AS "lastName",
                   role,
                   is_active AS "isActive"
            FROM users
-           WHERE display_name = $1`,
-			[ displayName ]
+           WHERE id = $1`,
+			[ id ]
 		);
 
 		const user = result.rows[0];
@@ -46,48 +48,61 @@ class User {
 			}
 		}
 
-		throw new UnauthorizedError('Invalid displayName/password');
+		throw new UnauthorizedError('Invalid id/password');
 	}
 
 	/** Register user with data.
    *
-   * Returns { displayName, firstName, lastName, role, isActive }
+   * Returns { id, pin, displayName, firstName, lastName, role, isActive }
    *
    * Throws BadRequestError on duplicates.
    **/
 
 	static async register({
-		displayName,
+		id,
 		password,
+		pin,
+		displayName,
 		firstName,
 		lastName,
 		role,
 		isActive
 	}) {
 		const duplicateCheck = await db.query(
-			`SELECT display_name
+			`SELECT id
            FROM users
-           WHERE display_name = $1`,
-			[ displayName ]
+           WHERE id = $1`,
+			[ id ]
 		);
 
 		if (duplicateCheck.rows[0]) {
-			throw new BadRequestError(`Duplicate displayName: ${displayName}`);
+			throw new BadRequestError(`Duplicate id: ${id}`);
 		}
 
 		const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
 		const result = await db.query(
 			`INSERT INTO users
-           (display_name,
+           (id,
             password,
+            pin,
+            display_name
             first_name,
             last_name,
             role,
             is_active)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
-			[ displayName, hashedPassword, firstName, lastName, role, isActive ]
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+           RETURNING id, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
+			[
+				id,
+				hashedPassword,
+				pin,
+				displayName,
+				firstName,
+				lastName,
+				role,
+				isActive
+			]
 		);
 
 		const user = result.rows[0];
@@ -97,18 +112,20 @@ class User {
 
 	/** Find all users.
    *
-   * Returns [{ displayName, firstName, lastName, role, isActive }, ...]
+   * Returns [{ id, displayName, pin, firstName, lastName, role, isActive }, ...]
    **/
 
 	static async findAll() {
 		const result = await db.query(
-			`SELECT display_name AS "displayName" ,
+			`SELECT id,
+                  pin,
+                  display_name AS "displayName",
                   first_name AS "firstName",
                   last_name AS "lastName",
                   role,
                   is_active AS "isActive"
            FROM users
-           ORDER BY display_name`
+           ORDER BY id`
 		);
 
 		return result.rows;
@@ -116,33 +133,35 @@ class User {
 
 	/** Given a username, return data about user.
    *
-   * Returns { displayName, firstName, lastName, role, jobs }
+   * Returns { id, pin, displayName, firstName, lastName, role, jobs }
    *   where jobs is { id, title, company_handle, company_name, state }
    *
    * Throws NotFoundError if user not found.
    **/
 
-	// static async get(displayName) {
+	// static async get(id) {
 	// 	const userRes = await db.query(
-	// 		`SELECT display_name AS "displayName",
+	// 		`SELECT id,
+	//                 pin,
+	//                 display_name AS "displayName",
 	//                 first_name AS "firstName",
 	//                 last_name AS "lastName",
 	//                 role,
 	//                 is_active AS "isActive"
 	//          FROM users
-	//          WHERE display_name = $1`,
-	// 		[ displayName ]
+	//          WHERE id = $1`,
+	// 		[ id ]
 	// 	);
 
 	// 	const user = userRes.rows[0];
 
-	// 	if (!user) throw new NotFoundError(`No user: ${displayName}`);
+	// 	if (!user) throw new NotFoundError(`No user: ${id}`);
 
 	// 	const userApplicationsRes = await db.query(
 	// 		`SELECT a.job_id
 	//          FROM applications AS a
-	//          WHERE a.username = $1`,
-	// 		[ displayName ]
+	//          WHERE a.id = $1`,
+	// 		[ id ]
 	// 	);
 
 	// 	user.applications = userApplicationsRes.rows.map((a) => a.job_id);
@@ -155,9 +174,9 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { firstName, lastName, password, role, isActive }
+   *   { pin, displayName, firstName, lastName, password, role, isActive }
    *
-   * Returns { displayName, firstName, lastName, role, isActive }
+   * Returns { id, pin, displayName, firstName, lastName, role, isActive }
    *
    * Throws NotFoundError if not found.
    *
@@ -166,7 +185,7 @@ class User {
    * or a serious security risks are opened.
    */
 
-	static async update(displayName, data) {
+	static async update(id, data) {
 		if (data.password) {
 			data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
 		}
@@ -176,20 +195,22 @@ class User {
 			lastName: 'last_name',
 			isActive: 'is_active'
 		});
-		const displayNameVarIdx = '$' + (values.length + 1);
+		const idVarIdx = '$' + (values.length + 1);
 
 		const querySql = `UPDATE users 
                       SET ${setCols} 
-                      WHERE display_name = ${displayNameVarIdx} 
-                      RETURNING display_name AS "displayName",
+                      WHERE id = ${idVarIdx} 
+                      RETURNING id,
+                                pin,
+                                display_name AS "displayName",
                                 first_name AS "firstName",
                                 last_name AS "lastName",
                                 role,
                                 is_active AS "isActive"`;
-		const result = await db.query(querySql, [ ...values, displayName ]);
+		const result = await db.query(querySql, [ ...values, id ]);
 		const user = result.rows[0];
 
-		if (!user) throw new NotFoundError(`No user: ${displayName}`);
+		if (!user) throw new NotFoundError(`No user: ${id}`);
 
 		delete user.password;
 		return user;
@@ -197,22 +218,22 @@ class User {
 
 	/** Delete given user from database; returns undefined. */
 
-	static async remove(displayName) {
+	static async remove(id) {
 		let result = await db.query(
 			`DELETE
            FROM users
-           WHERE display_name = $1
-           RETURNING display_name AS "displayName"`,
-			[ displayName ]
+           WHERE id = $1
+           RETURNING id`,
+			[ id ]
 		);
 		const user = result.rows[0];
 
-		if (!user) throw new NotFoundError(`No user: ${displayName}`);
+		if (!user) throw new NotFoundError(`No user: ${id}`);
 	}
 
 	/** Apply for job: update db, returns undefined.
    *
-   * - username: username applying for job
+   * - id: id applying for job
    * - jobId: job id
    **/
 
