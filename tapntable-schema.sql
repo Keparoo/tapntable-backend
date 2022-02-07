@@ -58,10 +58,10 @@ CREATE TABLE items (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL,
 description TEXT,
-price NUMERIC(8,2) NOT NULL,
+price NUMERIC(8,2) CHECK (price >= 0) NOT NULL,
 category_id INTEGER REFERENCES item_categories,
 destination_id INTEGER REFERENCES destinations,
-count INTEGER, --NULL indicates unlimited (no count)
+count INTEGER, CHECK (count >= 0), --NULL indicates unlimited (no count)
 is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -76,11 +76,11 @@ created_at TIMESTAMP NOT NULL,
 printed_at TIMESTAMP,
 closed_at TIMESTAMP,
 discount_id INTEGER, --This will eventually point to discount table
-sub_total NUMERIC(10,2),
-discount_total NUMERIC(10,2),
-local_tax NUMERIC(6,2),
-state_tax NUMERIC(6,2),
-federal_tax NUMERIC(6,2)
+sub_total NUMERIC(10,2) CHECK (sub_total >= 0),
+discount_total NUMERIC(10,2) CHECK (discount_total >= 0),
+local_tax NUMERIC(6,2) CHECK (local_tax >= 0),
+state_tax NUMERIC(6,2) CHECK (state_tax >= 0),
+federal_tax NUMERIC(6,2) CHECK (federal_tax >= 0)
 );
 
 --Batch of items sent as an order. A check may have many orders
@@ -118,8 +118,8 @@ CREATE TABLE payments (
 id SERIAL PRIMARY KEY,
 check_id INTEGER REFERENCES checks,
 payment_type_id INTEGER REFERENCES payment_types,
-tip_amt NUMERIC(6,2),
-sub_total NUMERIC(10,2)
+tip_amt NUMERIC(6,2) CHECK (tip_amt >= 0),
+sub_total NUMERIC(10,2) CHECK (sub_total >= 0)
 );
 
 --Static Data about a restaurant
@@ -133,8 +133,8 @@ state VARCHAR(25),
 zip_code VARCHAR(10),
 phone_number VARCHAR(13),
 website VARCHAR(25),
-local_tax_rate NUMERIC(6,3),
-state_tax_rate NUMERIC(6,3),
-federal_tax_rate NUMERIC(6,3),
+local_tax_rate NUMERIC(6,3) CHECK (local_tax_rate >= 0 AND local_tax_rate <= 100),
+state_tax_rate NUMERIC(6,3) CHECK (state_tax_rate >= 0 AND state_tax_rate <= 100),
+federal_tax_rate NUMERIC(6,3) CHECK (federal_tax_rate >= 0 AND federal_tax_rate <= 100),
 week_start_mon BOOLEAN NOT NULL DEFAULT TRUE
 );
