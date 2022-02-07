@@ -63,7 +63,7 @@ COMMENT ON TABLE destinations IS 'Station where item is sent (kitchen, bar)';
 
 CREATE TABLE items (
 id SERIAL PRIMARY KEY,
-name VARCHAR(25) NOT NULL,
+name VARCHAR(40) NOT NULL,
 description TEXT,
 price NUMERIC(8,2) CHECK (price >= 0) NOT NULL,
 category_id INTEGER REFERENCES item_categories,
