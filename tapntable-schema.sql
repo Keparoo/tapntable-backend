@@ -1,10 +1,11 @@
 CREATE TABLE employee_roles (
 id SERIAL PRIMARY KEY,
-role VARCHAR(25) NOT NULL
+name VARCHAR(25) NOT NULL
 );
 
 CREATE TABLE employees (
-  display_name VARCHAR(25) PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
+  display_name VARCHAR(25) NOT NULL,
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
@@ -46,7 +47,7 @@ count INTEGER,
 is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE TABLE check (
+CREATE TABLE checks (
 id SERIAL PRIMARY KEY,
 emp_id INTEGER REFERENCES employees,
 table_id VARCHAR(15) NOT NULL, --Create table of restaurant tables?
@@ -65,14 +66,14 @@ federal_tax NUMERIC(6,2)
 CREATE TABLE ticket (
 id SERIAL PRIMARY KEY,
 emp_id INTEGER REFERENCES employees,
-sent_at TIMESTAMP NOT NULL,
+sent_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE item_ordered (
 id SERIAL PRIMARY KEY,
-item_id INTEGER REFERENCES items
+item_id INTEGER REFERENCES items,
 ticket_id INTEGER REFERENCES ticket,
-check_id INTEGER REFERENCES check,
+check_id INTEGER REFERENCES checks,
 seat_num INTEGER,
 completed_at TIMESTAMP,
 completed_by INTEGER REFERENCES employees,
@@ -83,12 +84,12 @@ item_discount_id INTEGER --This will eventually point to discount table
 
 CREATE TABLE payment_type (
 id SERIAL PRIMARY KEY,
-type VARCHAR(15) NOT NULL,
+type VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE payments (
 id SERIAL PRIMARY KEY,
-check_id INTEGER REFERENCES check,
+check_id INTEGER REFERENCES checks,
 payment_type_id INTEGER REFERENCES payment_type,
 tip_amt NUMERIC(6,2),
 sub_total NUMERIC(10,2)

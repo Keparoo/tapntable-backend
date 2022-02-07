@@ -1,7 +1,7 @@
 --test users have the password "password"
 
-INSERT INTO employee_roles (id, role)
-VALUES (1, 'trainee'), (2, 'dishwasher'), (3, 'maintenance'), (4, 'cook'), (5, 'host'), (6 'server'), (7, 'bartender'), (8, 'head-server'), (9, 'bar-manager'), (10, 'chef') , (11, 'manager'), (12, 'owner');
+INSERT INTO employee_roles (id, name)
+VALUES (1, 'trainee'), (2, 'dishwasher'), (3, 'maintenance'), (4, 'cook'), (5, 'host'), (6, 'server'), (7, 'bartender'), (8, 'head-server'), (9, 'bar-manager'), (10, 'chef') , (11, 'manager'), (12, 'owner');
 
 INSERT INTO employees (id, display_name, password, first_name, last_name, role_id)
 VALUES (1,
@@ -13,14 +13,12 @@ VALUES (1,
 (2,
 'Bartender',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-'',
 'Bartender-First',
 'Bartender-Last',
 7),
-(2,
+(3,
 'Manager',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-'',
 'Manager-First',
 'Manager-Last',
 7);
@@ -85,7 +83,7 @@ NULL,
 3);
 
 INSERT INTO payment_type (id, type)
-VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Disc'), (6, 'Apple'), (7, 'Google'), (8, 'Venmo');
+VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Disc'), (6, 'Apple-Pay'), (7, 'Google-Pay'), (8, 'Venmo');
 
 INSERT INTO restaurant_info (id, restaurant_name, address, city, state, zip_code, phone_number, website, state_tax_rate)
 VALUES ('1a',
