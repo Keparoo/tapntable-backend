@@ -1,19 +1,19 @@
---Role of employee: determines auth access
+--Role of user: determines auth access
 
-CREATE TABLE employee_roles (
+CREATE TABLE user_roles (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
 
---Employee data. Display name is name shown on POS
+--User data. Display name is name shown on POS
 
-CREATE TABLE employees (
+CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   display_name VARCHAR(25) NOT NULL,
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  role_id INTEGER REFERENCES employee_roles,
+  role_id INTEGER REFERENCES user_roles,
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -30,7 +30,7 @@ type VARCHAR(25) NOT NULL
 
 CREATE TABLE user_logs (
 id SERIAL PRIMARY KEY,
-emp_id INTEGER REFERENCES employees,
+user_id INTEGER REFERENCES users,
 log_event_id INTEGER REFERENCES log_events,
 timestamp TIMESTAMP NOT NULL,
 entity_id INTEGER --eg. item_ordered_id, or check_id
@@ -69,7 +69,7 @@ is_active BOOLEAN NOT NULL DEFAULT TRUE
 
 CREATE TABLE checks (
 id SERIAL PRIMARY KEY,
-emp_id INTEGER REFERENCES employees,
+user_id INTEGER REFERENCES users,
 table_id VARCHAR(15) NOT NULL, --Create table of restaurant tables? At bar could be customer name/description
 num_guests INTEGER NOT NULL,
 created_at TIMESTAMP NOT NULL,
@@ -86,7 +86,7 @@ federal_tax NUMERIC(6,2) CHECK (federal_tax >= 0)
 --Batch of items sent as an order. A check may have many orders
 CREATE TABLE tickets (
 id SERIAL PRIMARY KEY,
-emp_id INTEGER REFERENCES employees,
+user_id INTEGER REFERENCES users,
 sent_at TIMESTAMP NOT NULL
 );
 
@@ -99,7 +99,7 @@ ticket_id INTEGER REFERENCES tickets,
 check_id INTEGER REFERENCES checks,
 seat_num INTEGER,
 completed_at TIMESTAMP,
-completed_by INTEGER REFERENCES employees,
+completed_by INTEGER REFERENCES users,
 delivered_at TIMESTAMP,
 item_note VARCHAR(30),
 item_discount_id INTEGER --This will eventually point to discount table
