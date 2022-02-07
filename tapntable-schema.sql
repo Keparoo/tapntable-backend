@@ -13,7 +13,7 @@ CREATE TABLE employees (
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE TABLE log_event (
+CREATE TABLE log_events (
 id SERIAL PRIMARY KEY,
 type VARCHAR(25) NOT NULL
 );
@@ -21,17 +21,17 @@ type VARCHAR(25) NOT NULL
 CREATE TABLE user_logs (
 id SERIAL PRIMARY KEY,
 emp_id INTEGER REFERENCES employees,
-log_event_id INTEGER REFERENCES log_event,
+log_event_id INTEGER REFERENCES log_events,
 timestamp TIMESTAMP NOT NULL,
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );
 
-CREATE TABLE item_category (
+CREATE TABLE item_categories (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
 
-CREATE TABLE destination (
+CREATE TABLE destinations (
 id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL
 );
@@ -41,8 +41,8 @@ id SERIAL PRIMARY KEY,
 name VARCHAR(25) NOT NULL,
 description TEXT,
 price NUMERIC(8,2) NOT NULL,
-category_id INTEGER REFERENCES item_category,
-destination_id INTEGER REFERENCES destination,
+category_id INTEGER REFERENCES item_categories,
+destination_id INTEGER REFERENCES destinations,
 count INTEGER,
 is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
@@ -63,7 +63,7 @@ state_tax NUMERIC(6,2),
 federal_tax NUMERIC(6,2)
 );
 
-CREATE TABLE ticket (
+CREATE TABLE tickets (
 id SERIAL PRIMARY KEY,
 emp_id INTEGER REFERENCES employees,
 sent_at TIMESTAMP NOT NULL
@@ -72,7 +72,7 @@ sent_at TIMESTAMP NOT NULL
 CREATE TABLE item_ordered (
 id SERIAL PRIMARY KEY,
 item_id INTEGER REFERENCES items,
-ticket_id INTEGER REFERENCES ticket,
+ticket_id INTEGER REFERENCES tickets,
 check_id INTEGER REFERENCES checks,
 seat_num INTEGER,
 completed_at TIMESTAMP,
@@ -82,7 +82,7 @@ item_note VARCHAR(30),
 item_discount_id INTEGER --This will eventually point to discount table
 );
 
-CREATE TABLE payment_type (
+CREATE TABLE payment_types (
 id SERIAL PRIMARY KEY,
 type VARCHAR(15) NOT NULL
 );
@@ -90,7 +90,7 @@ type VARCHAR(15) NOT NULL
 CREATE TABLE payments (
 id SERIAL PRIMARY KEY,
 check_id INTEGER REFERENCES checks,
-payment_type_id INTEGER REFERENCES payment_type,
+payment_type_id INTEGER REFERENCES payment_types,
 tip_amt NUMERIC(6,2),
 sub_total NUMERIC(10,2)
 );

@@ -21,15 +21,15 @@ VALUES (1,
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
 'Manager-First',
 'Manager-Last',
-7);
+11);
 
-INSERT INTO log_event (id, type)
+INSERT INTO log_events (id, type)
 VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'close-shift'),(5, 'close-day'),(6, 'discount-item'), (7, 'discount-check');
 
-INSERT INTO item_category (id, name)
+INSERT INTO item_categories (id, name)
 VALUES (1, 'Appetizer'),  (2, 'Soup'), (3, 'Salad'), (4, 'Entree'), (5, 'Addition'), (6, 'Desert'), (7, 'Favorites'), (8, 'Beverage'), (9, 'Beer'), (10, 'Wine'), (11, 'Liquor'), (12, 'Carryout'), (13, 'Delivery');
 
-INSERT INTO destination (id, name)
+INSERT INTO destinations (id, name)
 VALUES (1, 'Kitchen-hot'), (2, 'Kitchen-cold'),(3, 'Bar'), (4, 'No-send');
 
 INSERT INTO items (id, name, description, price, category_id, destination_id)
@@ -60,7 +60,7 @@ VALUES (1,
 (5,
 'Walnut Chicken Salad',
 'Carmelized walnut-encrusted chicken breast over crisp mesclun greens',
-.99,
+13.99,
 3,
 2),
 (6,
@@ -80,10 +80,22 @@ NULL,
 NULL,
 4.99,
 10,
-3);
+3),
+(9,
+'Curious Traveler',
+NULL,
+2.99,
+9,
+3),
+(10,
+'Creme Brulee',
+'Creamy custard with crisp carmelized sugar',
+5.99,
+6,
+2);
 
-INSERT INTO payment_type (id, type)
-VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Disc'), (6, 'Apple-Pay'), (7, 'Google-Pay'), (8, 'Venmo');
+INSERT INTO payment_types (id, type)
+VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Discover'), (6, 'Apple-Pay'), (7, 'Google-Pay'), (8, 'Venmo');
 
 INSERT INTO restaurant_info (id, restaurant_name, address, city, state, zip_code, phone_number, website, state_tax_rate)
 VALUES ('1a',
