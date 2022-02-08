@@ -2,7 +2,7 @@
 --test PINs: Server 1111, Bartender 2222, Manager 3333
 
 INSERT INTO user_roles (id, name)
-VALUES (1, 'trainee'), (2, 'dishwasher'), (3, 'maintenance'), (4, 'cook'), (5, 'host'), (6, 'server'), (7, 'bartender'), (8, 'head-server'), (9, 'bar-manager'), (10, 'chef') , (11, 'manager'), (12, 'owner');
+VALUES (1, 'trainee'), (2, 'employee'), (3, 'cook'), (4, 'host'), (5, 'server'), (6, 'bartender'), (7, 'head-server'), (8, 'bar-manager'), (9, 'chef') , (10, 'manager'), (11, 'owner');
 
 INSERT INTO users (id, username, password, pin, display_name, first_name, last_name, role_id)
 VALUES (1,
@@ -12,7 +12,7 @@ VALUES (1,
 'TestServer',
 'Server-First',
 'Server-Last',
-6),
+5),
 (2,
 'bartender',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -20,7 +20,7 @@ VALUES (1,
 'TestBartender',
 'Bartender-First',
 'Bartender-Last',
-7),
+6),
 (3,
 'manager',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -28,7 +28,7 @@ VALUES (1,
 'TestManager',
 'Manager-First',
 'Manager-Last',
-11);
+10);
 
 INSERT INTO log_events (id, type)
 VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'close-shift'),(5, 'close-day'),(6, 'discount-item'), (7, 'discount-check');
