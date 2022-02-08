@@ -1,17 +1,22 @@
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require('../config');
 
-/** return signed JWT from user data. */
+/** return signed JWT from user data. 
+ * 
+ * There should always be a role given. If for some reason
+ * it is missing, 1: trainee will be assigned
+ * 
+*/
 
 function createToken(user) {
 	console.assert(
 		user.role_id !== undefined,
-		'createToken passed user without role_id property'
+		'createToken passed user without role_id property of trainee'
 	);
 
 	let payload = {
 		username: user.username,
-		role: user.role_id || 0
+		role: user.role_id || 1
 	};
 
 	return jwt.sign(payload, SECRET_KEY);
