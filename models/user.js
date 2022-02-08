@@ -66,8 +66,7 @@ class User {
 		displayName,
 		firstName,
 		lastName,
-		roleId,
-		isActive
+		roleId
 	}) {
 		const duplicateCheck = await db.query(
 			`SELECT username
@@ -87,13 +86,12 @@ class User {
            (username,
             password,
             pin,
-            display_name
+            display_name,
             first_name,
             last_name,
-            role_id,
-            is_active)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId", is_active AS "isActive"`,
+            role_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId"`,
 			[
 				username,
 				hashedPassword,
@@ -101,8 +99,7 @@ class User {
 				displayName,
 				firstName,
 				lastName,
-				roleId,
-				isActive
+				roleId
 			]
 		);
 
