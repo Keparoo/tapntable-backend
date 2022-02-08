@@ -31,7 +31,7 @@ class User {
               display_name AS "displayName",
               first_name AS "firstName",
               last_name AS "lastName",
-              role,
+              role_id,
               is_active AS "isActive"
            FROM users
            WHERE username = $1`,
@@ -67,7 +67,7 @@ class User {
 		displayName,
 		firstName,
 		lastName,
-		role,
+		role_id,
 		isActive
 	}) {
 		const duplicateCheck = await db.query(
@@ -91,7 +91,7 @@ class User {
             display_name
             first_name,
             last_name,
-            role,
+            role_id,
             is_active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
            RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
@@ -102,7 +102,7 @@ class User {
 				displayName,
 				firstName,
 				lastName,
-				role,
+				role_id,
 				isActive
 			]
 		);
@@ -209,7 +209,7 @@ class User {
                                 display_name AS "displayName",
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                role,
+                                role_id,
                                 is_active AS "isActive"`;
 		const result = await db.query(querySql, [ ...values, id ]);
 		const user = result.rows[0];
