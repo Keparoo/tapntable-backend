@@ -49,7 +49,7 @@ router.post('/', ensureManager, async function(req, res, next) {
  *
  * Returns list of all users.
  *
- * Authorization require: manager or owner (roleId = 10 or 11)
+ * Authorization required: manager or owner (roleId = 10 or 11)
  **/
 
 router.get('/', ensureManager, async function(req, res, next) {
@@ -67,7 +67,7 @@ router.get('/', ensureManager, async function(req, res, next) {
  * Returns { id, username, pin, displayName, firstName, lastName, role, isActive }
  * 
  *
- * Authorization required: admin or same user-as-:username
+ * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
  **/
 
 router.get('/:username', ensureCorrectUserOrManager, async function(
@@ -114,7 +114,7 @@ router.patch('/:username', ensureCorrectUserOrManager, async function(
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: manager or owner (roleId = 10 or 11)
  **/
 
 router.delete('/:username', ensureManager, async function(req, res, next) {

@@ -220,13 +220,13 @@ class User {
 
 	/** Delete given user from database; returns undefined. */
 
-	static async remove(id) {
+	static async remove(username) {
 		let result = await db.query(
 			`DELETE
            FROM users
-           WHERE id = $1
-           RETURNING id`,
-			[ id ]
+           WHERE username = $1
+           RETURNING username`,
+			[ username ]
 		);
 		const user = result.rows[0];
 
