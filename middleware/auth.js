@@ -27,7 +27,7 @@ function authenticateJWT(req, res, next) {
 	}
 }
 
-/** Middleware to use when they must be logged in.
+/** Middleware to use when user must be logged in.
  *
  * If not, raises Unauthorized.
  */
@@ -41,7 +41,7 @@ function ensureLoggedIn(req, res, next) {
 	}
 }
 
-/** Middleware to use when they be logged in as an a manager user or higher (roleId >= 10).
+/** Middleware to use when user must be logged in as an a manager or owner (roleId >= 10).
  *
  *  If not, raises Unauthorized.
  */
@@ -59,6 +59,8 @@ function ensureManager(req, res, next) {
 
 /** Middleware to use when they must provide a valid token & be user matching
  *  username provided as route param.
+ * 
+ *  A manager or owner (roleId >= 10) will allow this route
  *
  *  If not, raises Unauthorized.
  */
