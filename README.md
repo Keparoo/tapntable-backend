@@ -77,6 +77,8 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 * Returns JWT token which can be used to authenticate further requests  
 * Authorization required: none
 **Note: Auth will be changed to role = manager or owner (RoleId=10 or 11)**
+
+**All auth tests currently pass**
   
 ### User Routes
 

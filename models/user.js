@@ -104,7 +104,7 @@ class User {
 		);
 
 		const user = result.rows[0];
-
+		console.log(user);
 		return user;
 	}
 
