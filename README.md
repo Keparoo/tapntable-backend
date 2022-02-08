@@ -1,12 +1,16 @@
-# tapntable
-A restaurant point of sale system (POS): A web-based POS with a postgresql RESTful backend and React-Redux Frontend
+# **tapntable - backend**
+**Tapntable** is a web-based restaurant point of sale system (POS): This is the backend for the system. It implements a postgresql database with a RESTful API.
 
-Springboard Capstone 2
+The Front end is a React-Redux web-based user interface that creates user terminals for servers and bartenders as well as destination points for sent orders (kitchen and service bar)
+
 ---  
 ## Database Schema  
-The current version of the database schema is below. Only the orange tables have been implemented. The blue tables are for phase 2.  
+The current version of the database schema (v1.9) is below.
+* The orange tables represent phase 1 and are currently implemented.
+* The blue tables are for phase 2.  
+* Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
 
-![Database Schema v1.6](tapntable-schema-v1.6.png)
+![Database Schema v1.9](tapntable-schema-v1.9.png)
 
 Current issues being worked out related to the schema:
 
