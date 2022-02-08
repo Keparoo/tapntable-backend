@@ -79,6 +79,16 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 **Note: Auth will be changed to role = manager or owner (RoleId=10 or 11)**
 
 **All auth tests currently pass**
+
+### Auth Middleware
+* authenticateJWT
+* ensureLoggedIn
+* ensureManager
+  * must have roleId >= 10 (Manager or Owner)
+* ensureCorrectUserOrManager
+  * must be same user or have roleId >= 10 (Manager or Owner)
+
+**All middleware tests currently pass**
   
 ### User Routes
 
