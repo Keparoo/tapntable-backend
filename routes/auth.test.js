@@ -67,10 +67,12 @@ describe('POST /auth/register', function() {
 	test('works for anon', async function() {
 		const resp = await request(app).post('/auth/register').send({
 			username: 'new',
+			password: 'password',
+			pin: 9999,
+			displayName: 'display',
 			firstName: 'first',
 			lastName: 'last',
-			password: 'password',
-			email: 'new@email.com'
+			roleId: 1
 		});
 		expect(resp.statusCode).toEqual(201);
 		expect(resp.body).toEqual({
@@ -88,10 +90,12 @@ describe('POST /auth/register', function() {
 	test('bad request with invalid data', async function() {
 		const resp = await request(app).post('/auth/register').send({
 			username: 'new',
+			password: 'password',
+			pin: 8888,
+			displayName: 'display',
 			firstName: 'first',
 			lastName: 'last',
-			password: 'password',
-			email: 'not-an-email'
+			roleId: 'not-an-integer'
 		});
 		expect(resp.statusCode).toEqual(400);
 	});
