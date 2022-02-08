@@ -6,7 +6,7 @@ Springboard Capstone 2
 ## Database Schema  
 The current version of the database schema is below. Only the orange tables have been implemented. The blue tables are for phase 2.  
 
-[Database Schema v1.6](tapntable-schema-v1.6.png)
+![Database Schema v1.6](tapntable-schema-v1.6.png)
 
 Current issues being worked out related to the schema:
 
