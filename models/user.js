@@ -31,7 +31,7 @@ class User {
               display_name AS "displayName",
               first_name AS "firstName",
               last_name AS "lastName",
-              role_id,
+              role_id AS "roleId",
               is_active AS "isActive"
            FROM users
            WHERE username = $1`,
@@ -60,14 +60,13 @@ class User {
    **/
 
 	static async register({
-		id,
 		username,
 		password,
 		pin,
 		displayName,
 		firstName,
 		lastName,
-		role_id,
+		roleId,
 		isActive
 	}) {
 		const duplicateCheck = await db.query(
@@ -94,7 +93,7 @@ class User {
             role_id,
             is_active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_active AS "isActive"`,
+           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId", is_active AS "isActive"`,
 			[
 				username,
 				hashedPassword,
@@ -102,7 +101,7 @@ class User {
 				displayName,
 				firstName,
 				lastName,
-				role_id,
+				roleId,
 				isActive
 			]
 		);
@@ -125,7 +124,7 @@ class User {
               display_name AS "displayName",
               first_name AS "firstName",
               last_name AS "lastName",
-              role_id,
+              role_id AS "roleId",
               is_active AS "isActive"
            FROM users
            ORDER BY id`

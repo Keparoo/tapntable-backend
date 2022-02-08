@@ -5,6 +5,7 @@ const { SECRET_KEY } = require('../config');
  * 
  * There should always be a role given. If for some reason
  * it is missing, 1: trainee will be assigned
+ * This should not happen as 1 is the default in the postgresql db
  * 
 */
 
