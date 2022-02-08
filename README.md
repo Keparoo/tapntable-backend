@@ -65,16 +65,17 @@ From the server/bartender terminals I'm trying to figure out the best plan. Here
 
 ## Routes
 ### Auth Routes
-POST /auth/token {username, password} => { token }
-Returns JWT token which can be used to authenticate further requests
-Token fields: { username, RoleId, iat }
-Authorization required: none
+POST /auth/token {username, password} => { token }  
+* All fields are required
+* Returns JWT token which can be used to authenticate further requests  
+* Token fields: { username, RoleId, iat }  
+* Authorization required: none
 
-POST /auth/register { username, password, pin, displayName, firstName, lastName, roleId } => { token }
-All fields are required
-isActive is set to true automatically upon creation
-Returns JWT token which can be used to authenticate further requests
-Authorization required: none
+POST /auth/register { username, password, pin, displayName, firstName, lastName, roleId } => { token }  
+* All fields are required  
+* isActive is set to true automatically upon creation  
+* Returns JWT token which can be used to authenticate further requests  
+* Authorization required: none
 **Note: Auth will be changed to role = manager or owner (RoleId=10 or 11)**
   
 ### User Routes
