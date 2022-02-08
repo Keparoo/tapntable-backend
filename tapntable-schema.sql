@@ -16,7 +16,7 @@ CREATE TABLE users (
   display_name VARCHAR(15) NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  role_id INTEGER REFERENCES user_roles DEFAULT 1,
+  role_id INTEGER REFERENCES user_roles,
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 COMMENT ON TABLE users IS 'List of users (employees) and their info';

@@ -21,13 +21,12 @@ const router = express.Router();
 /** POST / { user }  => { user, token }
  *
  * Adds a new user. This is not the registration endpoint --- instead, this is
- * only for admin users to add new users. The new user being added can be an
- * admin.
+ * only for admin users to add new users. The new user being added can be a manager or owner.
  *
  * This returns the newly created user and an authentication token for them:
  *  {user: { id, username, pin, displayName, firstName, lastName, role, isActive }, token }
  *
- * Authorization required: admin
+ * Authorization required: manager or owner (RoleId = 10 or 11)
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
@@ -55,9 +54,10 @@ router.post('/', ensureManager, async function(req, res, next) {
 
 // add ensureManager
 
-router.get('/', ensureLoggedIn, async function(req, res, next) {
+router.get('/', ensureManager, async function(req, res, next) {
 	try {
 		const users = await User.findAll();
+		console.log(users);
 		return res.json({ users });
 	} catch (err) {
 		return next(err);
@@ -119,11 +119,7 @@ router.patch('/:username', ensureCorrectUserOrManager, async function(
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete('/:username', ensureCorrectUserOrManager, async function(
-	req,
-	res,
-	next
-) {
+router.delete('/:username', ensureManager, async function(req, res, next) {
 	try {
 		await User.remove(req.params.username);
 		return res.json({ deleted: req.params.username });

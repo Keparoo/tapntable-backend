@@ -32,11 +32,6 @@
 			"type": "string",
 			"minLength": 1,
 			"maxLength": 30
-		},
-		"roleId": {
-			"type": "integer",
-			"minimum": 1,
-			"maximum": 11
 		}
 	},
 	"additionalProperties": false,
@@ -46,7 +41,6 @@
 		"pin",
 		"displayName",
 		"firstName",
-		"lastName",
-		"roleId"
+		"lastName"
 	]
 }

@@ -38,14 +38,16 @@ router.post('/token', async function(req, res, next) {
 
 /** POST /auth/register:   { user } => { token }
  *
- * user must include { username, password, pin, displayName, firstName, lastName, roleId }
+ * user must include { username, password, pin, displayName, firstName, lastName }
  * 
  * Note: isActive will be set to true when a new user is registered.
+ * 
+ * RoleId will be set to 1 (trainee - the lowest auth level)
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
  * Authorization required: none
- * Note Auth for this route to be changed to role=manager or owner (roleId=10 or 11)
+ *
  */
 
 router.post('/register', async function(req, res, next) {
@@ -55,8 +57,8 @@ router.post('/register', async function(req, res, next) {
 			const errs = validator.errors.map((e) => e.stack);
 			throw new BadRequestError(errs);
 		}
-
-		const newUser = await User.register({ ...req.body });
+		// Set roleId to 1 (trainee, lowest auth level)
+		const newUser = await User.register({ ...req.body, roleId: 1 });
 		const token = createToken(newUser);
 		return res.status(201).json({ token });
 	} catch (err) {

@@ -71,8 +71,7 @@ describe('POST /auth/register', function() {
 			pin: 9999,
 			displayName: 'display',
 			firstName: 'first',
-			lastName: 'last',
-			roleId: 1
+			lastName: 'last'
 		});
 		expect(resp.statusCode).toEqual(201);
 		expect(resp.body).toEqual({
