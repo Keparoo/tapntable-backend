@@ -20,8 +20,8 @@ User currently includes these fields:
 * id (serial primary key)
 * username (unique)
 * password
-* pin (unique)
-* display_name
+* pin (unique) (Used by user to punch-in, log-in and use the frontend interface)
+* display_name (Name displayed on frontend interface and printed checks)
 * first_name
 * last_name
 * role_id (role determining POS response and allowed actions)
