@@ -5,8 +5,8 @@ const { UnauthorizedError } = require('../expressError');
 const {
 	authenticateJWT,
 	ensureLoggedIn,
-	ensureAdmin,
-	ensureCorrectUserOrAdmin
+	ensureManager,
+	ensureCorrectUserOrManager
 } = require('./auth');
 
 const { SECRET_KEY } = require('../config');
@@ -78,7 +78,7 @@ describe('ensureLoggedIn', function() {
 	});
 });
 
-describe('ensureAdmin', function() {
+describe('ensureManager', function() {
 	test('works', function() {
 		expect.assertions(1);
 		const req = {};
@@ -86,17 +86,17 @@ describe('ensureAdmin', function() {
 		const next = function(err) {
 			expect(err).toBeFalsy();
 		};
-		ensureAdmin(req, res, next);
+		ensureManager(req, res, next);
 	});
 
-	test('unauth if not admin', function() {
+	test('unauth if not manager', function() {
 		expect.assertions(1);
 		const req = {};
 		const res = { locals: { user: { username: 'test', roleId: 1 } } };
 		const next = function(err) {
 			expect(err instanceof UnauthorizedError).toBeTruthy();
 		};
-		ensureAdmin(req, res, next);
+		ensureManager(req, res, next);
 	});
 
 	test('unauth if anon', function() {
@@ -106,11 +106,11 @@ describe('ensureAdmin', function() {
 		const next = function(err) {
 			expect(err instanceof UnauthorizedError).toBeTruthy();
 		};
-		ensureAdmin(req, res, next);
+		ensureManager(req, res, next);
 	});
 });
 
-describe('ensureCorrectUserOrAdmin', function() {
+describe('ensureCorrectUserOrManager', function() {
 	test('works: admin', function() {
 		expect.assertions(1);
 		const req = { params: { username: 'test' } };
@@ -118,7 +118,7 @@ describe('ensureCorrectUserOrAdmin', function() {
 		const next = function(err) {
 			expect(err).toBeFalsy();
 		};
-		ensureCorrectUserOrAdmin(req, res, next);
+		ensureCorrectUserOrManager(req, res, next);
 	});
 
 	test('works: same user', function() {
@@ -128,7 +128,7 @@ describe('ensureCorrectUserOrAdmin', function() {
 		const next = function(err) {
 			expect(err).toBeFalsy();
 		};
-		ensureCorrectUserOrAdmin(req, res, next);
+		ensureCorrectUserOrManager(req, res, next);
 	});
 
 	test('unauth: mismatch', function() {
@@ -138,7 +138,7 @@ describe('ensureCorrectUserOrAdmin', function() {
 		const next = function(err) {
 			expect(err instanceof UnauthorizedError).toBeTruthy();
 		};
-		ensureCorrectUserOrAdmin(req, res, next);
+		ensureCorrectUserOrManager(req, res, next);
 	});
 
 	test('unauth: if anon', function() {
@@ -148,6 +148,6 @@ describe('ensureCorrectUserOrAdmin', function() {
 		const next = function(err) {
 			expect(err instanceof UnauthorizedError).toBeTruthy();
 		};
-		ensureCorrectUserOrAdmin(req, res, next);
+		ensureCorrectUserOrManager(req, res, next);
 	});
 });

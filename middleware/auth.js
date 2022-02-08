@@ -41,15 +41,14 @@ function ensureLoggedIn(req, res, next) {
 	}
 }
 
-/** Middleware to use when they be logged in as an admin user.
+/** Middleware to use when they be logged in as an a manager user or higher (roleId >= 10).
  *
  *  If not, raises Unauthorized.
  */
 
-function ensureAdmin(req, res, next) {
+function ensureManager(req, res, next) {
 	try {
-		// if (!res.locals.user || !res.locals.user.isAdmin) {
-		if (!res.locals.user || res.locals.user.roleId !== 10) {
+		if (!res.locals.user || res.locals.user.roleId < 10) {
 			throw new UnauthorizedError();
 		}
 		return next();
@@ -64,11 +63,11 @@ function ensureAdmin(req, res, next) {
  *  If not, raises Unauthorized.
  */
 
-function ensureCorrectUserOrAdmin(req, res, next) {
+function ensureCorrectUserOrManager(req, res, next) {
 	try {
 		const user = res.locals.user;
 		if (
-			!(user && (user.roleId === 10 || user.username === req.params.username))
+			!(user && (user.roleId >= 10 || user.username === req.params.username))
 		) {
 			throw new UnauthorizedError();
 		}
@@ -81,6 +80,6 @@ function ensureCorrectUserOrAdmin(req, res, next) {
 module.exports = {
 	authenticateJWT,
 	ensureLoggedIn,
-	ensureAdmin,
-	ensureCorrectUserOrAdmin
+	ensureManager,
+	ensureCorrectUserOrManager
 };

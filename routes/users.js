@@ -6,8 +6,8 @@ const jsonschema = require('jsonschema');
 
 const express = require('express');
 const {
-	ensureCorrectUserOrAdmin,
-	ensureAdmin,
+	ensureCorrectUserOrManager,
+	ensureManager,
 	ensureLoggedIn
 } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
@@ -30,7 +30,7 @@ const router = express.Router();
  * Authorization required: admin
  **/
 
-router.post('/', ensureAdmin, async function(req, res, next) {
+router.post('/', ensureManager, async function(req, res, next) {
 	try {
 		const validator = jsonschema.validate(req.body, userNewSchema);
 		if (!validator.valid) {
@@ -53,7 +53,7 @@ router.post('/', ensureAdmin, async function(req, res, next) {
  * Authorization required: admin
  **/
 
-// add ensureAdmin
+// add ensureManager
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
 	try {
@@ -72,7 +72,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get('/:username', ensureCorrectUserOrAdmin, async function(
+router.get('/:username', ensureCorrectUserOrManager, async function(
 	req,
 	res,
 	next
@@ -95,7 +95,7 @@ router.get('/:username', ensureCorrectUserOrAdmin, async function(
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch('/:username', ensureCorrectUserOrAdmin, async function(
+router.patch('/:username', ensureCorrectUserOrManager, async function(
 	req,
 	res,
 	next
@@ -119,7 +119,7 @@ router.patch('/:username', ensureCorrectUserOrAdmin, async function(
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete('/:username', ensureCorrectUserOrAdmin, async function(
+router.delete('/:username', ensureCorrectUserOrManager, async function(
 	req,
 	res,
 	next
@@ -139,7 +139,7 @@ router.delete('/:username', ensureCorrectUserOrAdmin, async function(
  * Authorization required: admin or same-user-as-:username
  * */
 
-router.post('/:username/jobs/:id', ensureCorrectUserOrAdmin, async function(
+router.post('/:username/jobs/:id', ensureCorrectUserOrManager, async function(
 	req,
 	res,
 	next
