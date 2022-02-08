@@ -49,10 +49,8 @@ router.post('/', ensureManager, async function(req, res, next) {
  *
  * Returns list of all users.
  *
- * Authorization required: admin
+ * Authorization require: manager or owner (roleId = 10 or 11)
  **/
-
-// add ensureManager
 
 router.get('/', ensureManager, async function(req, res, next) {
 	try {

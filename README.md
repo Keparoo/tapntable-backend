@@ -72,11 +72,12 @@ POST /auth/token {username, password} => { token }
 * Authorization required: none
 
 POST /auth/register { username, password, pin, displayName, firstName, lastName, roleId } => { token }  
-* All fields are required  
+* All fields are required
+* roleId is set to 1 automatically (trainee: lowest auth level) 
 * isActive is set to true automatically upon creation  
 * Returns JWT token which can be used to authenticate further requests  
 * Authorization required: none
-**Note: Auth will be changed to role = manager or owner (RoleId=10 or 11)**
+
 
 **All auth tests currently pass**
 
@@ -91,5 +92,17 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 **All middleware tests currently pass**
   
 ### User Routes
+POST /users {username, password, pin, displayName, firstName, lastName, roleId, isActive} => { token }
+* Required fields: username, password, pin, displayName, firstName, lastName, roleId
+* isActive is optional. If ommitted, defaults to true
+* Returns a JWT token which can be used to authenticate further requests
+* Authorization require: manager or owner (roleId = 10 or 11)
 
+GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
+* Returns a list of all users
+* Authorization require: manager or owner (roleId = 10 or 11)
 
+GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isActive }
+* Returns user record for requested user
+* Throws NotFoundError if user not found
+* Authorization require same user-as-:username or manager or owner (roleId = 10 or 11)

@@ -66,7 +66,8 @@ class User {
 		displayName,
 		firstName,
 		lastName,
-		roleId
+		roleId,
+		isActive = true
 	}) {
 		const duplicateCheck = await db.query(
 			`SELECT username
@@ -89,9 +90,10 @@ class User {
             display_name,
             first_name,
             last_name,
-            role_id)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)
-           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId"`,
+            role_id,
+            is_active)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId", is_active AS "isActive"`,
 			[
 				username,
 				hashedPassword,
@@ -99,7 +101,8 @@ class User {
 				displayName,
 				firstName,
 				lastName,
-				roleId
+				roleId,
+				isActive
 			]
 		);
 
@@ -132,41 +135,40 @@ class User {
 
 	/** Given a username, return data about user.
    *
-   * Returns { id, username, pin, displayName, firstName, lastName, role, jobs }
-   *   where jobs is { id, title, company_handle, company_name, state }
+   * Returns { id, username, pin, displayName, firstName, lastName, role, isActive }
    *
    * Throws NotFoundError if user not found.
    **/
 
-	// static async get(username) {
-	// 	const userRes = await db.query(
-	// 		`SELECT id,
-	//                 username,
-	//                 pin,
-	//                 display_name AS "displayName",
-	//                 first_name AS "firstName",
-	//                 last_name AS "lastName",
-	//                 role,
-	//                 is_active AS "isActive"
-	//          FROM users
-	//          WHERE id = $1`,
-	// 		[ id ]
-	// 	);
+	static async get(username) {
+		const userRes = await db.query(
+			`SELECT id,
+	            username,
+	            pin,
+	            display_name AS "displayName",
+	            first_name AS "firstName",
+	            last_name AS "lastName",
+	            role_id AS "roleId",
+	            is_active AS "isActive"
+	         FROM users
+	         WHERE username = $1`,
+			[ username ]
+		);
 
-	// 	const user = userRes.rows[0];
+		const user = userRes.rows[0];
 
-	// 	if (!user) throw new NotFoundError(`No user: ${username}`);
+		if (!user) throw new NotFoundError(`No user: ${username}`);
 
-	// 	const userApplicationsRes = await db.query(
-	// 		`SELECT a.job_id
-	//          FROM applications AS a
-	//          WHERE a.id = $1`,
-	// 		[ id ]
-	// 	);
+		// const userApplicationsRes = await db.query(
+		// 	`SELECT a.job_id
+		//        FROM applications AS a
+		//        WHERE a.id = $1`,
+		// 	[ id ]
+		// );
 
-	// 	user.applications = userApplicationsRes.rows.map((a) => a.job_id);
-	// 	return user;
-	// }
+		// user.applications = userApplicationsRes.rows.map((a) => a.job_id);
+		return user;
+	}
 
 	/** Update user data with `data`.
    *
