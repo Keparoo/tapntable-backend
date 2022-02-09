@@ -158,6 +158,7 @@ DELETE /items/:id => { deleted: id }
 **(Items should not be deleted, instead is_active=false)**
 
 **All item model tests pass**
+
 ---
 
 ## Routes to be completed:
