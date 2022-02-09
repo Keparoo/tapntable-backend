@@ -133,7 +133,10 @@ GET /users/logs
 
 ### Items routes
 POST /items  
-GET /items ?name, ?category  
+GET /items
+* search-query: name
+* search-query: category  
+
 GET /items/:id  
 PATCH /items/:id  
 POST /items/categories  
@@ -147,7 +150,9 @@ GET /items/destinations/:id
 
 ### Checks routes
 POST /checks  
-GET /checks ?emp_id  
+GET /checks
+* search-query: emp_id  
+
 GET /checks/:id  
 PATCH /checks/:id  
 **(Checks should not be deleted, instead is_void=true)**
