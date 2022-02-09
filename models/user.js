@@ -66,7 +66,7 @@ class User {
 		displayName,
 		firstName,
 		lastName,
-		roleId,
+		roleId = 1,
 		isActive = true
 	}) {
 		const duplicateCheck = await db.query(
@@ -107,7 +107,6 @@ class User {
 		);
 
 		const user = result.rows[0];
-		console.log(user);
 		return user;
 	}
 
@@ -233,7 +232,7 @@ class User {
 		);
 		const user = result.rows[0];
 
-		if (!user) throw new NotFoundError(`No user: ${id}`);
+		if (!user) throw new NotFoundError(`No user: ${username}`);
 	}
 
 	/** Apply for job: update db, returns undefined.

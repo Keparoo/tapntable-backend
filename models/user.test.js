@@ -11,8 +11,7 @@ const {
 	commonBeforeAll,
 	commonBeforeEach,
 	commonAfterEach,
-	commonAfterAll,
-	testJobIds
+	commonAfterAll
 } = require('./_testCommon');
 
 beforeAll(commonBeforeAll);
@@ -25,12 +24,17 @@ afterAll(commonAfterAll);
 describe('authenticate', function() {
 	test('works', async function() {
 		const user = await User.authenticate('u1', 'password1');
+		expect(typeof user.id).toBe('number');
+		delete user.id;
+
 		expect(user).toEqual({
 			username: 'u1',
+			pin: 6666,
+			displayName: 'U1D',
 			firstName: 'U1F',
 			lastName: 'U1L',
-			email: 'u1@email.com',
-			isAdmin: false
+			roleId: 1,
+			isActive: true
 		});
 	});
 
@@ -58,10 +62,11 @@ describe('authenticate', function() {
 describe('register', function() {
 	const newUser = {
 		username: 'new',
+		pin: 5555,
+		displayName: 'Test-display',
 		firstName: 'Test',
 		lastName: 'Tester',
-		email: 'test@test.com',
-		isAdmin: false
+		isActive: false
 	};
 
 	test('works', async function() {
@@ -69,23 +74,33 @@ describe('register', function() {
 			...newUser,
 			password: 'password'
 		});
+
+		expect(typeof user.id).toBe('number');
+		delete user.id;
+		expect(user.roleId).toEqual(1);
+		delete user.roleId;
+
 		expect(user).toEqual(newUser);
 		const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 		expect(found.rows.length).toEqual(1);
-		expect(found.rows[0].is_admin).toEqual(false);
+		expect(found.rows[0].is_active).toEqual(false);
 		expect(found.rows[0].password.startsWith('$2b$')).toEqual(true);
 	});
 
-	test('works: adds admin', async function() {
+	test('works: adds roleId', async function() {
 		let user = await User.register({
 			...newUser,
 			password: 'password',
-			isAdmin: true
+			roleId: 6
 		});
-		expect(user).toEqual({ ...newUser, isAdmin: true });
+
+		expect(typeof user.id).toBe('number');
+		delete user.id;
+
+		expect(user).toEqual({ ...newUser, roleId: 6 });
 		const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 		expect(found.rows.length).toEqual(1);
-		expect(found.rows[0].is_admin).toEqual(true);
+		expect(found.rows[0].role_id).toEqual(6);
 		expect(found.rows[0].password.startsWith('$2b$')).toEqual(true);
 	});
 
@@ -111,20 +126,30 @@ describe('register', function() {
 describe('findAll', function() {
 	test('works', async function() {
 		const users = await User.findAll();
+
+		expect(typeof users[0].id).toBe('number');
+		delete users[0].id;
+		expect(typeof users[1].id).toBe('number');
+		delete users[1].id;
+
 		expect(users).toEqual([
 			{
 				username: 'u1',
+				pin: 6666,
+				displayName: 'U1D',
 				firstName: 'U1F',
 				lastName: 'U1L',
-				email: 'u1@email.com',
-				isAdmin: false
+				roleId: 1,
+				isActive: true
 			},
 			{
 				username: 'u2',
+				pin: 7777,
+				displayName: 'U2D',
 				firstName: 'U2F',
 				lastName: 'U2L',
-				email: 'u2@email.com',
-				isAdmin: false
+				roleId: 1,
+				isActive: true
 			}
 		]);
 	});
@@ -135,13 +160,18 @@ describe('findAll', function() {
 describe('get', function() {
 	test('works', async function() {
 		let user = await User.get('u1');
+
+		expect(typeof user.id).toBe('number');
+		delete user.id;
+
 		expect(user).toEqual({
 			username: 'u1',
+			pin: 6666,
+			displayName: 'U1D',
 			firstName: 'U1F',
 			lastName: 'U1L',
-			email: 'u1@email.com',
-			isAdmin: false,
-			applications: [ testJobIds[0] ]
+			roleId: 1,
+			isActive: true
 		});
 	});
 
@@ -159,30 +189,40 @@ describe('get', function() {
 
 describe('update', function() {
 	const updateData = {
+		id: 1,
+		username: 'newUserName',
+		pin: 6666,
+		displayName: 'NewD',
 		firstName: 'NewF',
-		lastName: 'NewF',
-		email: 'new@email.com',
-		isAdmin: true
+		lastName: 'NewL',
+		roleId: 6,
+		isActive: false
 	};
 
 	test('works', async function() {
-		let job = await User.update('u1', updateData);
-		expect(job).toEqual({
-			username: 'u1',
+		let user = await User.update('u1', updateData);
+		expect(user).toEqual({
+			id: 1,
 			...updateData
 		});
 	});
 
 	test('works: set password', async function() {
-		let job = await User.update('u1', {
+		let user = await User.update('u1', {
 			password: 'new'
 		});
-		expect(job).toEqual({
+
+		expect(typeof user.id).toBe('number');
+		delete user.id;
+
+		expect(user).toEqual({
 			username: 'u1',
+			pin: 6666,
+			displayName: 'U1D',
 			firstName: 'U1F',
 			lastName: 'U1L',
-			email: 'u1@email.com',
-			isAdmin: false
+			roleId: 1,
+			isActive: true
 		});
 		const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
 		expect(found.rows.length).toEqual(1);
@@ -223,42 +263,6 @@ describe('remove', function() {
 	test('not found if no such user', async function() {
 		try {
 			await User.remove('nope');
-			fail();
-		} catch (err) {
-			expect(err instanceof NotFoundError).toBeTruthy();
-		}
-	});
-});
-
-/************************************** applyToJob */
-
-describe('applyToJob', function() {
-	test('works', async function() {
-		await User.applyToJob('u1', testJobIds[1]);
-
-		const res = await db.query('SELECT * FROM applications WHERE job_id=$1', [
-			testJobIds[1]
-		]);
-		expect(res.rows).toEqual([
-			{
-				job_id: testJobIds[1],
-				username: 'u1'
-			}
-		]);
-	});
-
-	test('not found if no such job', async function() {
-		try {
-			await User.applyToJob('u1', 0, 'applied');
-			fail();
-		} catch (err) {
-			expect(err instanceof NotFoundError).toBeTruthy();
-		}
-	});
-
-	test('not found if no such user', async function() {
-		try {
-			await User.applyToJob('nope', testJobIds[0], 'applied');
 			fail();
 		} catch (err) {
 			expect(err instanceof NotFoundError).toBeTruthy();

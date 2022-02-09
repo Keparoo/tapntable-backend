@@ -4,22 +4,22 @@ const { SECRET_KEY } = require('../config');
 
 describe('createToken', function() {
 	test('works: not admin', function() {
-		const token = createToken({ username: 'test', is_admin: false });
+		const token = createToken({ username: 'test', roleId: 1 });
 		const payload = jwt.verify(token, SECRET_KEY);
 		expect(payload).toEqual({
 			iat: expect.any(Number),
 			username: 'test',
-			isAdmin: false
+			roleId: 1
 		});
 	});
 
 	test('works: admin', function() {
-		const token = createToken({ username: 'test', isAdmin: true });
+		const token = createToken({ username: 'test', roleId: 10 });
 		const payload = jwt.verify(token, SECRET_KEY);
 		expect(payload).toEqual({
 			iat: expect.any(Number),
 			username: 'test',
-			isAdmin: true
+			roleId: 10
 		});
 	});
 
@@ -30,7 +30,7 @@ describe('createToken', function() {
 		expect(payload).toEqual({
 			iat: expect.any(Number),
 			username: 'test',
-			isAdmin: false
+			roleId: 1
 		});
 	});
 });
