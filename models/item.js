@@ -31,7 +31,7 @@ class Item {
 			`INSERT INTO items
            (name, description, price, category_id, destination_id)
            VALUES ($1, $2, $3, $4, $5)
-           RETURNING name, description, price, category_id AS "categoryId", destination_id AS "destinationId"`,
+           RETURNING id, name, description, price, category_id AS "categoryId", destination_id AS "destinationId", count, is_active AS "isActive"`,
 			[ name, description, price, categoryId, destinationId ]
 		);
 		const item = result.rows[0];
@@ -67,24 +67,24 @@ class Item {
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
 
-		if (minEmployees !== undefined) {
-			queryValues.push(minEmployees);
-			whereExpressions.push(`num_employees >= $${queryValues.length}`);
-		}
+		// if (minEmployees !== undefined) {
+		// 	queryValues.push(minEmployees);
+		// 	whereExpressions.push(`num_employees >= $${queryValues.length}`);
+		// }
 
-		if (maxEmployees !== undefined) {
-			queryValues.push(maxEmployees);
-			whereExpressions.push(`num_employees <= $${queryValues.length}`);
-		}
+		// if (maxEmployees !== undefined) {
+		// 	queryValues.push(maxEmployees);
+		// 	whereExpressions.push(`num_employees <= $${queryValues.length}`);
+		// }
 
-		if (name) {
-			queryValues.push(`%${name}%`);
-			whereExpressions.push(`name ILIKE $${queryValues.length}`);
-		}
+		// if (name) {
+		// 	queryValues.push(`%${name}%`);
+		// 	whereExpressions.push(`name ILIKE $${queryValues.length}`);
+		// }
 
-		if (whereExpressions.length > 0) {
-			query += ' WHERE ' + whereExpressions.join(' AND ');
-		}
+		// if (whereExpressions.length > 0) {
+		// 	query += ' WHERE ' + whereExpressions.join(' AND ');
+		// }
 
 		// Finalize query and return results
 
