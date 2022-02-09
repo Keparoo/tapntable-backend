@@ -27,5 +27,5 @@
 		}
 	},
 	"additionalProperties": false,
-	"required": [ "name", "description", "price", "categoryId", "destinationId" ]
+	"required": [ "name", "price", "categoryId", "destinationId" ]
 }
