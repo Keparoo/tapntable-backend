@@ -103,13 +103,13 @@ class Item {
 	static async get(id) {
 		const itemRes = await db.query(
 			`SELECT id,
-                    name,
-                    description,
-                    price,
-                    category_id AS "categoryId",
-                    destination_id AS "destinationId",
-                    count,
-                    is_active AS "isActive"
+              name,
+              description,
+              price,
+              category_id AS "categoryId",
+              destination_id AS "destinationId",
+              count,
+              is_active AS "isActive"
              FROM items
              WHERE id = $1`,
 			[ id ]
@@ -147,21 +147,22 @@ class Item {
 	static async update(id, data) {
 		const { setCols, values } = sqlForPartialUpdate(data, {
 			categoryId: 'category_id',
-			destinationId: 'destination_id'
+			destinationId: 'destination_id',
+			isActive: 'is_active'
 		});
 		const idVarIdx = '$' + (values.length + 1);
 
 		const querySql = `UPDATE items 
                         SET ${setCols} 
-                        WHERE handle = ${idVarIdx} 
+                        WHERE id = ${idVarIdx} 
                         RETURNING id, 
                                   name, 
                                   description,
                                   price,
                                   category_id AS "categoryId", 
                                   destination_id AS "destinationId"`;
-		const result = await db.query(querySql, [ ...values, handle ]);
-		const company = result.rows[0];
+		const result = await db.query(querySql, [ ...values, id ]);
+		const item = result.rows[0];
 
 		if (!item) throw new NotFoundError(`No item: ${id}`);
 

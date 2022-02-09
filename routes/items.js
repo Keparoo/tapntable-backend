@@ -80,7 +80,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	try {
-		const item = await Item.get(req.params.handle);
+		const item = await Item.get(req.params.id);
 		return res.json({ item });
 	} catch (err) {
 		return next(err);
@@ -106,7 +106,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 			throw new BadRequestError(errs);
 		}
 
-		const item = await Item.update(req.params.handle, req.body);
+		const item = await Item.update(req.params.id, req.body);
 		return res.json({ item });
 	} catch (err) {
 		return next(err);
@@ -124,8 +124,8 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
 	try {
-		await Item.remove(req.params.handle);
-		return res.json({ deleted: req.params.handle });
+		await Item.remove(req.params.id);
+		return res.json({ deleted: req.params.id });
 	} catch (err) {
 		return next(err);
 	}
