@@ -117,3 +117,5 @@ DELETE /users/:username => { deleted: username }
 * Returns the username deleted
 * Throws NotFoundError if user not found
 * Authorization required: manager or owner (roleId = 10 or 11)
+
+**All tests for user model and user routes pass**
