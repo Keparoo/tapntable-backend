@@ -117,7 +117,7 @@ DELETE /users/:username => { deleted: username }
 * Returns the username deleted
 * Throws NotFoundError if user not found
 * Authorization required: manager or owner (roleId = 10 or 11)
-* Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false
+* **Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false**
 
 **All tests for user model and user routes pass**  
 
@@ -130,7 +130,7 @@ GET /users/logs
 
 ### Items routes
 POST /items  
-GET /items ?name, ?category 
+GET /items ?name, ?category  
 GET /items/:id  
 PATCH /items/:id  
 POST /items/categories  
