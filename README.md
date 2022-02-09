@@ -41,7 +41,7 @@ Users that don't create orders (cooks for instance) only punch in and out. They 
 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
 
-Thus, I'm working out some authenitcation questions:
+Thus, I'm working out some authentication questions:
 Logging in from an office computer or remotely a username/password makes sense.
 
 From the server/bartender terminals I'm trying to figure out the best plan. Here are a few possible solutions:
@@ -62,6 +62,9 @@ From the server/bartender terminals I'm trying to figure out the best plan. Here
     * Could cause problems if a user with inadequate access has to start a day
 3. When the manager closes a day the token is refreshed and is now ready for the next day
     * This would allow an employee to log in even if a manager hasn't logged in to start the day
+
+Update: My current thinking is to separate the idea of authenticating to the database and authenticating to the user terminals. Currently, the backend is set up with username/password authentication that creates a token that contains username and roleId. I'm thinking that the terminals can act as a "manager" and be given a manager's token. The interface will query a user's roleId and allow or disallow functionality based on that. To interact with the terminals a user has a pin.  
+If a user needed to access the backend from somewhere other than a restaurant terminal, they would need to authenicate with username and password.
 
 ## Routes
 ### Auth Routes
