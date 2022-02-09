@@ -10,7 +10,7 @@ The current version of the database schema (v1.9) is below.
 * The blue tables are for phase 2.  
 * Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
 
-![Database Schema v1.9](tapntable-schema-v1.9.png)
+![Database Schema v1.9](tapntable-schema-v1.10.png)
 
 Current issues being worked out related to the schema:
 
@@ -117,5 +117,51 @@ DELETE /users/:username => { deleted: username }
 * Returns the username deleted
 * Throws NotFoundError if user not found
 * Authorization required: manager or owner (roleId = 10 or 11)
+* Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false
 
-**All tests for user model and user routes pass**
+**All tests for user model and user routes pass**  
+
+---
+
+## Routes to be completed:
+### User routes
+GET /users/roles
+GET /users/logs
+
+### Items routes
+POST /items  
+GET /items ?name, ?category 
+GET /items/:id  
+PATCH /items/:id  
+POST /items/categories  
+GET /items/categories  
+GET /items/categories/:id  
+PATCH /items/categories/:id  
+POST /items/destinations  
+GET /items/destinations  
+GET /items/destinations/:id  
+(Items should not be deleted, instead is_active=false)
+
+### Checks routes
+POST /checks  
+GET /checks ?emp_id  
+GET /checks/:id  
+PATCH /checks/:id  
+(Checks should not be deleted, instead is_void=true)
+
+GET /checks/:id/items
+* returns a list of items ordered related to check
+
+GET /checks/:id/payments
+* returns a list of payments related to check
+
+### Payments
+GET /payments  
+GET /payments/:id  
+POST /payments
+
+### Restaurant Info
+GET /info  
+POST /info  
+PATCH /info
+
