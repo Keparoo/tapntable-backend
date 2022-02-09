@@ -124,6 +124,39 @@ DELETE /users/:username => { deleted: username }
 
 **All tests for user model and user routes pass**  
 
+### Items routes
+
+POST /items  { name, description, price, category_id, destination_id }  => {item: { id, name, description, price, category_id, destination_id, count, is_active }
+* Required fields: { name, price, category_id, destination_id }
+* count is set to NULL
+* isActive is set to true
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+GET /items => { items: [ { id, name, description, price, category_id, destination_id, count, is_active }, ...] }
+* Returns a list of all items
+* Optional search-query: name, Filters for items like name, case insensitive
+* Optional search-query: categoryId: Filters for items with category_id that matches
+* Optional search-query: isActive: Filters for items with is_active that matches
+* Authorization required: user is logged in
+
+
+GET /items/:id  => { id, name, description, price, category_id, destination_id, count, is_active }
+* Returns item record for requested item
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
+PATCH /items/:id => { id, name, description, price, category_id, destination_id, count, is_active }
+* Data can include: { name, description, price, category_id, destination_id, count, is_active }
+* Returns { id, name, description, price, category_id, destination_id, count, is_active }
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+DELETE /items/:id => { deleted: id }
+* Returns the id of deleted item
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner (roleId = 10 or 11)  
+**(Items should not be deleted, instead is_active=false)**
+
 ---
 
 ## Routes to be completed:
@@ -132,13 +165,6 @@ GET /users/roles
 GET /users/logs
 
 ### Items routes
-POST /items  
-GET /items
-* search-query: name
-* search-query: category  
-
-GET /items/:id  
-PATCH /items/:id  
 POST /items/categories  
 GET /items/categories  
 GET /items/categories/:id  
@@ -146,7 +172,6 @@ PATCH /items/categories/:id
 POST /items/destinations  
 GET /items/destinations  
 GET /items/destinations/:id  
-**(Items should not be deleted, instead is_active=false)**
 
 ### Checks routes
 POST /checks  
