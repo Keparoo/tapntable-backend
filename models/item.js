@@ -51,13 +51,13 @@ class Item {
 
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id,
-                          name,
-                          description,
-                          price,
-                          category_id AS "categoryId",
-                          destination_id AS "destinationId",
-                          count,
-                          is_active AS "isActive"
+                        name,
+                        description,
+                        price,
+                        category_id AS "categoryId",
+                        destination_id AS "destinationId",
+                        count,
+                        is_active AS "isActive"
                    FROM items`;
 		let whereExpressions = [];
 		let queryValues = [];
