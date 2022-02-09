@@ -10,6 +10,9 @@
 		"categoryId": {
 			"type": "integer",
 			"minimum": 1
+		},
+		"isActive": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,

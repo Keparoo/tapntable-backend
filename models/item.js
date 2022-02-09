@@ -62,7 +62,7 @@ class Item {
 		let whereExpressions = [];
 		let queryValues = [];
 
-		const { name, categoryId } = searchFilters;
+		const { name, categoryId, isActive } = searchFilters;
 
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
@@ -75,6 +75,11 @@ class Item {
 		if (categoryId !== undefined) {
 			queryValues.push(categoryId);
 			whereExpressions.push(`category_id = $${queryValues.length}`);
+		}
+
+		if (isActive !== undefined) {
+			queryValues.push(isActive);
+			whereExpressions.push(`is_active = $${queryValues.length}`);
 		}
 
 		if (whereExpressions.length > 0) {
@@ -155,7 +160,9 @@ class Item {
                                   description,
                                   price,
                                   category_id AS "categoryId", 
-                                  destination_id AS "destinationId"`;
+                                  destination_id AS "destinationId",
+                                  count,
+                                  is_active AS "isActive"`;
 		const result = await db.query(querySql, [ ...values, id ]);
 		const item = result.rows[0];
 
