@@ -11,6 +11,7 @@ const { authenticateJWT } = require('./middleware/auth');
 
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
+const itemsRoutes = require('./routes/items');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cors());
 
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
+app.use('/items', itemsRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
