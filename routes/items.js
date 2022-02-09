@@ -56,6 +56,8 @@ router.post('/', ensureManager, async function(req, res, next) {
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
+	// arrive as strings from querystring, but we want as ints
+	if (q.categoryId !== undefined) q.categoryId = +q.categoryId;
 
 	try {
 		const validator = jsonschema.validate(q, itemSearchSchema);

@@ -67,24 +67,19 @@ class Item {
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
 
-		// if (minEmployees !== undefined) {
-		// 	queryValues.push(minEmployees);
-		// 	whereExpressions.push(`num_employees >= $${queryValues.length}`);
-		// }
+		if (name) {
+			queryValues.push(`%${name}%`);
+			whereExpressions.push(`name ILIKE $${queryValues.length}`);
+		}
 
-		// if (maxEmployees !== undefined) {
-		// 	queryValues.push(maxEmployees);
-		// 	whereExpressions.push(`num_employees <= $${queryValues.length}`);
-		// }
+		if (categoryId !== undefined) {
+			queryValues.push(categoryId);
+			whereExpressions.push(`category_id = $${queryValues.length}`);
+		}
 
-		// if (name) {
-		// 	queryValues.push(`%${name}%`);
-		// 	whereExpressions.push(`name ILIKE $${queryValues.length}`);
-		// }
-
-		// if (whereExpressions.length > 0) {
-		// 	query += ' WHERE ' + whereExpressions.join(' AND ');
-		// }
+		if (whereExpressions.length > 0) {
+			query += ' WHERE ' + whereExpressions.join(' AND ');
+		}
 
 		// Finalize query and return results
 
