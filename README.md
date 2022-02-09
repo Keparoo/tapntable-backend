@@ -143,14 +143,14 @@ PATCH /items/categories/:id
 POST /items/destinations  
 GET /items/destinations  
 GET /items/destinations/:id  
-(Items should not be deleted, instead is_active=false)
+**(Items should not be deleted, instead is_active=false)**
 
 ### Checks routes
 POST /checks  
 GET /checks ?emp_id  
 GET /checks/:id  
 PATCH /checks/:id  
-(Checks should not be deleted, instead is_void=true)
+**(Checks should not be deleted, instead is_void=true)**
 
 GET /checks/:id/items
 * returns a list of items ordered related to check
