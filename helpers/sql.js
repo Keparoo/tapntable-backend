@@ -8,7 +8,7 @@ const { BadRequestError } = require('../expressError');
  *
  * @param dataToUpdate {Object} {field1: newVal, field2: newVal, ...}
  * @param jsToSql {Object} maps js-style data fields to database column names,
- *   like { firstName: "first_name", age: "age" }
+ *   like { firstName: "first_name", age: 32 }
  *
  * @returns {Object} {sqlSetCols, dataToUpdate}
  *

@@ -176,9 +176,9 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { pin, displayName, firstName, lastName, password, role, isActive }
+   *   { username, password, pin, displayName, firstName, lastName, roleId, isActive }
    *
-   * Returns { id, pin, displayName, firstName, lastName, role, isActive }
+   * Returns { id, username, pin, displayName, firstName, lastName, role, isActive }
    *
    * Throws NotFoundError if not found.
    *
@@ -187,32 +187,35 @@ class User {
    * or a serious security risks are opened.
    */
 
-	static async update(id, data) {
+	static async update(username, data) {
 		if (data.password) {
 			data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
 		}
 
 		const { setCols, values } = sqlForPartialUpdate(data, {
+			displayName: 'display_name',
 			firstName: 'first_name',
 			lastName: 'last_name',
+			roleId: 'role_id',
 			isActive: 'is_active'
 		});
-		const idVarIdx = '$' + (values.length + 1);
+		const usernameVarIdx = '$' + (values.length + 1);
 
 		const querySql = `UPDATE users 
                       SET ${setCols} 
-                      WHERE id = ${idVarIdx} 
+                      WHERE username = ${usernameVarIdx} 
                       RETURNING id,
+                                username,
                                 pin,
                                 display_name AS "displayName",
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                role_id,
+                                role_id AS "roleId",
                                 is_active AS "isActive"`;
-		const result = await db.query(querySql, [ ...values, id ]);
+		const result = await db.query(querySql, [ ...values, username ]);
 		const user = result.rows[0];
 
-		if (!user) throw new NotFoundError(`No user: ${id}`);
+		if (!user) throw new NotFoundError(`No user: ${username}`);
 
 		delete user.password;
 		return user;

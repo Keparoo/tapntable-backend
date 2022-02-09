@@ -96,13 +96,24 @@ POST /users {username, password, pin, displayName, firstName, lastName, roleId, 
 * Required fields: username, password, pin, displayName, firstName, lastName, roleId
 * isActive is optional. If ommitted, defaults to true
 * Returns a JWT token which can be used to authenticate further requests
-* Authorization require: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner (roleId = 10 or 11)
 
 GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
 * Returns a list of all users
-* Authorization require: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner (roleId = 10 or 11)
 
 GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isActive }
 * Returns user record for requested user
 * Throws NotFoundError if user not found
-* Authorization require same user-as-:username or manager or owner (roleId = 10 or 11)
+* Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+
+PATCH /users/:username => {user}
+* Data can include: { username, password, pin, displayName, firstName, lastName, roleId, isActive }
+* Returns { id, username, pin, displayName, firstName, lastName, roleId, isActive }
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+DELETE /users/:username => { deleted: username }
+* Returns the username deleted
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
