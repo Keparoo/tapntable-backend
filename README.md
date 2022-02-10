@@ -232,11 +232,6 @@ DELETE /items/destinations/:id => {deleted: id}
 GET /users/roles
 GET /users/logs
 
-### Items routes  
-POST /items/destinations  
-GET /items/destinations  
-GET /items/destinations/:id  
-
 ### Checks routes
 POST /checks  
 GET /checks
