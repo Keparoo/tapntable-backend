@@ -167,6 +167,8 @@ DELETE /items/:id => { deleted: id }
 
 **All item model and routes tests pass**
 
+### Categories routes
+
 POST /items/categories  { name } => { id, name }
 * Creates a new category
 * Required fields: name
