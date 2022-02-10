@@ -167,6 +167,33 @@ DELETE /items/:id => { deleted: id }
 
 **All item model and routes tests pass**
 
+POST /items/categories  { name } => { id, name }
+* Creates a new category
+* Required fields: name
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+GET /items/categories  => { categories: [ { id, name }, ...] }
+* Returns a list of all categories in order by name
+  * Optional search-query: name, Filters for items like name, case insensitive
+* Authorization required: user is logged in
+
+GET /items/categories/:id  => { id, name }
+* Returns the id and name of a category
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
+PATCH /items/categories/:id => { category }
+* Data can include { name }
+* Returns { id, name }
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+DELETE /items/categories/:id => {deleted: id}
+* Returns the id of deleted item
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner (roleId = 10 or 11)  
+**(Categories should not be deleted, if needed, implement is_active)**
+
 ---
 
 ## Routes to be completed:
@@ -174,11 +201,7 @@ DELETE /items/:id => { deleted: id }
 GET /users/roles
 GET /users/logs
 
-### Items routes
-POST /items/categories  
-GET /items/categories  
-GET /items/categories/:id  
-PATCH /items/categories/:id  
+### Items routes  
 POST /items/destinations  
 GET /items/destinations  
 GET /items/destinations/:id  
