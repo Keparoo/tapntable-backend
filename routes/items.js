@@ -86,7 +86,36 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** GET /[id]  =>  { item }
+/** GET items/categories  =>
+ *   { categories: [ { id, name }, ...] }
+ *
+ * Can filter on provided optional search filters:
+ * - name (will find case-insensitive, partial matches)
+ *
+ * Authorization required: LoggedIn
+ * 
+ */
+
+router.get('/categories', ensureLoggedIn, async function(req, res, next) {
+	const q = req.query;
+
+	console.log('in route');
+
+	try {
+		const validator = jsonschema.validate(q, categorySearchSchema);
+		if (!validator.valid) {
+			const errs = validator.errors.map((e) => e.stack);
+			throw new BadRequestError(errs);
+		}
+
+		const categories = await Category.findAll(q);
+		return res.json({ categories });
+	} catch (err) {
+		return next(err);
+	}
+});
+
+/** GET /:id  =>  { item }
  *
  *  Item is { id, name, description, price, category_id, destination_id, count, is_active }
  *
@@ -169,35 +198,8 @@ router.post('/categories', ensureManager, async function(req, res, next) {
 			throw new BadRequestError(errs);
 		}
 
-		const categyr = await Category.create(req.body);
+		const category = await Category.create(req.body);
 		return res.status(201).json({ category });
-	} catch (err) {
-		return next(err);
-	}
-});
-
-/** GET items/categories  =>
- *   { categories: [ { id, name }, ...] }
- *
- * Can filter on provided optional search filters:
- * - name (will find case-insensitive, partial matches)
- *
- * Authorization required: LoggedIn
- * 
- */
-
-router.get('/categories', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
-
-	try {
-		const validator = jsonschema.validate(q, categorySearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
-
-		const categories = await Category.findAll(q);
-		return res.json({ categories });
 	} catch (err) {
 		return next(err);
 	}
@@ -245,7 +247,7 @@ router.patch('/categories/:id', ensureManager, async function(req, res, next) {
 	}
 });
 
-/** DELETE /id  =>  { deleted: id }
+/** DELETE /categories/id  =>  { deleted: id }
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
@@ -254,7 +256,7 @@ router.patch('/categories/:id', ensureManager, async function(req, res, next) {
  * 
  */
 
-router.delete('/:id', ensureManager, async function(req, res, next) {
+router.delete('/categories/:id', ensureManager, async function(req, res, next) {
 	try {
 		await Category.remove(req.params.id);
 		return res.json({ deleted: req.params.id });

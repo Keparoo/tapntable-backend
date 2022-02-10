@@ -6,7 +6,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for categories. */
 
-class Item {
+class Category {
 	/** Create a category (from data), update db, return new item data.
    *
    * data should be { name }
@@ -27,6 +27,8 @@ class Item {
 
 		if (duplicateCheck.rows[0])
 			throw new BadRequestError(`Duplicate category: ${name}`);
+
+		console.log(name);
 
 		const result = await db.query(
 			`INSERT INTO item_categories
@@ -50,7 +52,7 @@ class Item {
 
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id,
-                        name,
+                        name
                    FROM item_categories`;
 		let whereExpressions = [];
 		let queryValues = [];
@@ -62,7 +64,7 @@ class Item {
 
 		if (name) {
 			queryValues.push(`%${name}%`);
-			whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
+			whereExpressions.push(`name ILIKE $${queryValues.length}`);
 		}
 
 		if (whereExpressions.length > 0) {
@@ -142,9 +144,9 @@ class Item {
 	static async remove(id) {
 		const result = await db.query(
 			`DELETE
-             FROM item_categories
-             WHERE id = $1
-             RETURNING id`,
+       FROM item_categories
+       WHERE id = $1
+       RETURNING id`,
 			[ id ]
 		);
 		const category = result.rows[0];
@@ -152,3 +154,5 @@ class Item {
 		if (!category) throw new NotFoundError(`No category: ${id}`);
 	}
 }
+
+module.exports = Category;
