@@ -48,8 +48,12 @@ router.post('/', ensureManager, async function(req, res, next) {
  *   { items: [ { id, name, description, price, category, destination, count, is_active }, ...] }
  *
  * Can filter on provided optional search filters:
- * - nameLike (will find case-insensitive, partial matches)
- * - category
+ * - name (will find case-insensitive, partial matches)
+ * - description (will find case-insensitive, partial matches)
+ * - categoryId
+ * - destinationId
+ * - count
+ * - isActive
  *
  * Authorization required: LoggedIn
  */
@@ -58,6 +62,8 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
 	// Convert querystring to int
 	if (q.categoryId) q.categoryId = +q.categoryId;
+	if (q.destinationId) q.destinationId = +q.destinationId;
+	if (q.count) q.count = +q.count;
 	// Convert querystring to boolean
 	if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
 

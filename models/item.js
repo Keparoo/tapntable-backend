@@ -65,7 +65,14 @@ class Item {
 		let whereExpressions = [];
 		let queryValues = [];
 
-		const { name, categoryId, isActive } = searchFilters;
+		const {
+			name,
+			description,
+			categoryId,
+			destinationId,
+			count,
+			isActive
+		} = searchFilters;
 
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
@@ -75,9 +82,24 @@ class Item {
 			whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
 		}
 
+		if (description) {
+			queryValues.push(`%${description}%`);
+			whereExpressions.push(`i.description ILIKE $${queryValues.length}`);
+		}
+
 		if (categoryId) {
 			queryValues.push(categoryId);
 			whereExpressions.push(`category_id = $${queryValues.length}`);
+		}
+
+		if (destinationId) {
+			queryValues.push(destinationId);
+			whereExpressions.push(`destination_id = $${queryValues.length}`);
+		}
+
+		if (count) {
+			queryValues.push(count);
+			whereExpressions.push(`count = $${queryValues.length}`);
 		}
 
 		if (isActive !== undefined) {
