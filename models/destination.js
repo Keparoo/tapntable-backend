@@ -4,10 +4,10 @@ const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../expressError');
 const { sqlForPartialUpdate } = require('../helpers/sql');
 
-/** Related functions for categories. */
+/** Related functions for destinations. */
 
-class Category {
-	/** Create a category (from data), update db, return new category data.
+class Destination {
+	/** Create a destination (from data), update db, return new destination data.
    *
    * data should be { name }
    *
@@ -15,21 +15,23 @@ class Category {
    *
    * Throws BadRequestError if item already in database.
    * 
+   * This model may add another field for printer ip address
+   * 
    * */
 
 	static async create({ name }) {
 		const duplicateCheck = await db.query(
 			`SELECT name
-		   FROM item_categories
+		   FROM destinations
 		   WHERE name = $1`,
 			[ name ]
 		);
 
 		if (duplicateCheck.rows[0])
-			throw new BadRequestError(`Duplicate category: ${name}`);
+			throw new BadRequestError(`Duplicate destination: ${name}`);
 
 		const result = await db.query(
-			`INSERT INTO item_categories
+			`INSERT INTO destinations
            (name)
            VALUES ($1)
            RETURNING id, name`,
@@ -40,7 +42,7 @@ class Category {
 		return category;
 	}
 
-	/** Find all categories (optional filter on searchFilters).
+	/** Find all destinations.
    *
    * searchFilters (all optional):
    * - name (will find case-insensitive, partial matches)
@@ -71,8 +73,8 @@ class Category {
 		// Finalize query and return results
 
 		query += ' ORDER BY name';
-		const categoryRes = await db.query(query, queryValues);
-		return categoryRes.rows;
+		const destinationRes = await db.query(query, queryValues);
+		return destinationRes.rows;
 	}
 
 	/** Given a category id, return id and name.
@@ -86,19 +88,19 @@ class Category {
 	static async get(id) {
 		const itemRes = await db.query(
 			`SELECT id, name
-       FROM item_categories
+       FROM destinations
        WHERE id = $1`,
 			[ id ]
 		);
 
-		const category = itemRes.rows[0];
+		const destination = itemRes.rows[0];
 
-		if (!category) throw new NotFoundError(`No category: ${id}`);
+		if (!destination) throw new NotFoundError(`No destination: ${id}`);
 
-		return category;
+		return destination;
 	}
 
-	/** Update category name with `data`.
+	/** Update destination name with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
@@ -114,41 +116,41 @@ class Category {
 
 	static async update(id, data) {
 		const { setCols, values } = sqlForPartialUpdate(data, {});
-		const catVarIdx = '$' + (values.length + 1);
+		const destVarIdx = '$' + (values.length + 1);
 
 		const querySql = `UPDATE item_categories 
                         SET ${setCols} 
-                        WHERE id = ${catVarIdx} 
+                        WHERE id = ${destVarIdx} 
                         RETURNING id, 
                                   name`;
 		const result = await db.query(querySql, [ ...values, id ]);
-		const category = result.rows[0];
+		const destination = result.rows[0];
 
-		if (!category) throw new NotFoundError(`No category: ${id}`);
+		if (!destination) throw new NotFoundError(`No destination: ${id}`);
 
-		return category;
+		return destination;
 	}
 
-	/** Delete given category from database; returns undefined.
+	/** Delete given destination from database; returns undefined.
    *
-   * Throws NotFoundError if item not found.
+   * Throws NotFoundError if destination not found.
    * 
-   * This should not be done once a category has been used
+   * This should not be done once a destination has been used
    * Possibly implement an is_active field if needed
    **/
 
 	static async remove(id) {
 		const result = await db.query(
 			`DELETE
-       FROM item_categories
+       FROM destinations
        WHERE id = $1
        RETURNING id`,
 			[ id ]
 		);
-		const category = result.rows[0];
+		const destination = result.rows[0];
 
-		if (!category) throw new NotFoundError(`No category: ${id}`);
+		if (!destination) throw new NotFoundError(`No destination: ${id}`);
 	}
 }
 
-module.exports = Category;
+module.exports = Destination;

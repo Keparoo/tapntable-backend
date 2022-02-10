@@ -1,6 +1,6 @@
 'use strict';
 
-/** Routes for items. */
+/** Routes for categories. */
 
 const jsonschema = require('jsonschema');
 
