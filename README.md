@@ -103,6 +103,11 @@ POST /users {username, password, pin, displayName, firstName, lastName, roleId, 
 
 GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
 * Returns a list of all users
+  * Optional search-query: firstName, Filters for items like firstName, case insensitive
+  * Optional search-query: lastName, Filters for items like lastName, case insensitive
+  * Optional search-query: displayName, Filters for items like display_name, case insensitive
+  * Optional search-query: roleId: Filters for items with role_id that matches
+  * Optional search-query: isActive: Filters for items with is_active that matches
 * Authorization required: manager or owner (roleId = 10 or 11)
 
 GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isActive }
