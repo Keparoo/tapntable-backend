@@ -43,8 +43,11 @@ class Item {
    *
    * searchFilters (all optional):
    * - name (will find case-insensitive, partial matches)
+   * - description (will find case-insensitive, partial matches)
    * - categoryId
-   * - 
+   * - destinationId
+   * - count
+   * - isActive
    *
    * Returns [{ id, name, description, price, category, destination, count, is_active }, ...]
    * */
