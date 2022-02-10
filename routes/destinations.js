@@ -10,9 +10,9 @@ const { ensureManager, ensureLoggedIn } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
 const Destination = require('../models/destination');
 
-const categoryNewSchema = require('../schemas/destinationNew.json');
-const categorySearchSchema = require('../schemas/destinationSearch.json');
-const categoryUpdateSchema = require('../schemas/destinationUpdate.json');
+const destinationNewSchema = require('../schemas/destinationNew.json');
+const destinationSearchSchema = require('../schemas/destinationSearch.json');
+const destinationUpdateSchema = require('../schemas/destinationUpdate.json');
 
 const router = express.Router();
 

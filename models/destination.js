@@ -52,7 +52,7 @@ class Destination {
 
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id, name
-                 FROM item_categories`;
+                 FROM destinations`;
 		let whereExpressions = [];
 		let queryValues = [];
 
@@ -118,7 +118,7 @@ class Destination {
 		const { setCols, values } = sqlForPartialUpdate(data, {});
 		const destVarIdx = '$' + (values.length + 1);
 
-		const querySql = `UPDATE item_categories 
+		const querySql = `UPDATE destinations 
                         SET ${setCols} 
                         WHERE id = ${destVarIdx} 
                         RETURNING id, 
