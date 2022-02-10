@@ -187,14 +187,43 @@ GET /items/categories/:id  => { id, name }
 PATCH /items/categories/:id => { category }
 * Data can include { name }
 * Returns { id, name }
-* Throws NotFoundError if user not found
+* Throws NotFoundError if category not found
 * Authorization required: manager or owner (roleId = 10 or 11)
 
 DELETE /items/categories/:id => {deleted: id}
 * Returns the id of deleted item
-* Throws NotFoundError if item not found
+* Throws NotFoundError if category not found
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Categories should not be deleted, if needed, implement is_active)**
+
+### Destination routes
+
+POST /items/destinations  { name } => { id, name }
+* Creates a new destination
+* Required fields: name
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+GET /items/destinations  => { destinations: [ { id, name }, ...] }
+* Returns a list of all destinations in order by name
+  * Optional search-query: name, Filters for items like name, case insensitive
+* Authorization required: user is logged in
+
+GET /items/destinations/:id  => { id, name }
+* Returns the id and name of a destination
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
+PATCH /items/destinations/:id => { category }
+* Data can include { name }
+* Returns { id, name }
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+DELETE /items/destinations/:id => {deleted: id}
+* Returns the id of deleted destination
+* Throws NotFoundError if destination not found
+* Authorization required: manager or owner (roleId = 10 or 11)  
+**(Destinations should not be deleted, if needed, implement is_active)**
 
 ---
 
