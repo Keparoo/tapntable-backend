@@ -115,21 +115,64 @@ class User {
    * Returns [{ id, username, pin, displayName, firstName, lastName, role, isActive }, ...]
    **/
 
-	static async findAll() {
-		const result = await db.query(
-			`SELECT id,
-              username,
-              pin,
-              display_name AS "displayName",
-              first_name AS "firstName",
-              last_name AS "lastName",
-              role_id AS "roleId",
-              is_active AS "isActive"
-           FROM users
-           ORDER BY id`
-		);
+	static async findAll(searchFilters = {}) {
+		let query = `SELECT id,
+                        username,
+                        pin,
+                        display_name AS "displayName",
+                        first_name AS "firstName",
+                        last_name AS "lastName",
+                        role_id AS "roleId",
+                        is_active AS "isActive"
+                    FROM users`;
+		let whereExpressions = [];
+		let queryValues = [];
 
-		return result.rows;
+		const {
+			firstName,
+			lastName,
+			displayName,
+			roleId,
+			isActive
+		} = searchFilters;
+
+		// For each possible search term, add to whereExpressions and queryValues so
+		// we can generate the right SQL
+
+		if (firstName) {
+			queryValues.push(`%${firstName}%`);
+			whereExpressions.push(`first_name ILIKE $${queryValues.length}`);
+		}
+
+		if (lastName) {
+			queryValues.push(`%${lastName}%`);
+			whereExpressions.push(`last_name ILIKE $${queryValues.length}`);
+		}
+
+		if (displayName) {
+			queryValues.push(`%${displayName}%`);
+			whereExpressions.push(`display_name ILIKE $${queryValues.length}`);
+		}
+
+		if (roleId) {
+			queryValues.push(roleId);
+			whereExpressions.push(`role_id = $${queryValues.length}`);
+		}
+
+		if (isActive !== undefined) {
+			queryValues.push(isActive);
+			whereExpressions.push(`is_active = $${queryValues.length}`);
+		}
+
+		if (whereExpressions.length > 0) {
+			query += ' WHERE ' + whereExpressions.join(' AND ');
+		}
+
+		// Finalize query and return results
+
+		query += ' ORDER BY last_name';
+		const usersRes = await db.query(query, queryValues);
+		return usersRes.rows;
 	}
 
 	/** Given a username, return data about user.

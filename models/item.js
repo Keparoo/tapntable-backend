@@ -75,7 +75,7 @@ class Item {
 			whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
 		}
 
-		if (categoryId !== undefined) {
+		if (categoryId) {
 			queryValues.push(categoryId);
 			whereExpressions.push(`category_id = $${queryValues.length}`);
 		}

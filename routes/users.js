@@ -14,6 +14,7 @@ const User = require('../models/user');
 const { createToken } = require('../helpers/tokens');
 const userNewSchema = require('../schemas/userNew.json');
 const userUpdateSchema = require('../schemas/userUpdate.json');
+const userSearchSchema = require('../schemas/userSearch.json');
 
 const router = express.Router();
 
@@ -47,14 +48,30 @@ router.post('/', ensureManager, async function(req, res, next) {
 /** GET / => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
  *
  * Returns list of all users.
+ * 
+ * Can filter on provided optional search filters:
+ * - firstNameLike (will find case-insensitive, partial matches)
+ * - lastNameLike (will find case-insensitive, partial matches)
+ * - displayNameLike (will find case-insensitive, partial matches)
+ * - roleId
+ * - isActive
  *
  * Authorization required: manager or owner (roleId = 10 or 11)
  **/
 
 router.get('/', ensureManager, async function(req, res, next) {
+	const q = req.query;
+	if (q.roleId) q.roleId = +q.roleId;
+	if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
+
 	try {
-		const users = await User.findAll();
-		console.log(users);
+		const validator = jsonschema.validate(q, userSearchSchema);
+		if (!validator.valid) {
+			const errs = validator.errors.map((e) => e.stack);
+			throw new BadRequestError(errs);
+		}
+
+		const users = await User.findAll(q);
 		return res.json({ users });
 	} catch (err) {
 		return next(err);

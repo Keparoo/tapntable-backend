@@ -47,7 +47,7 @@ router.post('/', ensureManager, async function(req, res, next) {
 /** GET /  =>
  *   { items: [ { id, name, description, price, category, destination, count, is_active }, ...] }
  *
- * Can filter on provided search filters:
+ * Can filter on provided optional search filters:
  * - nameLike (will find case-insensitive, partial matches)
  * - category
  *
@@ -56,10 +56,10 @@ router.post('/', ensureManager, async function(req, res, next) {
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
-	// arrive as strings from querystring, but we want as ints
-	if (q.categoryId !== undefined) q.categoryId = +q.categoryId;
-	if (q.isActive !== undefined)
-		q.isActive = q.isActive.toLowerCase() === 'true';
+	// Convert querystring to int
+	if (q.categoryId) q.categoryId = +q.categoryId;
+	// Convert querystring to boolean
+	if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
 
 	try {
 		const validator = jsonschema.validate(q, itemSearchSchema);
