@@ -108,6 +108,8 @@ class Item {
    * Data can include: { name }
    *
    * Returns { id, name }
+   * 
+   * This function is set up with extensibility in mind: in case new cols are added later
    *
    * Throws NotFoundError if not found.
    */
