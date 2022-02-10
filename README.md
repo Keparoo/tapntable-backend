@@ -142,7 +142,7 @@ GET /items => { items: [ { id, name, description, price, category_id, destinatio
   * Optional search-query: name, Filters for items like name, case insensitive
   * Optional search-query: description, Filters for items like name, case insensitive
   * Optional search-query: categoryId: Filters for items with category_id that matches
-  * Optional search-query: destinationyId: Filters for items with destinationy_id that matches
+  * Optional search-query: destinationId: Filters for items with destinationy_id that matches
   * Optional search-query: count: Filters for items with count that matches
   * Optional search-query: isActive: Filters for items with is_active that matches
 * Authorization required: user is logged in
