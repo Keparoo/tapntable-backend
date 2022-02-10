@@ -96,8 +96,8 @@ describe('GET /items', () => {
 					name: 'n1',
 					description: 'Desc1',
 					price: '1.99',
-					categoryId: 1,
-					destinationId: 3,
+					category: 'Appetizer',
+					destination: 'Bar',
 					count: null,
 					isActive: true
 				},
@@ -106,8 +106,8 @@ describe('GET /items', () => {
 					name: 'n2',
 					description: 'Desc2',
 					price: '2.99',
-					categoryId: 5,
-					destinationId: 3,
+					category: 'Entree',
+					destination: 'Bar',
 					count: null,
 					isActive: true
 				},
@@ -116,8 +116,8 @@ describe('GET /items', () => {
 					name: 'n3',
 					description: 'Desc3',
 					price: '3.99',
-					categoryId: 5,
-					destinationId: 3,
+					category: 'Entree',
+					destination: 'Bar',
 					count: null,
 					isActive: true
 				}
@@ -138,8 +138,8 @@ describe('GET /items', () => {
 					name: 'n3',
 					description: 'Desc3',
 					price: '3.99',
-					categoryId: 5,
-					destinationId: 3,
+					category: 'Entree',
+					destination: 'Bar',
 					count: null,
 					isActive: true
 				}
@@ -162,8 +162,8 @@ describe('GET /items', () => {
 					name: 'n3',
 					description: 'Desc3',
 					price: '3.99',
-					categoryId: 5,
-					destinationId: 3,
+					category: 'Entree',
+					destination: 'Bar',
 					count: null,
 					isActive: true
 				}
@@ -194,7 +194,9 @@ describe('GET /items/:id', () => {
 				description: 'Desc1',
 				price: '1.99',
 				categoryId: 1,
+				category: 'Appetizer',
 				destinationId: 3,
+				destination: 'Bar',
 				count: null,
 				isActive: true
 			}
