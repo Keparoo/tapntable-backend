@@ -131,7 +131,7 @@ class Category {
 
 	/** Delete given category from database; returns undefined.
    *
-   * Throws NotFoundError if item not found.
+   * Throws NotFoundError if destination not found.
    * 
    * This should not be done once a category has been used
    * Possibly implement an is_active field if needed
