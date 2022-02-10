@@ -46,19 +46,22 @@ class Item {
    * - categoryId
    * - 
    *
-   * Returns [{ id, name, description, price, category_id, destination_id, count, is_active }, ...]
+   * Returns [{ id, name, description, price, category, destination, count, is_active }, ...]
    * */
 
 	static async findAll(searchFilters = {}) {
-		let query = `SELECT id,
-                        name,
-                        description,
-                        price,
-                        category_id AS "categoryId",
-                        destination_id AS "destinationId",
-                        count,
-                        is_active AS "isActive"
-                   FROM items`;
+		let query = `SELECT i.id,
+                        i.name,
+                        i.description,
+                        i.price,
+                        c.name AS "category",
+                        d.name AS "destination",
+                        i.count,
+                        i.is_active AS "isActive"
+                   FROM items i INNER JOIN item_categories c
+                   ON i.category_id = c.id
+                   INNER JOIN destinations d
+                   ON i.destination_id = d.id`;
 		let whereExpressions = [];
 		let queryValues = [];
 
@@ -69,7 +72,7 @@ class Item {
 
 		if (name) {
 			queryValues.push(`%${name}%`);
-			whereExpressions.push(`name ILIKE $${queryValues.length}`);
+			whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
 		}
 
 		if (categoryId !== undefined) {
@@ -88,7 +91,7 @@ class Item {
 
 		// Finalize query and return results
 
-		query += ' ORDER BY name';
+		query += ' ORDER BY i.name';
 		const itemsRes = await db.query(query, queryValues);
 		return itemsRes.rows;
 	}
@@ -102,16 +105,21 @@ class Item {
 
 	static async get(id) {
 		const itemRes = await db.query(
-			`SELECT id,
-              name,
-              description,
-              price,
-              category_id AS "categoryId",
-              destination_id AS "destinationId",
-              count,
-              is_active AS "isActive"
-             FROM items
-             WHERE id = $1`,
+			`SELECT i.id,
+              i.name,
+              i.description,
+              i.price,
+              i.category_id AS "categoryId",
+              c.name AS category,
+              i.destination_id AS "destinationId",
+              d.name AS "destination",
+              i.count,
+              i.is_active AS "isActive"
+              FROM items i INNER JOIN item_categories c
+              ON i.category_id = c.id
+              INNER JOIN destinations d
+              ON i.destination_id = d.id
+              WHERE i.id = $1`,
 			[ id ]
 		);
 

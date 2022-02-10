@@ -45,7 +45,7 @@ router.post('/', ensureManager, async function(req, res, next) {
 });
 
 /** GET /  =>
- *   { items: [ { id, name, description, price, category_id, destination_id, count, is_active }, ...] }
+ *   { items: [ { id, name, description, price, category, destination, count, is_active }, ...] }
  *
  * Can filter on provided search filters:
  * - nameLike (will find case-insensitive, partial matches)
