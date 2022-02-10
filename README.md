@@ -157,7 +157,7 @@ DELETE /items/:id => { deleted: id }
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Items should not be deleted, instead is_active=false)**
 
-**All item model tests pass**
+**All item model and routes tests pass**
 
 ---
 

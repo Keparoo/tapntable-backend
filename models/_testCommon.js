@@ -3,11 +3,15 @@ const bcrypt = require('bcrypt');
 const db = require('../db.js');
 const { BCRYPT_WORK_FACTOR } = require('../config');
 
-// const testJobIds = [];
-
 async function commonBeforeAll() {
 	// noinspection SqlWithoutWhere
 	await db.query('DELETE FROM items');
+	// Either of these 2 lines reset the primary key id to 1
+	// For some reason the 3 items below will have ids of 2, 3, and 4
+
+	await db.query("SELECT setval('items_id_seq', 1)");
+	// await db.query('ALTER SEQUENCE items_id_seq RESTART WITH 1');
+
 	// noinspection SqlWithoutWhere
 	await db.query('DELETE FROM users');
 

@@ -15,10 +15,11 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-/************************************** create */
+/**** create *********************************************/
 
 describe('create', () => {
 	const newItem = {
+		id: 5,
 		name: 'New Item',
 		description: 'New Description',
 		price: 9.99,
@@ -30,8 +31,7 @@ describe('create', () => {
 
 	test('works', async () => {
 		let item = await Item.create(newItem);
-		expect(typeof item.id).toBe('number');
-		delete item.id;
+
 		item.price = +item.price;
 		expect(item).toEqual(newItem);
 
@@ -53,33 +53,17 @@ describe('create', () => {
 			}
 		]);
 	});
-
-	// test('bad request with dupe', async function() {
-	// 	try {
-	// 		await Item.create(newItem);
-	// 		await Item.create(newItem);
-	// 		fail();
-	// 	} catch (err) {
-	// 		expect(err instanceof BadRequestError).toBeTruthy();
-	// 	}
-	// });
 });
 
-/************************************** findAll */
+/**** findAll **********************************************/
 
-describe('findAll', function() {
-	test('works: find all items', async function() {
+describe('findAll', () => {
+	test('works: find all items', async () => {
 		let items = await Item.findAll();
 
-		expect(typeof items[0].id).toBe('number');
-		delete items[0].id;
-		expect(typeof items[1].id).toBe('number');
-		delete items[1].id;
-		expect(typeof items[2].id).toBe('number');
-		delete items[2].id;
-
 		expect(items).toEqual([
 			{
+				id: 2,
 				name: 'n1',
 				description: 'Desc1',
 				price: '1.99',
@@ -89,6 +73,7 @@ describe('findAll', function() {
 				isActive: true
 			},
 			{
+				id: 3,
 				name: 'n2',
 				description: 'Desc2',
 				price: '2.99',
@@ -98,6 +83,7 @@ describe('findAll', function() {
 				isActive: false
 			},
 			{
+				id: 4,
 				name: 'n3',
 				description: 'Desc3',
 				price: '3.99',
@@ -109,14 +95,12 @@ describe('findAll', function() {
 		]);
 	});
 
-	test('works: filter query by name', async function() {
+	test('works: filter query by name', async () => {
 		let items = await Item.findAll({ name: '1' });
 
-		expect(typeof items[0].id).toBe('number');
-		delete items[0].id;
-
 		expect(items).toEqual([
 			{
+				id: 2,
 				name: 'n1',
 				description: 'Desc1',
 				price: '1.99',
@@ -128,16 +112,12 @@ describe('findAll', function() {
 		]);
 	});
 
-	test('works: filter by categoryId', async function() {
+	test('works: filter by categoryId', async () => {
 		let items = await Item.findAll({ categoryId: 5 });
 
-		expect(typeof items[0].id).toBe('number');
-		delete items[0].id;
-		expect(typeof items[1].id).toBe('number');
-		delete items[1].id;
-
 		expect(items).toEqual([
 			{
+				id: 3,
 				name: 'n2',
 				description: 'Desc2',
 				price: '2.99',
@@ -147,6 +127,7 @@ describe('findAll', function() {
 				isActive: false
 			},
 			{
+				id: 4,
 				name: 'n3',
 				description: 'Desc3',
 				price: '3.99',
@@ -158,16 +139,12 @@ describe('findAll', function() {
 		]);
 	});
 
-	test('works: filter by isActive', async function() {
+	test('works: filter by isActive', async () => {
 		let items = await Item.findAll({ isActive: false });
 
-		expect(typeof items[0].id).toBe('number');
-		delete items[0].id;
-		expect(typeof items[1].id).toBe('number');
-		delete items[1].id;
-
 		expect(items).toEqual([
 			{
+				id: 3,
 				name: 'n2',
 				description: 'Desc2',
 				price: '2.99',
@@ -177,6 +154,7 @@ describe('findAll', function() {
 				isActive: false
 			},
 			{
+				id: 4,
 				name: 'n3',
 				description: 'Desc3',
 				price: '3.99',
@@ -188,14 +166,12 @@ describe('findAll', function() {
 		]);
 	});
 
-	test('works: filter by name & isActive', async function() {
+	test('works: filter by name & isActive', async () => {
 		let items = await Item.findAll({ name: 'n', isActive: true });
-
-		expect(typeof items[0].id).toBe('number');
-		delete items[0].id;
 
 		expect(items).toEqual([
 			{
+				id: 2,
 				name: 'n1',
 				description: 'Desc1',
 				price: '1.99',
@@ -207,28 +183,20 @@ describe('findAll', function() {
 		]);
 	});
 
-	test('works: empty list on nothing found', async function() {
+	test('works: empty list on nothing found', async () => {
 		let items = await Item.findAll({ name: 'nope' });
 		expect(items).toEqual([]);
 	});
 });
 
-/************************************** get */
+/**** get *************************************************/
 
-describe('get', function() {
-	test('works', async function() {
-		const result = await db.query(
-			`SELECT id
-           FROM items
-           WHERE name = 'n1'`
-		);
-
-		let item = await Item.get(result.rows[0].id);
-
-		expect(typeof item.id).toBe('number');
-		delete item.id;
+describe('get', () => {
+	test('works', async () => {
+		let item = await Item.get(2);
 
 		expect(item).toEqual({
+			id: 2,
 			name: 'n1',
 			description: 'Desc1',
 			price: '1.99',
@@ -239,7 +207,7 @@ describe('get', function() {
 		});
 	});
 
-	test('not found if no such item', async function() {
+	test('not found if no such item', async () => {
 		try {
 			await Item.get(99999999);
 			fail();
@@ -249,9 +217,9 @@ describe('get', function() {
 	});
 });
 
-/************************************** update */
+/**** update ***********************************************/
 
-describe('update', function() {
+describe('update', () => {
 	const updateData = {
 		name: 'New',
 		description: 'New Description',
@@ -262,17 +230,11 @@ describe('update', function() {
 		isActive: false
 	};
 
-	test('works', async function() {
-		const result = await db.query(
-			`SELECT id
-             FROM items
-             WHERE name = 'n1'`
-		);
-
-		let item = await Item.update(result.rows[0].id, updateData);
+	test('works', async () => {
+		let item = await Item.update(2, updateData);
 
 		expect(item).toEqual({
-			id: result.rows[0].id,
+			id: 2,
 			name: 'New',
 			description: 'New Description',
 			price: '10.99',
@@ -285,12 +247,12 @@ describe('update', function() {
 		const res = await db.query(
 			`SELECT id, name, description, price, category_id, destination_id, count, is_active
 	           FROM items
-	           WHERE id = ${result.rows[0].id}`
+	           WHERE id = 2`
 		);
 
 		expect(res.rows).toEqual([
 			{
-				id: result.rows[0].id,
+				id: 2,
 				name: 'New',
 				description: 'New Description',
 				price: '10.99',
@@ -302,22 +264,16 @@ describe('update', function() {
 		]);
 	});
 
-	test('works: null fields', async function() {
+	test('works: null fields', async () => {
 		const updateDataSetNulls = {
 			name: 'New',
 			description: null,
 			count: null
 		};
 
-		const res = await db.query(
-			`SELECT id
-             FROM items
-             WHERE name = 'n1'`
-		);
-
-		let item = await Item.update(res.rows[0].id, updateDataSetNulls);
+		let item = await Item.update(2, updateDataSetNulls);
 		expect(item).toEqual({
-			id: res.rows[0].id,
+			id: 2,
 			name: 'New',
 			description: null,
 			price: '1.99',
@@ -330,7 +286,7 @@ describe('update', function() {
 		const result = await db.query(
 			`SELECT name, description, price, category_id, destination_id, count, is_active
 		           FROM items
-		           WHERE id = ${res.rows[0].id}`
+		           WHERE id = 2`
 		);
 		expect(result.rows).toEqual([
 			{
@@ -345,7 +301,7 @@ describe('update', function() {
 		]);
 	});
 
-	test('not found if no such item', async function() {
+	test('not found if no such item', async () => {
 		try {
 			await Item.update(9999999, updateData);
 			fail();
@@ -354,7 +310,7 @@ describe('update', function() {
 		}
 	});
 
-	test('bad request with no data', async function() {
+	test('bad request with no data', async () => {
 		try {
 			await Item.update('c1', {});
 			fail();
@@ -364,23 +320,17 @@ describe('update', function() {
 	});
 });
 
-/************************************** remove */
+/**** remove **************************************************/
 
-describe('remove', function() {
-	test('works', async function() {
-		const result = await db.query(
-			`SELECT id
-           FROM items
-           WHERE name = 'n1'`
-		);
-
-		await Item.remove(result.rows[0].id);
+describe('remove', () => {
+	test('works', async () => {
+		await Item.remove(2);
 
 		const res = await db.query("SELECT id FROM items WHERE name='n1'");
 		expect(res.rows.length).toEqual(0);
 	});
 
-	test('not found if no such item', async function() {
+	test('not found if no such item', async () => {
 		try {
 			await Item.remove(99999999);
 			fail();

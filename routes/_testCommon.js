@@ -2,6 +2,7 @@
 
 const db = require('../db.js');
 const User = require('../models/user');
+const Item = require('../models/item');
 // const Company = require('../models/company');
 // const Job = require('../models/job');
 const { createToken } = require('../helpers/tokens');
@@ -12,29 +13,34 @@ async function commonBeforeAll() {
 	// noinspection SqlWithoutWhere
 	await db.query('DELETE FROM users');
 	// // noinspection SqlWithoutWhere
-	// await db.query('DELETE FROM companies');
+	await db.query('DELETE FROM items');
+	// Either of these 2 lines reset the primary key id to 1
+	// For some reason the 3 items below will have ids of 2, 3, and 4
 
-	// await Company.create({
-	// 	handle: 'c1',
-	// 	name: 'C1',
-	// 	numEmployees: 1,
-	// 	description: 'Desc1',
-	// 	logoUrl: 'http://c1.img'
-	// });
-	// await Company.create({
-	// 	handle: 'c2',
-	// 	name: 'C2',
-	// 	numEmployees: 2,
-	// 	description: 'Desc2',
-	// 	logoUrl: 'http://c2.img'
-	// });
-	// await Company.create({
-	// 	handle: 'c3',
-	// 	name: 'C3',
-	// 	numEmployees: 3,
-	// 	description: 'Desc3',
-	// 	logoUrl: 'http://c3.img'
-	// });
+	await db.query("SELECT setval('items_id_seq', 1)");
+	// await db.query('ALTER SEQUENCE items_id_seq RESTART WITH 1');
+
+	await Item.create({
+		name: 'n1',
+		description: 'Desc1',
+		price: 1.99,
+		categoryId: 1,
+		destinationId: 3
+	});
+	await Item.create({
+		name: 'n2',
+		description: 'Desc2',
+		price: 2.99,
+		categoryId: 5,
+		destinationId: 3
+	});
+	await Item.create({
+		name: 'n3',
+		description: 'Desc3',
+		price: 3.99,
+		categoryId: 5,
+		destinationId: 3
+	});
 
 	// testJobIds[0] = (await Job.create({
 	// 	title: 'J1',
