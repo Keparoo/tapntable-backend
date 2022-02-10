@@ -55,8 +55,6 @@ router.post('/', ensureManager, async function(req, res, next) {
 router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
 
-	console.log('in route');
-
 	try {
 		const validator = jsonschema.validate(q, categorySearchSchema);
 		if (!validator.valid) {
@@ -89,7 +87,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 
 /** PATCH items/categories/:id, { fld1, fld2, ... } => { category }
  *
- * Patches category name.
+ * Updates category name.
  *
  * fields can be: { name }
  *
@@ -117,7 +115,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
- * Note: Catetgories should not be deleted once they have been used in any way. If needed, implement is_active
+ * Note: Categories should not be deleted once they have been used in any way. If needed, implement is_active
  * This route should only run if an item is created accidentally and needs to be immediately deleted.
  * 
  */
