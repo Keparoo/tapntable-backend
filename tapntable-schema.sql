@@ -24,11 +24,13 @@ COMMENT ON TABLE users IS 'List of users (employees) and their info';
 --Types of log events: clock-in, clock-out, cash-out, close-shift, close-day,
 --discount-item, discount-check
 
-CREATE TABLE log_events (
-id SERIAL PRIMARY KEY,
-type VARCHAR(25) NOT NULL
-);
-COMMENT ON TABLE log_events IS 'Type of events to log';
+-- CREATE TABLE log_events (
+-- id SERIAL PRIMARY KEY,
+-- type VARCHAR(25) NOT NULL
+-- );
+-- COMMENT ON TABLE log_events IS 'Type of events to log';
+
+CREATE TYPE log_event AS ENUM ('clock-in', 'clock-out', 'cash-out', 'open-shift', 'close-shift', 'open-day', 'close-day','discount-item', 'discount-check')
 
 --Log of user events: clock-in, clock-out, cash-out, close-shift, close-day, and
 --logs of discounted items and checks.
@@ -36,7 +38,8 @@ COMMENT ON TABLE log_events IS 'Type of events to log';
 CREATE TABLE user_logs (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
-log_event_id INTEGER REFERENCES log_events,
+-- log_event_id INTEGER REFERENCES log_events,
+event LOG_EVENT,
 timestamp TIMESTAMP NOT NULL,
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );

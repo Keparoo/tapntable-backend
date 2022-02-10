@@ -30,8 +30,8 @@ VALUES (1,
 'Manager-Last',
 10);
 
-INSERT INTO log_events (id, type)
-VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'close-shift'),(5, 'close-day'),(6, 'discount-item'), (7, 'discount-check');
+-- INSERT INTO log_events (id, type)
+-- VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'open-shift'), (5, 'close-shift'), (6, 'open-day'), (7, 'close-day'), (8, 'discount-item'), (9, 'discount-check');
 
 INSERT INTO item_categories (id, name)
 VALUES (1, 'Appetizer'),  (2, 'Soup'), (3, 'Salad'), (4, 'Sandwich'), (5, 'Entree'), (6, 'Addition'), (7, 'Dessert'), (8, 'Favorites'), (9, 'Beverage'), (10, 'Beer'), (11, 'Wine'), (12, 'Liquor'),(13, 'Children'), (14, 'Carryout'), (15, 'Delivery');
