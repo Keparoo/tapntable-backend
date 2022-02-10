@@ -14,6 +14,7 @@ async function commonBeforeAll() {
 
 	// noinspection SqlWithoutWhere
 	await db.query('DELETE FROM users');
+	await db.query("SELECT setval('users_id_seq', 1)");
 
 	await db.query(`
 	  INSERT INTO items (name, description, price, category_id, destination_id, is_active)

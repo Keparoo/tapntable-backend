@@ -61,6 +61,7 @@ describe('authenticate', () => {
 
 describe('register', () => {
 	const newUser = {
+		id: 4,
 		username: 'new',
 		pin: 5555,
 		displayName: 'Test-display',
@@ -75,12 +76,7 @@ describe('register', () => {
 			password: 'password'
 		});
 
-		expect(typeof user.id).toBe('number');
-		delete user.id;
-		expect(user.roleId).toEqual(1);
-		delete user.roleId;
-
-		expect(user).toEqual(newUser);
+		expect(user).toEqual({ ...newUser, roleId: 1 });
 		const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 		expect(found.rows.length).toEqual(1);
 		expect(found.rows[0].is_active).toEqual(false);
@@ -94,10 +90,7 @@ describe('register', () => {
 			roleId: 6
 		});
 
-		expect(typeof user.id).toBe('number');
-		delete user.id;
-
-		expect(user).toEqual({ ...newUser, roleId: 6 });
+		expect(user).toEqual({ ...newUser, id: 5, roleId: 6 });
 		const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 		expect(found.rows.length).toEqual(1);
 		expect(found.rows[0].role_id).toEqual(6);
@@ -127,13 +120,9 @@ describe('findAll', () => {
 	test('works', async () => {
 		const users = await User.findAll();
 
-		expect(typeof users[0].id).toBe('number');
-		delete users[0].id;
-		expect(typeof users[1].id).toBe('number');
-		delete users[1].id;
-
 		expect(users).toEqual([
 			{
+				id: 2,
 				username: 'u1',
 				pin: 6666,
 				displayName: 'U1D',
@@ -143,6 +132,7 @@ describe('findAll', () => {
 				isActive: true
 			},
 			{
+				id: 3,
 				username: 'u2',
 				pin: 7777,
 				displayName: 'U2D',
@@ -161,10 +151,8 @@ describe('get', () => {
 	test('works', async () => {
 		let user = await User.get('u1');
 
-		expect(typeof user.id).toBe('number');
-		delete user.id;
-
 		expect(user).toEqual({
+			id: 2,
 			username: 'u1',
 			pin: 6666,
 			displayName: 'U1D',
@@ -212,10 +200,8 @@ describe('update', () => {
 			password: 'new'
 		});
 
-		expect(typeof user.id).toBe('number');
-		delete user.id;
-
 		expect(user).toEqual({
+			id: 2,
 			username: 'u1',
 			pin: 6666,
 			displayName: 'U1D',

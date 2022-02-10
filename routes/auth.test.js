@@ -16,10 +16,10 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-/************************************** POST /auth/token */
+/**** POST /auth/token ***************************************/
 
-describe('POST /auth/token', function() {
-	test('works', async function() {
+describe('POST /auth/token', () => {
+	test('works', async () => {
 		const resp = await request(app).post('/auth/token').send({
 			username: 'u1',
 			password: 'password1'
@@ -29,7 +29,7 @@ describe('POST /auth/token', function() {
 		});
 	});
 
-	test('unauth with non-existent user', async function() {
+	test('unauth with non-existent user', async () => {
 		const resp = await request(app).post('/auth/token').send({
 			username: 'no-such-user',
 			password: 'password1'
@@ -37,7 +37,7 @@ describe('POST /auth/token', function() {
 		expect(resp.statusCode).toEqual(401);
 	});
 
-	test('unauth with wrong password', async function() {
+	test('unauth with wrong password', async () => {
 		const resp = await request(app).post('/auth/token').send({
 			username: 'u1',
 			password: 'nope'
@@ -45,14 +45,14 @@ describe('POST /auth/token', function() {
 		expect(resp.statusCode).toEqual(401);
 	});
 
-	test('bad request with missing data', async function() {
+	test('bad request with missing data', async () => {
 		const resp = await request(app).post('/auth/token').send({
 			username: 'u1'
 		});
 		expect(resp.statusCode).toEqual(400);
 	});
 
-	test('bad request with invalid data', async function() {
+	test('bad request with invalid data', async () => {
 		const resp = await request(app).post('/auth/token').send({
 			username: 42,
 			password: 'above-is-a-number'
@@ -61,10 +61,10 @@ describe('POST /auth/token', function() {
 	});
 });
 
-/************************************** POST /auth/register */
+/***** POST /auth/register ****************************************/
 
-describe('POST /auth/register', function() {
-	test('works for anon', async function() {
+describe('POST /auth/register', () => {
+	test('works for anon', async () => {
 		const resp = await request(app).post('/auth/register').send({
 			username: 'new',
 			password: 'password',
@@ -79,14 +79,14 @@ describe('POST /auth/register', function() {
 		});
 	});
 
-	test('bad request with missing fields', async function() {
+	test('bad request with missing fields', async () => {
 		const resp = await request(app).post('/auth/register').send({
 			username: 'new'
 		});
 		expect(resp.statusCode).toEqual(400);
 	});
 
-	test('bad request with invalid data', async function() {
+	test('bad request with invalid data', async () => {
 		const resp = await request(app).post('/auth/register').send({
 			username: 'new',
 			password: 'password',

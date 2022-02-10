@@ -12,7 +12,9 @@ const { createToken } = require('../helpers/tokens');
 async function commonBeforeAll() {
 	// noinspection SqlWithoutWhere
 	await db.query('DELETE FROM users');
+	await db.query("SELECT setval('users_id_seq', 1)");
 	// // noinspection SqlWithoutWhere
+
 	await db.query('DELETE FROM items');
 	// Either of these 2 lines reset the primary key id to 1
 	// For some reason the 3 items below will have ids of 2, 3, and 4
