@@ -14,6 +14,7 @@ const usersRoutes = require('./routes/users');
 const itemsRoutes = require('./routes/items');
 const categoriesRoutes = require('./routes/categories');
 const destinationsRoutes = require('./routes/destinations');
+const checksRoutes = require('./routes/checks');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/users', usersRoutes);
 app.use('/items/categories', categoriesRoutes);
 app.use('/items/destinations', destinationsRoutes);
 app.use('/items', itemsRoutes);
+app.use('/checks', checksRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
