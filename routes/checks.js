@@ -67,6 +67,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	// Convert querystring to int
 	if (q.userId) q.userId = +q.userId;
 	if (q.numGuests) q.numGuests = +q.numGuests;
+	if (q.tableNum) q.tableNum = +q.tableNum;
 	if (q.createdAt) q.createdAt = +q.createdAt;
 	if (q.printedAt) q.printedAt = +q.printedAt;
 	if (q.closedAt) q.closedAt = +q.closedAt;

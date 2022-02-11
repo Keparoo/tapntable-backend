@@ -83,7 +83,7 @@ CREATE TABLE checks (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 table_num INTEGER NOT NULL, --Create table of restaurant tables? 
-customer VARCHAR(15) --At bar only: customer name/description
+customer VARCHAR(15), --At bar only: customer name/description
 num_guests INTEGER NOT NULL,
 created_at TIMESTAMP DEFAULT Now(),
 printed_at TIMESTAMP,

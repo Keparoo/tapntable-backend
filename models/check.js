@@ -114,7 +114,7 @@ class Check {
 
 		if (userId) {
 			queryValues.push(userId);
-			whereExpressions.push(`c.employee_id = $${queryValues.length}`);
+			whereExpressions.push(`c.user_id = $${queryValues.length}`);
 		}
 
 		if (employee) {
@@ -123,8 +123,8 @@ class Check {
 		}
 
 		if (tableNum) {
-			queryValues.push(`%${tableNum}%`);
-			whereExpressions.push(`c.table_num ILIKE $${queryValues.length}`);
+			queryValues.push(tableNum);
+			whereExpressions.push(`c.table_num = $${queryValues.length}`);
 		}
 
 		if (numGuests) {
@@ -133,8 +133,8 @@ class Check {
 		}
 
 		if (customer) {
-			queryValues.push(customer);
-			whereExpressions.push(`c.num_guests = $${queryValues.length}`);
+			queryValues.push(`%${customer}%`);
+			whereExpressions.push(`c.customer ILIKE $${queryValues.length}`);
 		}
 
 		if (createdAt) {
