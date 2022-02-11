@@ -278,7 +278,7 @@ GET /tickets
 GET /ticktets/:id  
 
 ### Payments
-POST /payments
+POST /payments  
 GET /payments  
 GET /payments/:id  
 
