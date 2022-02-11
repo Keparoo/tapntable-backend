@@ -12,7 +12,7 @@ The current version of the database schema (v1.9) is below.
 
 ![Database Schema v1.9](tapntable-schema-v1.10.png)
 
-Regarding users, login and auth:
+### Regarding users, login and auth:
 
 User currently includes these fields:  
 * id (serial primary key)
