@@ -289,8 +289,13 @@ DELETE /payments/:id => { deleted: id }
 
 ## Routes to be completed:
 ### User routes
-GET /users/roles  
+GET /users/roles
+
+## Logs routes
+POST /users/logs
 GET /users/logs
+GET /users/logs/:id
+
 
 ### Checks routes
 POST /checks/:id  
