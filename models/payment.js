@@ -95,18 +95,19 @@ class Payment {
      **/
 
 	static async get(id) {
-		const itemRes = await db.query(
+		const paymentRes = await db.query(
 			`SELECT id,
               check_id AS "checkId",
               type,
               tip_amt AS "tipAmt",
               subtotal,
               is_void AS "isVoid"
-        FROM payments`,
+        FROM payments
+        WHERE id = $1`,
 			[ id ]
 		);
 
-		const payment = itemRes.rows[0];
+		const payment = paymentRes.rows[0];
 
 		if (!payment) throw new NotFoundError(`No payment: ${id}`);
 
@@ -133,7 +134,7 @@ class Payment {
 		});
 		const paymentVarIdx = '$' + (values.length + 1);
 
-		const querySql = `UPDATE items 
+		const querySql = `UPDATE payments 
                         SET ${setCols} 
                         WHERE id = ${paymentVarIdx} 
                         RETURNING id, 
