@@ -123,6 +123,25 @@ DELETE /users/:username => { deleted: username }
 
 **All tests for user model and user routes pass**  
 
+## Logs routes
+POST /users/logs { userId, event, entity_id } => { log: { id, userId, event, timestamp, entity_id } }
+* Required fields: { userId, event, entity_id }
+* timestamp is automatically set
+* Authorization required: user is logged in
+
+GET /users/logs => { logs:[ { id, userId, event, timestamp, entity_id }...]}
+* Returns a list of all logs
+  * Optional search-query: userId
+  * Optional search-query: type
+  * Optional search-query: timestamp
+  * Optional search-query: entityId
+* Authorization required: user is logged in
+
+GET /users/logs/:id  => {log: { id, userId, event, timestamp, entity_id }}
+* Returns log record for requested item
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
 ### Items routes
 
 POST /items  { name, description, price, category_id, destination_id }  => {item: { id, name, description, price, category_id, destination_id, count, is_active }
@@ -290,12 +309,6 @@ DELETE /payments/:id => { deleted: id }
 ## Routes to be completed:
 ### User routes
 GET /users/roles
-
-## Logs routes
-POST /users/logs
-GET /users/logs
-GET /users/logs/:id
-
 
 ### Checks routes
 POST /checks/:id  
