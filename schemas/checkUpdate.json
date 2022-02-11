@@ -3,7 +3,11 @@
 	"$id": "http://our.company.com/companyNew.schema.json",
 	"type": "object",
 	"properties": {
-		"tableId": {
+		"tableNum": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"customer": {
 			"type": "string",
 			"minLength": 1,
 			"maxLength": 15

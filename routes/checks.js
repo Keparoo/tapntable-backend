@@ -21,10 +21,10 @@ const router = express.Router();
 
 /** POST / { check }  => { check }
  *
- * item should be { userId, tablId, numGuests } 
+ * item should be { userId, tablId, numGuests, customer } 
  *
  * This returns the newly created item
- *  {item: { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax } }
+ *  {item: { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax } }
  *
  * Authorization required: logged in to own account
  **/
@@ -37,7 +37,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 			throw new BadRequestError(errs);
 		}
 
-		const item = await Check.create(req.body);
+		const check = await Check.create(req.body);
 		return res.status(201).json({ check });
 	} catch (err) {
 		return next(err);
@@ -45,13 +45,14 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /  =>
- *   { checks: [{ id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
+ *   { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
    * - userId 
    * - employee (will find case-insensitive, partial matches)
-   * - tableId
+   * - tableNum
    * - numGuests
+   * - customer
    * - createdAt
    * - printedAt
    * - closedAt
@@ -89,7 +90,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 
 /** GET /:id  =>  { check }
  *
- *  Check is { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
+ *  Check is { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
  *
  * Authorization required: Logged in to own account
  */
@@ -107,9 +108,9 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Updates check data.
  *
- * fields can be: { userId, employee, tableId, numGuests, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * fields can be: { userId, employee, tableNum, numGuests, customer, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
- * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * Returns { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
  * Authorization required: Logged in to own account
  */

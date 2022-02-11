@@ -82,9 +82,10 @@ COMMENT ON TABLE items IS 'List of items for sale & info';
 CREATE TABLE checks (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
-table_id VARCHAR(15) NOT NULL, --Create table of restaurant tables? At bar could be customer name/description
+table_num INTEGER NOT NULL, --Create table of restaurant tables? 
+customer VARCHAR(15) --At bar only: customer name/description
 num_guests INTEGER NOT NULL,
-created_at TIMESTAMP NOT NULL,
+created_at TIMESTAMP DEFAULT Now(),
 printed_at TIMESTAMP,
 closed_at TIMESTAMP,
 discount_id INTEGER, --This will eventually point to discount table

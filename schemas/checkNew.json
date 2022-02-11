@@ -3,20 +3,24 @@
 	"$id": "http://our.company.com/companyNew.schema.json",
 	"type": "object",
 	"properties": {
-		"empId": {
+		"userId": {
 			"type": "integer",
 			"minimum": 1
 		},
-		"tablId": {
+		"tableNum": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"customer": {
 			"type": "string",
 			"minLength": 1,
 			"maxLength": 15
 		},
 		"numGuests": {
 			"type": "number",
-			"minimum": 100
+			"minimum": 1
 		}
 	},
 	"additionalProperties": false,
-	"required": [ "empId", "tableId", "numGuests" ]
+	"required": [ "userId", "tableNum", "numGuests" ]
 }

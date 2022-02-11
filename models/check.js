@@ -4,14 +4,14 @@ const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../expressError');
 const { sqlForPartialUpdate } = require('../helpers/sql');
 
-/** Related functions for categories. */
+/** Related functions for checks. */
 
 class Check {
 	/** Create a check (from data), update db, return new check data.
    *
-   * data should be { userId, tablId, numGuests }
+   * data should be { userId, tablId, customer, numGuests }
    *
-   * Returns { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
+   * Returns { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
    * 
    * Required args { userId, tablId, numGuests }
    *
@@ -19,7 +19,7 @@ class Check {
    * 
    * */
 
-	static async create({ userId, tableId, numGuests }) {
+	static async create({ userId, tableNum, numGuests, customer }) {
 		// const duplicateCheck = await db.query(
 		// 	`SELECT name
 		//    FROM item_categories
@@ -32,12 +32,13 @@ class Check {
 
 		const result = await db.query(
 			`INSERT INTO checks
-       (user_id, table_id, num_guests)
-       VALUES ($1, $2, $3)
+       (user_id, table_num, num_guests, customer)
+       VALUES ($1, $2, $3, $4)
        RETURNING id,
                 user_id AS "userId",
-                table_id AS "tableId",
+                table_num AS "tableNum",
                 num_guests AS "numGuests",
+                customer,
                 created_at AS "createdAt",
                 printed_at AS "printedAt",
                 closed_at AS "closedAt",
@@ -48,7 +49,7 @@ class Check {
                 state_tax AS "stateTax",
                 federal_tax AS "federalTax",
                 is_void AS "isVoid"`,
-			[ userId, tableId, numGuests ]
+			[ userId, tableNum, numGuests, customer ]
 		);
 		const check = result.rows[0];
 
@@ -60,15 +61,16 @@ class Check {
    * searchFilters (all optional):
    * - userId 
    * - employee (will find case-insensitive, partial matches)
-   * - tableId
+   * - tableNum
    * - numGuests
+   * - customer
    * - createdAt
    * - printedAt
    * - closedAt
    * - discountId
    * - isVoid
    *
-   * Returns { checks: [{ id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
+   * Returns { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
    * 
    * */
 
@@ -76,8 +78,9 @@ class Check {
 		let query = `SELECT c.id,
                         c.user_id AS "userId",
                         u.display_name AS "employee",
-                        c.table_id AS "tableId",
+                        c.table_num AS "tableNum",
                         c.num_guests AS "numGuests",
+                        c.customer,
                         c.created_at AS "createdAt",
                         c.printed_at AS "printedAt",
                         c.closed_at AS "closedAt",
@@ -96,8 +99,9 @@ class Check {
 		const {
 			userId,
 			employee,
-			tableId,
+			tableNum,
 			numGuests,
+			customer,
 			createdAt,
 			printedAt,
 			closedAt,
@@ -118,13 +122,18 @@ class Check {
 			whereExpressions.push(`u.display_name ILIKE $${queryValues.length}`);
 		}
 
-		if (tableId) {
-			queryValues.push(`%${tableId}%`);
-			whereExpressions.push(`c.table_id ILIKE $${queryValues.length}`);
+		if (tableNum) {
+			queryValues.push(`%${tableNum}%`);
+			whereExpressions.push(`c.table_num ILIKE $${queryValues.length}`);
 		}
 
 		if (numGuests) {
 			queryValues.push(numGuests);
+			whereExpressions.push(`c.num_guests = $${queryValues.length}`);
+		}
+
+		if (customer) {
+			queryValues.push(customer);
 			whereExpressions.push(`c.num_guests = $${queryValues.length}`);
 		}
 
@@ -166,7 +175,7 @@ class Check {
 
 	/** Given a check id, return info about check.
      *
-     * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+     * Returns { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
      *
      * Throws NotFoundError if not found.
      * 
@@ -177,8 +186,9 @@ class Check {
 			`SELECT c.id,
               c.user_id AS "userId",
               u.display_name AS "employee",
-              c.table_id AS "tableId",
+              c.table_num AS "tableNum",
               c.num_guests AS "numGuests",
+              c.customer,
               c.created_at AS "createdAt",
               c.printed_at AS "printedAt",
               c.closed_at AS "closedAt",
@@ -207,17 +217,18 @@ class Check {
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: { tableId, numGuests, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+   * Data can include: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    *
-   * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+   * Returns { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    * 
    * Throws NotFoundError if not found.
    */
 
 	static async update(id, data) {
 		const { setCols, values } = sqlForPartialUpdate(data, {
-			tableId: 'table_id',
+			tableNum: 'table_num',
 			numGuests: 'num_guests',
+			customer: 'customer',
 			printedAt: 'printed_at',
 			closedAt: 'closed_at',
 			discountId: 'discount_id',
@@ -235,8 +246,9 @@ class Check {
                       WHERE id = ${checkVarIdx} 
                       RETURNING id,
                       user_id AS "userId",
-                      table_id AS "tableId",
+                      table_num AS "tableNum",
                       num_guests AS "numGuests",
+                      customer,
                       created_at AS "createdAt",
                       sub_total AS "subTotal",
                       local_tax AS "localTax",

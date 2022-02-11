@@ -3,7 +3,7 @@
 	"$id": "http://our.company.com/companySearch.schema.json",
 	"type": "object",
 	"properties": {
-		"empId": {
+		"userId": {
 			"type": "integer",
 			"minimum": 1
 		},
@@ -11,7 +11,11 @@
 			"type": "string",
 			"minLength": 1
 		},
-		"tableId": {
+		"tableNum": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"customer": {
 			"type": "string",
 			"minLength": 1
 		},
