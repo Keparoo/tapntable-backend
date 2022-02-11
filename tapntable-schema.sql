@@ -39,7 +39,7 @@ CREATE TABLE user_logs (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 -- log_event_id INTEGER REFERENCES log_events,
-event LOG_EVENT,
+event LOG_EVENT NOT NULL,
 timestamp TIMESTAMP NOT NULL,
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );
@@ -124,18 +124,20 @@ COMMENT ON TABLE item_ordered IS 'Item ordered with modifications and info';
 
 --Types of payment: Cash, MC, Visa, Amex etc
 
-CREATE TABLE payment_types (
-id SERIAL PRIMARY KEY,
-type VARCHAR(15) NOT NULL
-);
-COMMENT ON TABLE payment_types IS 'Cash, Visa, MC, etc';
+-- CREATE TABLE payment_types (
+-- id SERIAL PRIMARY KEY,
+-- type VARCHAR(15) NOT NULL
+-- );
+-- COMMENT ON TABLE payment_types IS 'Cash, Visa, MC, etc';
+
+CREATE TYPE payment_type AS ENUM ('Cash', 'MC', 'Visa', 'Amex', 'Disc', 'Google', 'Apple','Venmo');
 
 --A payment applied to a check. A check may have many payments
 
 CREATE TABLE payments (
 id SERIAL PRIMARY KEY,
 check_id INTEGER REFERENCES checks,
-payment_type_id INTEGER REFERENCES payment_types,
+type PAYMENT_TYPE NOT NULL,
 tip_amt NUMERIC(6,2) CHECK (tip_amt >= 0),
 sub_total NUMERIC(10,2) CHECK (sub_total >= 0)
 );
