@@ -12,12 +12,6 @@ The current version of the database schema (v1.9) is below.
 
 ![Database Schema v1.9](tapntable-schema-v1.10.png)
 
-Current issues being worked out related to the schema:
-
-Halim, you mentioned that at least one column could be of type enum (user_logs.type). So far I have gone with ids to tables of values in several places: log_events, employee_roles, payment_types, item_categories, destinations, mod_categories, and mod_groups)
-
-Some or all of these could be enum types. I went with tables as it is more universal in SQL and would allow the interface to add new values. Was this a good decision?
-
 Regarding users, login and auth:
 
 User currently includes these fields:  
@@ -54,14 +48,14 @@ From the server/bartender terminals I'm trying to figure out the best plan. Here
     * Servers/Bartenders simply enter their unique pin to clock-in/create checks
     * Perhaps a token could be refreshed regulary (see option 3)
     * This would be the easiest. Are there potential security issues?
-2. The manager logs in to start a day
+
+2. When the manager closes a day the token is refreshed and is now ready for the next day
+    * This would allow an employee to log in even if a manager hasn't logged in to start the day
     * The system generates a new token and stores it locally.
     * Now that the system has been started, employees can access with their pin
     * The employee role will decide the actions of the POS and what they can do
     * It would be helpful if this could be done on one terminal and all server terminals would "logged in"
     * Could cause problems if a user with inadequate access has to start a day
-3. When the manager closes a day the token is refreshed and is now ready for the next day
-    * This would allow an employee to log in even if a manager hasn't logged in to start the day
 
 Update: My current thinking is to separate the idea of authenticating to the database and authenticating to the user terminals. Currently, the backend is set up with username/password authentication that creates a token that contains username and roleId. I'm thinking that the terminals can act as a "manager" and be given a manager's token. The interface will query a user's roleId and allow or disallow functionality based on that. To interact with the terminals a user has a pin.  
 If a user needed to access the backend from somewhere other than a restaurant terminal, they would need to authenicate with username and password.
