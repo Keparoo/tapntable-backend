@@ -121,7 +121,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 	}
 });
 
-/** DELETE /[handle]  =>  { deleted: id }
+/** DELETE /:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
