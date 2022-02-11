@@ -255,6 +255,36 @@ DELETE /checks/:id
 * Throws NotFoundError if item not found
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Checks should not be deleted, instead is_void=true)**
+
+### Payments
+POST /payments { check_id, type, tip_amt, subtotal } => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }  
+* Required fileds: { check_id, type, subtotal }
+* is_void is set to false
+* Authorization required: user is logged in
+
+GET /payments => { payments:[ { id, checkId, type, tipAmt, subtotal, isVoid }...]}
+* Returns a list of all payments
+  * Optional search-query: type
+  * Optional search-query: isVoid
+* Authorization required: user is logged in
+
+GET /payments/:id => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+* Returns record for requested payment
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
+PATCH /payments/:id => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+* Data can include: { checkId, type, tipAmt, subtotal, isVoid }
+* Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+* Throws NotFoundError if user not found
+* Authorization required: manager or owner (roleId = 10 or 11)
+
+DELETE /payments/:id => { deleted: id }
+* Returns the id of deleted payment
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner (roleId = 10 or 11)  
+**(Payments should not be deleted, instead is_void=true)**
+
 ---
 
 ## Routes to be completed:
@@ -276,12 +306,6 @@ GET /checks/:id/payments
 POST /tickets  
 GET /tickets  
 GET /ticktets/:id  
-
-### Payments
-POST /payments  
-GET /payments  
-GET /payments/:id  
-
 
 ### Restaurant Info
 GET /info  

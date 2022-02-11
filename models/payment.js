@@ -30,7 +30,7 @@ class Payment {
 		// 	throw new BadRequestError(`Duplicate item: ${id}`);
 
 		const result = await db.query(
-			`INSERT INTO payment
+			`INSERT INTO payments
            (check_id, type, tip_amt, subtotal)
            VALUES ($1, $2, $3, $4)
            RETURNING check_id AS "checkId", type, tip_amt AS "tipAmt", subtotal, is_void AS "isVoid"`,
