@@ -92,7 +92,8 @@ sub_total NUMERIC(10,2) CHECK (sub_total >= 0),
 discount_total NUMERIC(10,2) CHECK (discount_total >= 0),
 local_tax NUMERIC(6,2) CHECK (local_tax >= 0),
 state_tax NUMERIC(6,2) CHECK (state_tax >= 0),
-federal_tax NUMERIC(6,2) CHECK (federal_tax >= 0)
+federal_tax NUMERIC(6,2) CHECK (federal_tax >= 0),
+is_void BOOLEAN DEFAULT FALSE
 );
 COMMENT ON TABLE checks IS 'List of all checks';
 

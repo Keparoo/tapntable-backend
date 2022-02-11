@@ -173,10 +173,10 @@ class Check {
      **/
 
 	static async get(id) {
-		const itemRes = await db.query(
-			`SELECT c.id
+		const checkRes = await db.query(
+			`SELECT c.id,
               c.user_id AS "userId",
-              u.display_name AS "employee"
+              u.display_name AS "employee",
               c.table_id AS "tableId",
               c.num_guests AS "numGuests",
               c.created_at AS "createdAt",
@@ -191,7 +191,7 @@ class Check {
               c.is_void AS "isVoid"
       FROM checks c INNER JOIN users u
       ON c.user_id = u.id
-      WHERE id = $1`,
+      WHERE c.id = $1`,
 			[ id ]
 		);
 
