@@ -6,8 +6,11 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for payments. */
 
-//payment enum type values:
-// 'Cash', 'MC', 'Visa', 'Amex', 'Disc', 'Google', 'Apple','Venmo'
+/**
+ * payment enum type values:
+ * 
+ * 'Cash', 'MC', 'Visa', 'Amex', 'Disc', 'Google', 'Apple','Venmo'
+ */
 
 class Payment {
 	/** Create a payment (from data), update db, return new item data.
