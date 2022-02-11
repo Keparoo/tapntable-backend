@@ -263,16 +263,20 @@ GET /users/roles
 GET /users/logs
 
 ### Checks routes
-GET /checks/:id/items
-* returns a list of items ordered related to check
+POST /checks/:id  
+PATCH /checks/:id/items/:id  
+GET /checks/:id/items  
+* returns a list of items ordered related to check  
+DELETE /checks/:id/items/:id
 
 GET /checks/:id/payments
 * returns a list of payments related to check
 
 ### Payments
+POST /payments
 GET /payments  
 GET /payments/:id  
-POST /payments
+
 
 ### Restaurant Info
 GET /info  
