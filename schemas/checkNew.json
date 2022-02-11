@@ -1,1 +1,22 @@
-{}
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "http://our.company.com/companyNew.schema.json",
+	"type": "object",
+	"properties": {
+		"empId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"tablId": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 15
+		},
+		"numGuests": {
+			"type": "number",
+			"minimum": 100
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "empId", "tableId", "numGuests" ]
+}

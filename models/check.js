@@ -68,7 +68,7 @@ class Check {
    * - discountId
    * - isVoid
    *
-   * Returns [{ id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]
+   * Returns { checks: [{ id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
    * 
    * */
 

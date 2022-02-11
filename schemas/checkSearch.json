@@ -1,1 +1,44 @@
-{}
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "http://our.company.com/companySearch.schema.json",
+	"type": "object",
+	"properties": {
+		"empId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"employee": {
+			"type": "string",
+			"minLength": 1
+		},
+		"tableId": {
+			"type": "string",
+			"minLength": 1
+		},
+		"numGuests": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"createdAt": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"printedAt": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"closedAt": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"discountId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"isVoid": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": []
+}

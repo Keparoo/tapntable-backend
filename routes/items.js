@@ -95,7 +95,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH /[id] { fld1, fld2, ... } => { item }
+/** PATCH /:id { fld1, fld2, ... } => { item }
  *
  * Patches item data.
  *
