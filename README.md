@@ -283,7 +283,7 @@ DELETE /payments/:id => { deleted: id }
 * Returns the id of deleted payment
 * Throws NotFoundError if item not found
 * Authorization required: manager or owner (roleId = 10 or 11)  
-**(Payments should not be deleted, instead is_void=true)**
+**(Payments should not be deleted, instead is_void=false)**
 
 ---
 
