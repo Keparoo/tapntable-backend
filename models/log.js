@@ -11,7 +11,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
  * 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item', 'delete-item-ordered' 'void-item', 'void-check'
  */
 
-class Payment {
+class Log {
 	/** Create a user log entry (from data), update db, return new log data.
    *
    * data should be { userId, event, entity_id }
