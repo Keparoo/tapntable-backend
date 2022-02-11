@@ -139,7 +139,8 @@ id SERIAL PRIMARY KEY,
 check_id INTEGER REFERENCES checks,
 type PAYMENT_TYPE NOT NULL,
 tip_amt NUMERIC(6,2) CHECK (tip_amt >= 0),
-sub_total NUMERIC(10,2) CHECK (sub_total >= 0)
+subtotal NUMERIC(10,2) CHECK (subtotal >= 0),
+is_void BOOLEAN DEFAULT FALSE
 );
 COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
