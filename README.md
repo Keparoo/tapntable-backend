@@ -10,7 +10,7 @@ The current version of the database schema (v1.9) is below.
 * The blue tables are for phase 2.  
 * Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
 
-![Database Schema v1.9](tapntable-schema-v1.10.png)
+![Database Schema v1.11](tapntable-schema-v1.11.png)
 
 ### Regarding users, login and auth:
 
