@@ -21,10 +21,10 @@ const router = express.Router();
 
 /** POST / { check }  => { check }
  *
- * item should be { empId, tablId, numGuests } 
+ * item should be { userId, tablId, numGuests } 
  *
  * This returns the newly created item
- *  {item: { id, emp_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax } }
+ *  {item: { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax } }
  *
  * Authorization required: logged in to own account
  **/
@@ -45,10 +45,10 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /  =>
- *   { checks: [{ id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
+ *   { checks: [{ id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
-   * - empId 
+   * - userId 
    * - employee (will find case-insensitive, partial matches)
    * - tableId
    * - numGuests
@@ -64,7 +64,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	const q = req.query;
 	// Convert querystring to int
-	if (q.empId) q.empId = +q.empId;
+	if (q.userId) q.userId = +q.userId;
 	if (q.numGuests) q.numGuests = +q.numGuests;
 	if (q.createdAt) q.createdAt = +q.createdAt;
 	if (q.printedAt) q.printedAt = +q.printedAt;
@@ -89,7 +89,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 
 /** GET /:id  =>  { check }
  *
- *  Check is { id, emp_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
+ *  Check is { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
  *
  * Authorization required: Logged in to own account
  */
@@ -107,9 +107,9 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Updates check data.
  *
- * fields can be: { empId, employee, tableId, numGuests, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * fields can be: { userId, employee, tableId, numGuests, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
- * Returns { id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
  * Authorization required: Logged in to own account
  */

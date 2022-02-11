@@ -9,17 +9,17 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Check {
 	/** Create a check (from data), update db, return new check data.
    *
-   * data should be { empId, tablId, numGuests }
+   * data should be { userId, tablId, numGuests }
    *
-   * Returns { id, emp_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
+   * Returns { id, user_id, table_id, num_guests, created_at, sub_total, local_tax, state_tax, federal_tax }
    * 
-   * Required args { empId, tablId, numGuests }
+   * Required args { userId, tablId, numGuests }
    *
    * Throws BadRequestError if item already in database.
    * 
    * */
 
-	static async create({ empId, tableId, numGuests }) {
+	static async create({ userId, tableId, numGuests }) {
 		// const duplicateCheck = await db.query(
 		// 	`SELECT name
 		//    FROM item_categories
@@ -32,10 +32,10 @@ class Check {
 
 		const result = await db.query(
 			`INSERT INTO checks
-       (emp_id, table_id, num_guests)
+       (user_id, table_id, num_guests)
        VALUES ($1, $2, $3)
        RETURNING id,
-                emp_id AS "empId",
+                user_id AS "userId",
                 table_id AS "tableId",
                 num_guests AS "numGuests",
                 created_at AS "createdAt",
@@ -48,7 +48,7 @@ class Check {
                 state_tax AS "stateTax",
                 federal_tax AS "federalTax",
                 is_void AS "isVoid"`,
-			[ empId, tableId, numGuests ]
+			[ userId, tableId, numGuests ]
 		);
 		const check = result.rows[0];
 
@@ -58,7 +58,7 @@ class Check {
 	/** Find all checks (optional filter on searchFilters).
    *
    * searchFilters (all optional):
-   * - empId 
+   * - userId 
    * - employee (will find case-insensitive, partial matches)
    * - tableId
    * - numGuests
@@ -68,14 +68,14 @@ class Check {
    * - discountId
    * - isVoid
    *
-   * Returns { checks: [{ id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
+   * Returns { checks: [{ id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
    * 
    * */
 
 	static async findAll(searchFilters = {}) {
-		let query = `SELECT c.id
-                        c.emp_id AS "empId",
-                        u.display_name AS "employee"
+		let query = `SELECT c.id,
+                        c.user_id AS "userId",
+                        u.display_name AS "employee",
                         c.table_id AS "tableId",
                         c.num_guests AS "numGuests",
                         c.created_at AS "createdAt",
@@ -89,12 +89,12 @@ class Check {
                         c.federal_tax AS "federalTax",
                         c.is_void AS "isVoid"
                  FROM checks c INNER JOIN users u
-                 ON c.emp_id = u.id`;
+                 ON c.user_id = u.id`;
 		let whereExpressions = [];
 		let queryValues = [];
 
 		const {
-			empId,
+			userId,
 			employee,
 			tableId,
 			numGuests,
@@ -108,8 +108,8 @@ class Check {
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
 
-		if (empId) {
-			queryValues.push(empId);
+		if (userId) {
+			queryValues.push(userId);
 			whereExpressions.push(`c.employee_id = $${queryValues.length}`);
 		}
 
@@ -166,7 +166,7 @@ class Check {
 
 	/** Given a check id, return info about check.
      *
-     * Returns { id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+     * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
      *
      * Throws NotFoundError if not found.
      * 
@@ -175,7 +175,7 @@ class Check {
 	static async get(id) {
 		const itemRes = await db.query(
 			`SELECT c.id
-              c.emp_id AS "empId",
+              c.user_id AS "userId",
               u.display_name AS "employee"
               c.table_id AS "tableId",
               c.num_guests AS "numGuests",
@@ -190,7 +190,7 @@ class Check {
               c.federal_tax AS "federalTax",
               c.is_void AS "isVoid"
       FROM checks c INNER JOIN users u
-      ON c.emp_id = u.id
+      ON c.user_id = u.id
       WHERE id = $1`,
 			[ id ]
 		);
@@ -209,7 +209,7 @@ class Check {
    *
    * Data can include: { tableId, numGuests, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    *
-   * Returns { id, empId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+   * Returns { id, userId, employee, tableId, numGuests, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    * 
    * Throws NotFoundError if not found.
    */
@@ -234,7 +234,7 @@ class Check {
                       SET ${setCols} 
                       WHERE id = ${checkVarIdx} 
                       RETURNING id,
-                      emp_id AS "empId",
+                      user_id AS "userId",
                       table_id AS "tableId",
                       num_guests AS "numGuests",
                       created_at AS "createdAt",
