@@ -32,7 +32,7 @@ app.use('/items/destinations', destinationsRoutes);
 app.use('/items', itemsRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
-app.use('/logs', logsRoutes);
+app.use('/users/logs', logsRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
