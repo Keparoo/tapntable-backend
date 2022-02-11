@@ -272,6 +272,11 @@ DELETE /checks/:id/items/:id
 GET /checks/:id/payments
 * returns a list of payments related to check
 
+### Tickets routes
+POST /tickets  
+GET /tickets  
+GET /ticktets/:id  
+
 ### Payments
 POST /payments
 GET /payments  
