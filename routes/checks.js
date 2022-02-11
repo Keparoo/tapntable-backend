@@ -144,11 +144,7 @@ router.patch('/:id', ensureCorrectUserOrManager, async function(
  * 
  */
 
-router.delete('/:id', ensureCorrectUserOrManager, async function(
-	req,
-	res,
-	next
-) {
+router.delete('/:id', ensureManager, async function(req, res, next) {
 	try {
 		await Check.remove(req.params.id);
 		return res.json({ deleted: req.params.id });

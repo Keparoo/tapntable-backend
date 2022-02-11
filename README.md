@@ -225,6 +225,42 @@ DELETE /items/destinations/:id => {deleted: id}
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Destinations should not be deleted, if needed, implement is_active)**
 
+### Checks routes
+POST /checks  { userId, tablId, customer, numGuests } => { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
+* Required fields: { userId, tablId, numGuests }
+* created_at is timestamped with current datetime
+* is_void is set to false
+* Authorization required: logged in to current user
+
+GET /checks => { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
+* Returns a list of all checks
+  * Optional search-query: userId: Filters for items with user_id that matches
+  * Optional search-query: employee, Filters for checks like displayName, case insensitive
+  * Optional search-query: tableNum: Filters for items with tableNum that matches 
+  * Optional search-query: numGuests: Filters for items with numGuests that matches
+  * Optional search-query: customer, Filters for checks like customer, case insensitive
+  * Optional search-query: createdAt: Filters for items with createdAt that matches
+  * Optional search-query: printedAt: Filters for items with printedAt that matches
+  * Optional search-query: closedAt: Filters for items with closedAt that matches
+  * Optional search-query: discountId: Filters for items with discountId that matches
+  * Optional search-query: isVoid: Filters for items with isVoid that matches
+* Authorization required: logged in to current user
+
+GET /checks/:id  => {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+* Returns check record that matches id
+* Throws NotFoundError if user not found
+* Authorization required: logged in to current user
+
+PATCH /checks/:id => {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+* Data can include: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+* Throws NotFoundError if user not found
+* Authorization required: logged in to current user
+
+DELETE /checks/:id
+* Returns the id of deleted item
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner (roleId = 10 or 11)  
+**(Checks should not be deleted, instead is_void=true)**
 ---
 
 ## Routes to be completed:
@@ -233,14 +269,6 @@ GET /users/roles
 GET /users/logs
 
 ### Checks routes
-POST /checks  
-GET /checks
-* search-query: emp_id  
-
-GET /checks/:id  
-PATCH /checks/:id  
-**(Checks should not be deleted, instead is_void=true)**
-
 GET /checks/:id/items
 * returns a list of items ordered related to check
 
