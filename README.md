@@ -259,7 +259,7 @@ DELETE /checks/:id
 
 ## Routes to be completed:
 ### User routes
-GET /users/roles
+GET /users/roles  
 GET /users/logs
 
 ### Checks routes
