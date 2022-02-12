@@ -321,9 +321,9 @@ GET /checks/:id/payments
 * returns a list of payments related to check
 
 ### Tickets routes
-POST /tickets  
-GET /tickets  
-GET /ticktets/:id  
+POST /checks/tickets  
+GET /checks/tickets  
+GET /checks/ticktets/:id  
 
 ### Restaurant Info
 GET /info  
