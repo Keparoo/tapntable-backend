@@ -327,14 +327,14 @@ DELETE /payments/:id => { deleted: id }
 ### User routes
 GET /users/roles
 
+### Checks routes
+GET /checks/:id/payments -- returns a list of payments related to check
+
+POST /checks/:id/ordered --  New item ordered  
+GET /checks/:id/ordered --  returns a list of items ordered related to check  
+
 ### Ordered routes
-POST /checks/:id/ordered  
-GET /checks/:id/payments
-* returns a list of payments related to check
-
-GET /ordered/:id   
-* returns a list of items ordered related to check  
-
+GET /ordered/:id -- return the item ordered  
 PATCH /ordered/:id  
 DELETE /ordered/:id
 
