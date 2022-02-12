@@ -19,7 +19,7 @@ const ticketSearchSchema = require('../schemas/ticketSearch.json');
 
 const router = express.Router();
 
-/** POST / { ticket }  => { ticket }
+/** POST /tickets { ticket }  => { ticket }
  *
  * ticket should be { userId }
  *
@@ -44,7 +44,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** GET /  =>
+/** GET /tickets  =>
  *   { tickets: [ { id, userId, sentAt}...] }
  *
  * Can filter on provided optional search filters:
@@ -73,7 +73,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** GET /:id  =>  { ticket }
+/** GET /tickets/:id  =>  { ticket }
  *
  *  Ticket is { ticket: { id, userId, sentAt} }
  *
