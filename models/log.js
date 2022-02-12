@@ -37,7 +37,7 @@ class Log {
    *
    * searchFilters (all optional):
    * - userId
-   * - type
+   * - event
    * - timestamp
    * - entityId
    *
@@ -54,7 +54,7 @@ class Log {
 		let whereExpressions = [];
 		let queryValues = [];
 
-		const { userId, type, timestamp, entityId } = searchFilters;
+		const { userId, event, timestamp, entityId } = searchFilters;
 
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
@@ -64,9 +64,9 @@ class Log {
 			whereExpressions.push(`user_id = $${queryValues.length}`);
 		}
 
-		if (type) {
-			queryValues.push(type);
-			whereExpressions.push(`type = $${queryValues.length}`);
+		if (event) {
+			queryValues.push(event);
+			whereExpressions.push(`event = $${queryValues.length}`);
 		}
 
 		if (timestamp) {
