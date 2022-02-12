@@ -40,7 +40,7 @@ id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 -- log_event_id INTEGER REFERENCES log_events,
 event LOG_EVENT NOT NULL,
-timestamp TIMESTAMP DEFAULT Now(),
+timestamp TIMESTAMP DEFAULT NOW(),
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );
 COMMENT ON TABLE user_logs IS 'Log of user events including timeclock';
@@ -85,7 +85,7 @@ user_id INTEGER REFERENCES users,
 table_num INTEGER NOT NULL, --Create table of restaurant tables? 
 customer VARCHAR(15), --At bar only: customer name/description
 num_guests INTEGER NOT NULL,
-created_at TIMESTAMP DEFAULT Now(),
+created_at TIMESTAMP DEFAULT NOW(),
 printed_at TIMESTAMP,
 closed_at TIMESTAMP,
 discount_id INTEGER, --This will eventually point to discount table
