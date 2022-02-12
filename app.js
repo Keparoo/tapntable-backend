@@ -26,13 +26,13 @@ app.use(morgan('tiny'));
 app.use(cors());
 
 app.use('/auth', authRoutes);
+app.use('/users/logs', logsRoutes);
 app.use('/users', usersRoutes);
 app.use('/items/categories', categoriesRoutes);
 app.use('/items/destinations', destinationsRoutes);
 app.use('/items', itemsRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
-app.use('/users/logs', logsRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
