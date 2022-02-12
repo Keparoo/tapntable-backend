@@ -82,7 +82,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	try {
-		const lop = await Log.get(req.params.id);
+		const log = await Log.get(req.params.id);
 		return res.json({ log });
 	} catch (err) {
 		return next(err);

@@ -98,7 +98,7 @@ class Log {
      **/
 
 	static async get(id) {
-		const paymentRes = await db.query(
+		const logRes = await db.query(
 			`SELECT id,
               user_id AS "userId",
               event,
