@@ -334,6 +334,7 @@ GET /checks/:id/payments
 
 GET /ordered/:id   
 * returns a list of items ordered related to check  
+
 PATCH /ordered/:id  
 DELETE /ordered/:id
 
