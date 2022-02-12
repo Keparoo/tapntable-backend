@@ -334,7 +334,7 @@ POST /checks/:id/ordered --  New item ordered
 GET /checks/:id/ordered --  returns a list of items ordered related to check  
 
 ### Ordered routes
-GET /ordered
+GET /ordered  
 GET /ordered/:id -- return the item ordered  
 PATCH /ordered/:id  
 DELETE /ordered/:id
