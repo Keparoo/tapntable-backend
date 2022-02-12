@@ -327,7 +327,7 @@ DELETE /payments/:id => { deleted: id }
 ### User routes
 GET /users/roles
 
-### Checks routes
+### Items routes
 POST /checks/:id/items  
 PATCH /checks/:id/items/:id  
 GET /checks/:id/items  
