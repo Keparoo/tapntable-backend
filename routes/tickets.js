@@ -5,7 +5,10 @@
 const jsonschema = require('jsonschema');
 const express = require('express');
 
-const { ensureManager, ensureLoggedIn } = require('../middleware/auth');
+const {
+	ensureManager,
+	ensureCorrectUserOrManager
+} = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
 const { createToken } = require('../helpers/tokens');
 
@@ -26,7 +29,7 @@ const router = express.Router();
  * Authorization required: logged in
  **/
 
-router.post('/', ensureLoggedIn, async function(req, res, next) {
+router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	try {
 		const validator = jsonschema.validate(req.body, ticketNewSchema);
 		if (!validator.valid) {
@@ -51,7 +54,7 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * Authorization required: LoggedIn
  */
 
-router.get('/', ensureLoggedIn, async function(req, res, next) {
+router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	const q = req.query;
 
 	if (q.userId) q.userId = +q.userId;
@@ -77,7 +80,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  * Authorization required: LoggedIn
  */
 
-router.get('/:id', ensureLoggedIn, async function(req, res, next) {
+router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
 	try {
 		const ticket = await Ticket.get(req.params.id);
 		return res.json({ ticket });

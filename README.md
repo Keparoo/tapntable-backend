@@ -275,11 +275,28 @@ DELETE /checks/:id
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Checks should not be deleted, instead is_void=true)**
 
+### Tickets routes
+POST /checks/tickets { userId } => { ticket: { id, userId, sentAt} }
+* Required fields { userId }
+* sentAt automatically timestamped
+* Authorization required: logged in to current user
+
+GET /checks/tickets => { tickets: [ { id, userId, sentAt}...]}
+* Returns a list of all tickets
+  * Optional search-query: userId 
+  * Optional search-query: sentAt
+* Authorization required: logged in to current user
+
+GET /checks/tickets/:id  
+* Returns record for requested ticket
+* Throws NotFoundError if user not found
+* Authorization required: user is logged in
+
 ### Payments
 POST /payments { check_id, type, tip_amt, subtotal } => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }  
-* Required fileds: { check_id, type, subtotal }
+* Required fields: { check_id, type, subtotal }
 * is_void is set to false
-* Authorization required: user is logged in
+* Authorization required: logged in to current user
 
 GET /payments => { payments:[ { id, checkId, type, tipAmt, subtotal, isVoid }...]}
 * Returns a list of all payments
@@ -319,11 +336,6 @@ DELETE /checks/:id/items/:id
 
 GET /checks/:id/payments
 * returns a list of payments related to check
-
-### Tickets routes
-POST /checks/tickets  
-GET /checks/tickets  
-GET /checks/tickets/:id  
 
 ### Restaurant Info
 GET /info  
