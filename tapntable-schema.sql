@@ -108,7 +108,7 @@ COMMENT ON TABLE tickets IS 'Batch of items ordered sent to destinations';
 
 --Item ordered and and relevent info: seat #, mods (currently item_note)
 
-CREATE TABLE ordered_item (
+CREATE TABLE ordered_items (
 id SERIAL PRIMARY KEY,
 item_id INTEGER REFERENCES items,
 ticket_id INTEGER REFERENCES tickets,
