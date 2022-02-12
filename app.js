@@ -34,7 +34,7 @@ app.use('/items/categories', categoriesRoutes);
 app.use('/items/destinations', destinationsRoutes);
 app.use('/items', itemsRoutes);
 app.use('/tickets', ticketsRoutes);
-
+app.use('/ordered', orderedRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
 

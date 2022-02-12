@@ -26,5 +26,5 @@
 		}
 	},
 	"additionalProperties": false,
-	"required": [ "itemId", "ticketId", "checkId" ]
+	"required": [ "itemId", "ticketId" ]
 }

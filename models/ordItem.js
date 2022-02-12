@@ -15,7 +15,7 @@ class OrdItem {
    *
    * */
 
-	static async create({ itemId, ticketId, checkId, seatNum, itemNote }) {
+	static async create(checkId, { itemId, ticketId, seatNum, itemNote }) {
 		const result = await db.query(
 			`INSERT INTO ordered_items
            (item_id,
@@ -32,7 +32,7 @@ class OrdItem {
 		return ordItem;
 	}
 
-	/** Find all ordered_items (optional filter on searchFilters).
+	/** Find all ordered_items for a given checkId (optional filter on searchFilters).
    *
    * searchFilters (all optional):
    * - itemId
@@ -178,7 +178,7 @@ class OrdItem {
 	static async remove(id) {
 		const result = await db.query(
 			`DELETE
-             FROM orderd_items
+             FROM ordered_items
              WHERE id = $1
              RETURNING id`,
 			[ id ]

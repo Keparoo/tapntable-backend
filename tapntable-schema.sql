@@ -118,9 +118,10 @@ completed_at TIMESTAMP,
 completed_by INTEGER REFERENCES users,
 delivered_at TIMESTAMP,
 item_note VARCHAR(30),
-item_discount_id INTEGER --This will eventually point to discount table
+item_discount_id INTEGER, --This will eventually point to discount table
+is_void BOOLEAN DEFAULT FALSE
 );
-COMMENT ON TABLE item_ordered IS 'Item ordered with modifications and info';
+COMMENT ON TABLE ordered_items IS 'Item ordered with modifications and info';
 
 --Types of payment: Cash, MC, Visa, Amex etc
 

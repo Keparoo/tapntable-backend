@@ -7,6 +7,7 @@ const express = require('express');
 
 const {
 	ensureManager,
+	ensureLoggedIn,
 	ensureCorrectUserOrManager
 } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
@@ -30,22 +31,22 @@ const router = express.Router();
  * Authorization required: logged into currend user
  **/
 
-router.post('/', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, orderedNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+// router.post('/:id/ordered', ensureManager, async function(req, res, next) {
+// 	try {
+// 		const validator = jsonschema.validate(req.body, orderedNewSchema);
+// 		if (!validator.valid) {
+// 			const errs = validator.errors.map((e) => e.stack);
+// 			throw new BadRequestError(errs);
+// 		}
 
-		const ordItem = await OrdItem.create(req.body);
-		return res.status(201).json({ ordItem });
-	} catch (err) {
-		return next(err);
-	}
-});
+// 		const ordItem = await OrdItem.create(req.params.id, req.body);
+// 		return res.status(201).json({ ordItem });
+// 	} catch (err) {
+// 		return next(err);
+// 	}
+// });
 
-/** GET /  =>
+/** GET /ordered  =>
  *   { ordItems: [ { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
@@ -73,14 +74,14 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 			throw new BadRequestError(errs);
 		}
 
-		const ordItems = await OrdItem.findAll(q);
+		const ordItems = await OrdItem.findAll(req.params.id, q);
 		return res.json({ ordItems });
 	} catch (err) {
 		return next(err);
 	}
 });
 
-/** GET /:id  =>  { ordItem }
+/** GET /ordered/:id  =>  { ordItem }
  *
  *  Item is { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
@@ -96,7 +97,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH /:id { fld1, fld2, ... } => { ordItem }
+/** PATCH /ordered/:id { fld1, fld2, ... } => { ordItem }
  *
  * Patches ordered item data.
  *
@@ -108,8 +109,9 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
+	const params = { ...req.body, checkId: req.params.id };
 	try {
-		const validator = jsonschema.validate(req.body, orderedUpdateSchema);
+		const validator = jsonschema.validate(params, orderedUpdateSchema);
 		if (!validator.valid) {
 			const errs = validator.errors.map((e) => e.stack);
 			throw new BadRequestError(errs);
@@ -122,7 +124,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 	}
 });
 
-/** DELETE /:id  =>  { deleted: id }
+/** DELETE /ordered/:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
