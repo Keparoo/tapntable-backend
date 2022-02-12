@@ -1,0 +1,24 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "http://our.company.com/companySearch.schema.json",
+	"type": "object",
+	"properties": {
+		"itemId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"ticketId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"checkId": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"isVoid": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": []
+}
