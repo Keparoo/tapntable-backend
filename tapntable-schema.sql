@@ -102,7 +102,7 @@ COMMENT ON TABLE checks IS 'List of all checks';
 CREATE TABLE tickets (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
-sent_at TIMESTAMP NOT NULL
+sent_at TIMESTAMP DEFAULT NOW()
 );
 COMMENT ON TABLE tickets IS 'Batch of items ordered sent to destinations';
 

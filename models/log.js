@@ -25,7 +25,7 @@ class Log {
 			`INSERT INTO user_logs
            (user_id, event, entity_id )
            VALUES ($1, $2, $3)
-           RETURNING user_id AS "userId", event, entity_id AS "entityId"`,
+           RETURNING id, user_id AS "userId", event, entity_id AS "entityId"`,
 			[ userId, event, entityId ]
 		);
 		const log = result.rows[0];
