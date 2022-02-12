@@ -18,6 +18,7 @@ const checksRoutes = require('./routes/checks');
 const paymentsRoutes = require('./routes/payments');
 const logsRoutes = require('./routes/logs');
 const ticketsRoutes = require('./routes/tickets');
+const orderedRoutes = require('./routes/ordItems');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/items/categories', categoriesRoutes);
 app.use('/items/destinations', destinationsRoutes);
 app.use('/items', itemsRoutes);
 app.use('/tickets', ticketsRoutes);
+
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
 
