@@ -329,14 +329,13 @@ GET /users/roles
 
 ### Ordered routes
 POST /checks/:id/ordered  
-PATCH /checks/:id/ordered/:id  
+GET /checks/:id/payments
+* returns a list of payments related to check
 
 GET /ordered/:id   
 * returns a list of items ordered related to check  
+PATCH /ordered/:id  
 DELETE /ordered/:id
-
-GET /checks/:id/payments
-* returns a list of payments related to check
 
 ### Restaurant Info
 GET /info  
