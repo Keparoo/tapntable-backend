@@ -12,14 +12,18 @@ const {
 const { BadRequestError } = require('../expressError');
 
 const Check = require('../models/check');
+const OrdItem = require('../models/ordItem');
 
 const checkNewSchema = require('../schemas/checkNew.json');
 const checkUpdateSchema = require('../schemas/checkUpdate.json');
 const checkSearchSchema = require('../schemas/checkSearch.json');
+const orderedNewSchema = require('../schemas/orderedNew.json');
+const orderedSearchSchema = require('../schemas/orderedSearch.json');
+const orderedUpdateSchema = require('../schemas/orderedUpdate.json');
 
 const router = express.Router();
 
-/** POST / { check }  => { check }
+/** POST /checks { check }  => { check }
  *
  * item should be { userId, tablId, numGuests, customer } 
  *
@@ -44,7 +48,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** GET /  =>
+/** GET /checks  =>
  *   { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
@@ -89,7 +93,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** GET /:id  =>  { check }
+/** GET /checks/:id  =>  { check }
  *
  *  Check is { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
  *
@@ -105,7 +109,7 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** PATCH /:id { fld1, fld2, ... } => { check }
+/** PATCH /checks/:id { fld1, fld2, ... } => { check }
  *
  * Updates check data.
  *
@@ -135,7 +139,7 @@ router.patch('/:id', ensureCorrectUserOrManager, async function(
 	}
 });
 
-/** DELETE /:id  =>  { deleted: id }
+/** DELETE /checks/:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
