@@ -323,7 +323,7 @@ GET /checks/:id/payments
 ### Tickets routes
 POST /checks/tickets  
 GET /checks/tickets  
-GET /checks/ticktets/:id  
+GET /checks/tickets/:id  
 
 ### Restaurant Info
 GET /info  
