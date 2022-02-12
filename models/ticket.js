@@ -40,7 +40,7 @@ class Ticket {
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id,
                         user_id AS "userId",
-                        sent_at AS "sentAt",
+                        sent_at AS "sentAt"
                  FROM tickets`;
 		let whereExpressions = [];
 		let queryValues = [];
