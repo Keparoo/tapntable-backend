@@ -330,7 +330,7 @@ GET /users/roles
 ### Ordered routes
 POST /checks/:id/ordered  
 PATCH /checks/:id/ordered/:id  
-GET /checks/:id/ordered  
+GET //ordered/:id   
 * returns a list of items ordered related to check  
 DELETE /checks/:id/ordered/:id
 
