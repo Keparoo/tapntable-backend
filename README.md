@@ -275,22 +275,28 @@ DELETE /checks/:id
 * Authorization required: manager or owner (roleId = 10 or 11)  
 **(Checks should not be deleted, instead is_void=true)**
 
-### Tickets routes
-POST /checks/tickets { userId } => { ticket: { id, userId, sentAt} }
+### Orders routes
+POST /checks/orders { userId } => { order: { id, userId, sentAt} }
 * Required fields { userId }
 * sentAt automatically timestamped
 * Authorization required: logged in to current user
 
-GET /checks/tickets => { tickets: [ { id, userId, sentAt}...]}
+GET /checks/orders => { tickets: [ { id, userId, sentAt}...]}
 * Returns a list of all tickets
   * Optional search-query: userId 
   * Optional search-query: sentAt
 * Authorization required: logged in to current user
 
-GET /checks/tickets/:id  
+GET /checks/orders/:id  
 * Returns record for requested ticket
 * Throws NotFoundError if user not found
 * Authorization required: user is logged in
+
+### Ordered routes
+GET /ordered  
+GET /ordered/:id -- return the item ordered  
+PATCH /ordered/:id  
+DELETE /ordered/:id
 
 ### Payments
 POST /payments { check_id, type, tip_amt, subtotal } => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }  
@@ -328,19 +334,11 @@ DELETE /payments/:id => { deleted: id }
 GET /users/roles
 
 ### Checks routes
-GET /checks/:id/payments -- returns a list of payments related to check
+GET /checks/:id/payments -- returns a list of payments related to check 
 
-POST /checks/:id/ordered --  New item ordered  
-GET /checks/:id/ordered --  returns a list of items ordered related to check  
-
-### Ordered routes
-GET /ordered  
-GET /ordered/:id -- return the item ordered  
-PATCH /ordered/:id  
-DELETE /ordered/:id
 
 ### Restaurant Info
-GET /info  
+This will become a json file. Remove table. Routes not needed
 POST /info  
 PATCH /info
 
