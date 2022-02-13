@@ -9,23 +9,23 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class OrdItem {
 	/** Create an ordered_items entry (from data), update db, return new ordered_items data.
    *
-   * data should be { itemId, ticketId, checkId, seatNum, itemNote }
+   * data should be { itemId, orderId, checkId, seatNum, itemNote }
    *
-   * Returns { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+   * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
    *
    * */
 
-	static async create(checkId, { itemId, ticketId, seatNum, itemNote }) {
+	static async create({ itemId, orderId, checkId, seatNum, itemNote }) {
 		const result = await db.query(
 			`INSERT INTO ordered_items
            (item_id,
-            ticket_id,
+            order_id,
             check_id,
             seat_num,
             item_note)
            VALUES ($1, $2, $3, $4, $5)
-           RETURNING item_id AS "itemId", ticket_id AS "ticketId", check_id AS "checkId", seat_num AS "seatNum", completed_at AS "completedAt", completed_by AS "completedBy", deliverd_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
-			[ itemId, ticketId, checkId, seatNum, itemNote ]
+           RETURNING item_id AS "itemId", order_id AS "orderId", check_id AS "checkId", seat_num AS "seatNum", completed_at AS "completedAt", completed_by AS "completedBy", delivered_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
+			[ itemId, orderId, checkId, seatNum, itemNote ]
 		);
 		const ordItem = result.rows[0];
 
@@ -36,17 +36,17 @@ class OrdItem {
    *
    * searchFilters (all optional):
    * - itemId
-   * - ticketId
+   * - orderId
    * - checkId
    * - isVoid
    *
-   * Returns { ordItems: [ { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]}
+   * Returns { ordItems: [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]}
    * */
 
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id,
                         item_id AS "itemId",
-                        ticket_id AS "ticketId",
+                        order_id AS "orderId",
                         check_id AS "checkId",
                         seat_num AS "seatNum",
                         completed_at AS "completedAt",
@@ -59,7 +59,7 @@ class OrdItem {
 		let whereExpressions = [];
 		let queryValues = [];
 
-		const { itemId, ticketId, checkId, isVoid } = searchFilters;
+		const { itemId, orderId, checkId, isVoid } = searchFilters;
 
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
@@ -69,9 +69,9 @@ class OrdItem {
 			whereExpressions.push(`item_id = $${queryValues.length}`);
 		}
 
-		if (ticketId) {
-			queryValues.push(ticketId);
-			whereExpressions.push(`ticket_id = $${queryValues.length}`);
+		if (orderId) {
+			queryValues.push(orderId);
+			whereExpressions.push(`order_id = $${queryValues.length}`);
 		}
 
 		if (checkId) {
@@ -97,7 +97,7 @@ class OrdItem {
 
 	/** Given a ordItem id, return the ordItem entry.
      *
-     * Returns { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+     * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
      *
      * Throws NotFoundError if not found.
      **/
@@ -106,7 +106,7 @@ class OrdItem {
 		const orderedRes = await db.query(
 			`SELECT id,
             item_id AS "itemId",
-            ticket_id AS "ticketId",
+            order_id AS "orderId",
             check_id AS "checkId",
             seat_num AS "seatNum",
             completed_at AS "completedAt",
@@ -134,7 +134,7 @@ class OrdItem {
    *
    * Data can include: { seatNum, itemNote, itemDiscountId, isVoid }
    *
-   * Returns { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+   * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
    *
    * Throws NotFoundError if not found.
    */
@@ -153,7 +153,7 @@ class OrdItem {
                         WHERE id = ${idVarIdx} 
                         RETURNING id,
                                   item_id AS "itemId",
-                                  ticket_id AS "ticketId",
+                                  order_id AS "orderId",
                                   check_id AS "checkId",
                                   seat_num AS "seatNum",
                                   completed_at AS "completedAt",

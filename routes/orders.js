@@ -1,6 +1,6 @@
 'use strict';
 
-/** Routes for user tickets. */
+/** Routes for user orders. */
 
 const jsonschema = require('jsonschema');
 const express = require('express');
@@ -12,40 +12,40 @@ const {
 const { BadRequestError } = require('../expressError');
 const { createToken } = require('../helpers/tokens');
 
-const Ticket = require('../models/ticket');
+const Order = require('../models/order');
 
-const ticketNewSchema = require('../schemas/ticketNew.json');
-const ticketSearchSchema = require('../schemas/ticketSearch.json');
+const orderNewSchema = require('../schemas/orderNew.json');
+const orderSearchSchema = require('../schemas/orderSearch.json');
 
 const router = express.Router();
 
-/** POST /tickets { ticket }  => { ticket }
+/** POST /orders { order }  => { order }
  *
- * ticket should be { userId }
+ * order should be { userId }
  *
- * This returns the newly created ticket
- *  { ticket: { id, userId, sentAt} }
+ * This returns the newly created order
+ *  { order: { id, userId, sentAt} }
  *
  * Authorization required: logged in
  **/
 
 router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	try {
-		const validator = jsonschema.validate(req.body, ticketNewSchema);
+		const validator = jsonschema.validate(req.body, orderNewSchema);
 		if (!validator.valid) {
 			const errs = validator.errors.map((e) => e.stack);
 			throw new BadRequestError(errs);
 		}
 
-		const ticket = await Ticket.create(req.body);
-		return res.status(201).json({ ticket });
+		const order = await Order.create(req.body);
+		return res.status(201).json({ order });
 	} catch (err) {
 		return next(err);
 	}
 });
 
-/** GET /tickets  =>
- *   { tickets: [ { id, userId, sentAt}...] }
+/** GET /orders  =>
+ *   { orders: [ { id, userId, sentAt}...] }
  *
  * Can filter on provided optional search filters:
  * - userId
@@ -60,30 +60,30 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	if (q.userId) q.userId = +q.userId;
 
 	try {
-		const validator = jsonschema.validate(q, ticketSearchSchema);
+		const validator = jsonschema.validate(q, orderSearchSchema);
 		if (!validator.valid) {
 			const errs = validator.errors.map((e) => e.stack);
 			throw new BadRequestError(errs);
 		}
 
-		const tickets = await Ticket.findAll(q);
-		return res.json({ tickets });
+		const orders = await Order.findAll(q);
+		return res.json({ orders });
 	} catch (err) {
 		return next(err);
 	}
 });
 
-/** GET /tickets/:id  =>  { ticket }
+/** GET /orders/:id  =>  { order }
  *
- *  Ticket is { ticket: { id, userId, sentAt} }
+ *  Order is { order: { id, userId, sentAt} }
  *
  * Authorization required: LoggedIn
  */
 
 router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
 	try {
-		const ticket = await Ticket.get(req.params.id);
-		return res.json({ ticket });
+		const order = await Order.get(req.params.id);
+		return res.json({ order });
 	} catch (err) {
 		return next(err);
 	}

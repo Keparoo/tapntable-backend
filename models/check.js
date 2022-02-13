@@ -11,7 +11,7 @@ class Check {
    *
    * data should be { userId, tablId, customer, numGuests }
    *
-   * Returns { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
+   * Returns { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax }
    * 
    * Required args { userId, tablId, numGuests }
    *
@@ -43,7 +43,7 @@ class Check {
                 printed_at AS "printedAt",
                 closed_at AS "closedAt",
                 discount_id AS "discountId",
-                sub_total AS "subTotal",
+                subtotal,
                 discount_total AS "discountTotal",
                 local_tax AS "localTax",
                 state_tax AS "stateTax",
@@ -70,7 +70,7 @@ class Check {
    * - discountId
    * - isVoid
    *
-   * Returns { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
+   * Returns { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
    * 
    * */
 
@@ -85,7 +85,7 @@ class Check {
                         c.printed_at AS "printedAt",
                         c.closed_at AS "closedAt",
                         c.discount_id AS "discountId",
-                        c.sub_total AS "subTotal",
+                        c.subtotal,
                         c.discount_total AS "discountTotal",
                         c.local_tax AS "localTax",
                         c.state_tax AS "stateTax",
@@ -175,7 +175,7 @@ class Check {
 
 	/** Given a check id, return info about check.
      *
-     * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+     * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
      *
      * Throws NotFoundError if not found.
      * 
@@ -193,7 +193,7 @@ class Check {
               c.printed_at AS "printedAt",
               c.closed_at AS "closedAt",
               c.discount_id AS "discountId",
-              c.sub_total AS "subTotal",
+              c.subtotal,
               c.discount_total AS "discountTotal",
               c.local_tax AS "localTax",
               c.state_tax AS "stateTax",
@@ -217,9 +217,9 @@ class Check {
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+   * Data can include: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    *
-   * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+   * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
    * 
    * Throws NotFoundError if not found.
    */
@@ -232,7 +232,6 @@ class Check {
 			printedAt: 'printed_at',
 			closedAt: 'closed_at',
 			discountId: 'discount_id',
-			subTotal: 'sub_total',
 			discountTotal: 'discount_total',
 			localTax: 'local_tax',
 			stateTax: 'state_tax',
@@ -250,7 +249,7 @@ class Check {
                       num_guests AS "numGuests",
                       customer,
                       created_at AS "createdAt",
-                      sub_total AS "subTotal",
+                      subtotal,
                       local_tax AS "localTax",
                       state_tax AS "stateTax",
                       federal_tax AS "federalTax",

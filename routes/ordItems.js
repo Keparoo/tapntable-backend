@@ -1,6 +1,6 @@
 'use strict';
 
-/** Routes for user tickets. */
+/** Routes for user orders. */
 
 const jsonschema = require('jsonschema');
 const express = require('express');
@@ -21,37 +21,37 @@ const orderedUpdateSchema = require('../schemas/orderedUpdate.json');
 
 const router = express.Router();
 
-/** POST / { ordItem }  => { ordItem }
+/** POST /ordered { ordItem }  => { ordItem }
  *
- * ordItem should be { itemId, ticketId, checkId, seatNum, itemNote } 
+ * ordItem should be { itemId, orderId, checkId, seatNum, itemNote } 
  *
  * This returns the newly created ordered item
- *  { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+ *  { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
  *
  * Authorization required: logged into currend user
  **/
 
-// router.post('/:id/ordered', ensureManager, async function(req, res, next) {
-// 	try {
-// 		const validator = jsonschema.validate(req.body, orderedNewSchema);
-// 		if (!validator.valid) {
-// 			const errs = validator.errors.map((e) => e.stack);
-// 			throw new BadRequestError(errs);
-// 		}
+router.post('/', ensureManager, async function(req, res, next) {
+	try {
+		const validator = jsonschema.validate(req.body, orderedNewSchema);
+		if (!validator.valid) {
+			const errs = validator.errors.map((e) => e.stack);
+			throw new BadRequestError(errs);
+		}
 
-// 		const ordItem = await OrdItem.create(req.params.id, req.body);
-// 		return res.status(201).json({ ordItem });
-// 	} catch (err) {
-// 		return next(err);
-// 	}
-// });
+		const ordItem = await OrdItem.create(req.body);
+		return res.status(201).json({ ordItem });
+	} catch (err) {
+		return next(err);
+	}
+});
 
 /** GET /ordered  =>
- *   { ordItems: [ { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+ *   { ordItems: [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
   * - itemId
-  * - ticketId
+  * - orderId
   * - checkId
   * - isVoid
  *
@@ -62,7 +62,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
 	// Convert querystring to int
 	if (q.itemId) q.itemId = +q.itemId;
-	if (q.ticketId) q.ticketId = +q.ticketId;
+	if (q.orderId) q.orderId = +q.orderId;
 	if (q.checkId) q.checkId = +q.checkId;
 	// Convert querystring to boolean
 	if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
@@ -83,7 +83,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /ordered/:id  =>  { ordItem }
  *
- *  Item is { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+ *  Item is { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
  * Authorization required: logged into current user
  */
@@ -103,15 +103,14 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * fields can be: { seatNum, itemNote, itemDiscountId, isVoid }
  *
- * Returns { ordItem: { id, itemId, ticketId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+ * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
-	const params = { ...req.body, checkId: req.params.id };
 	try {
-		const validator = jsonschema.validate(params, orderedUpdateSchema);
+		const validator = jsonschema.validate(req.body, orderedUpdateSchema);
 		if (!validator.valid) {
 			const errs = validator.errors.map((e) => e.stack);
 			throw new BadRequestError(errs);

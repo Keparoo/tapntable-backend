@@ -6,42 +6,42 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for payments. */
 
-class Ticket {
-	/** Create a ticket entry (from data), update db, return new ticket data.
+class Order {
+	/** Create an order entry (from data), update db, return new order data.
    *
    * data should be { userId }
    *
-   * Returns { ticket: { id, userId, sentAt} }
+   * Returns { order: { id, userId, sentAt} }
    *
    * */
 
 	static async create({ userId }) {
 		const result = await db.query(
-			`INSERT INTO tickets
+			`INSERT INTO orders
            (user_id)
            VALUES ($1)
            RETURNING id, user_id AS "userId", sent_at AS "sentAt"`,
 			[ userId ]
 		);
-		const ticket = result.rows[0];
+		const order = result.rows[0];
 
-		return ticket;
+		return order;
 	}
 
-	/** Find all tickets (optional filter on searchFilters).
+	/** Find all orders (optional filter on searchFilters).
    *
    * searchFilters (all optional):
    * - userId
    * - sentAt
    *
-   * Returns { tickets: [ { id, userId, sentAt}...]}
+   * Returns { orders: [ { id, userId, sentAt}...]}
    * */
 
 	static async findAll(searchFilters = {}) {
 		let query = `SELECT id,
                         user_id AS "userId",
                         sent_at AS "sentAt"
-                 FROM tickets`;
+                 FROM orders`;
 		let whereExpressions = [];
 		let queryValues = [];
 
@@ -67,33 +67,33 @@ class Ticket {
 		// Finalize query and return results
 
 		query += ' ORDER BY sent_at';
-		const ticketsRes = await db.query(query, queryValues);
-		return ticketsRes.rows;
+		const ordersRes = await db.query(query, queryValues);
+		return ordersRes.rows;
 	}
 
-	/** Given a ticket id, return the ticket entry.
+	/** Given a order id, return the order entry.
      *
-     * Returns { ticket: { id, userId, sentAt} }
+     * Returns { order: { id, userId, sentAt} }
      *
      * Throws NotFoundError if not found.
      **/
 
 	static async get(id) {
-		const ticketRes = await db.query(
+		const orderRes = await db.query(
 			`SELECT id,
               user_id AS "userId",
               sent_at AS "sentAt"
-        FROM tickets
+        FROM orders
         WHERE id = $1`,
 			[ id ]
 		);
 
-		const ticket = ticketRes.rows[0];
+		const order = orderRes.rows[0];
 
-		if (!ticket) throw new NotFoundError(`No ticket: ${id}`);
+		if (!order) throw new NotFoundError(`No order: ${id}`);
 
-		return ticket;
+		return order;
 	}
 }
 
-module.exports = Ticket;
+module.exports = Order;

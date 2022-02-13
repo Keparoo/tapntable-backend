@@ -89,7 +89,7 @@ created_at TIMESTAMP DEFAULT NOW(),
 printed_at TIMESTAMP,
 closed_at TIMESTAMP,
 discount_id INTEGER, --This will eventually point to discount table
-sub_total NUMERIC(10,2) CHECK (sub_total >= 0),
+subtotal NUMERIC(10,2) CHECK (subtotal >= 0),
 discount_total NUMERIC(10,2) CHECK (discount_total >= 0),
 local_tax NUMERIC(6,2) CHECK (local_tax >= 0),
 state_tax NUMERIC(6,2) CHECK (state_tax >= 0),
@@ -99,19 +99,19 @@ is_void BOOLEAN DEFAULT FALSE
 COMMENT ON TABLE checks IS 'List of all checks';
 
 --Batch of items sent as an order. A check may have many orders
-CREATE TABLE tickets (
+CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 sent_at TIMESTAMP DEFAULT NOW()
 );
-COMMENT ON TABLE tickets IS 'Batch of items ordered sent to destinations';
+COMMENT ON TABLE orders IS 'Batch of items ordered sent to destinations';
 
 --Item ordered and and relevent info: seat #, mods (currently item_note)
 
 CREATE TABLE ordered_items (
 id SERIAL PRIMARY KEY,
 item_id INTEGER REFERENCES items,
-ticket_id INTEGER REFERENCES tickets,
+order_id INTEGER REFERENCES orders,
 check_id INTEGER REFERENCES checks,
 seat_num INTEGER,
 completed_at TIMESTAMP,
