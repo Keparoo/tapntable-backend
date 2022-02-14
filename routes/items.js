@@ -17,12 +17,12 @@ const itemSearchSchema = require('../schemas/itemSearch.json');
 
 const router = express.Router();
 
-/** POST / { item }  => { item }
+/** POST / { item }  => {item: { item }}
  *
  * item should be { name, description, price, category_id, destination_id } 
  *
  * This returns the newly created item
- *  {item: { id, name, description, price, category_id, destination_id, count, is_active }
+ *  {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  **/
@@ -79,9 +79,11 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** GET /:id  =>  { item }
+/** GET /:id  =>  {item: { item }}
  *
  *  Item is { id, name, description, price, category_id, destination_id, count, is_active }
+ * 
+ * Returns: {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
  * Authorization required: LoggedIn
  */
@@ -95,13 +97,13 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH /:id { fld1, fld2, ... } => { item }
+/** PATCH /:id { fld1, fld2, ... } => {item: { item }}
  *
  * Patches item data.
  *
  * fields can be: { name, description, price, category_id, destination_id, count, is_active }
  *
- * Returns { id, name, description, price, category_id, destination_id, count, is_active }
+ * Returns {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */

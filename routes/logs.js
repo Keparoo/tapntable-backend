@@ -16,7 +16,7 @@ const logSearchSchema = require('../schemas/logSearch.json');
 
 const router = express.Router();
 
-/** POST / { log }  => { log }
+/** POST / { log }  => {log: { log }}
  *
  * log should be { userId, event, entityId }
  *
@@ -75,7 +75,9 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /:id  =>  { log }
  *
- *  Log is { log: { id, userId, event, timestamp, entity_id } }
+ *  Log is { id, userId, event, timestamp, entity_id }
+ * 
+ * Returns: {log: { id, userId, event, timestamp, entity_id }}
  *
  * Authorization required: LoggedIn
  */

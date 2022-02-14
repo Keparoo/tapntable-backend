@@ -23,12 +23,12 @@ const orderedUpdateSchema = require('../schemas/orderedUpdate.json');
 
 const router = express.Router();
 
-/** POST /checks { check }  => { check }
+/** POST /checks { check }  => {check: { check }}
  *
- * item should be { userId, tablId, numGuests, customer } 
+ * check should be { userId, tablId, numGuests, customer } 
  *
  * This returns the newly created item
- *  {item: { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax } }
+ *  {check: { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax } }
  *
  * Authorization required: logged in to own account
  **/
@@ -93,7 +93,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** GET /checks/:id  =>  { check }
+/** GET /checks/:id  =>  {check: { check }}
  *
  *  Check is { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax }
  *
@@ -109,13 +109,13 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
 	}
 });
 
-/** PATCH /checks/:id { fld1, fld2, ... } => { check }
+/** PATCH /checks/:id { fld1, fld2, ... } => {check: { check }}
  *
  * Updates check data.
  *
  * fields can be: { userId, employee, tableNum, numGuests, customer, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
- * Returns { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
  *
  * Authorization required: Logged in to own account
  */

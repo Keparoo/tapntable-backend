@@ -16,7 +16,7 @@ const categoryUpdateSchema = require('../schemas/categoryUpdate.json');
 
 const router = express.Router();
 
-/** POST items/categories, { category }  => { id, name}
+/** POST items/categories, { category }  => {category: { id, name}}
  *
  * category should be { name } 
  *
@@ -69,7 +69,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** GET /items/categories/:id  =>  { id, name }
+/** GET /items/categories/:id  =>  {category: { id, name }}
  *
  *  category is { id, name }
  *
@@ -91,7 +91,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * fields can be: { name }
  *
- * Returns { id, name }
+ * Returns {category: { id, name }}
  *
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */

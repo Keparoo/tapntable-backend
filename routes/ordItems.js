@@ -21,7 +21,7 @@ const orderedUpdateSchema = require('../schemas/orderedUpdate.json');
 
 const router = express.Router();
 
-/** POST /ordered { ordItem }  => { ordItem }
+/** POST /ordered { ordItem }  => {ordItem: { ordItem }}
  *
  * ordItem should be { itemId, orderId, checkId, seatNum, itemNote } 
  *
@@ -81,9 +81,11 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** GET /ordered/:id  =>  { ordItem }
+/** GET /ordered/:id  =>  {ordItem: { ordItem }}
  *
- *  Item is { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+ * Item is  { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
+ * 
+ * Returns: {ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
  * Authorization required: logged into current user
  */
@@ -97,7 +99,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH /ordered/:id { fld1, fld2, ... } => { ordItem }
+/** PATCH /ordered/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
  *
  * Patches ordered item data.
  *

@@ -19,7 +19,7 @@ const orderSearchSchema = require('../schemas/orderSearch.json');
 
 const router = express.Router();
 
-/** POST /orders { order }  => { order }
+/** POST /orders { order }  => {order: { order }}
  *
  * order should be { userId }
  *
@@ -75,7 +75,9 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 
 /** GET /orders/:id  =>  { order }
  *
- *  Order is { order: { id, userId, sentAt} }
+ * Order is { id, userId, sentAt}
+ * 
+ * Returns { order: { id, userId, sentAt}}
  *
  * Authorization required: LoggedIn
  */

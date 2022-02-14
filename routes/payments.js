@@ -17,7 +17,7 @@ const paymentSearchSchema = require('../schemas/paymentSearch.json');
 
 const router = express.Router();
 
-/** POST / { payment }  => { payment }
+/** POST / { payment }  => { payment: { payment }}
  *
  * payment should be { check_id, type, tip_amt, subtotal } 
  *
@@ -74,7 +74,9 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /:id  =>  { payment }
  *
- *  Payment is { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+ *  Payment is { id, checkId, type, tipAmt, subtotal, isVoid }
+ * 
+ * Returns {payment: { id, checkId, type, tipAmt, subtotal, isVoid }}
  *
  * Authorization required: LoggedIn
  */
@@ -88,7 +90,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH /:id { fld1, fld2, ... } => { item }
+/** PATCH /:id { fld1, fld2, ... } => { payment: { item }}
  *
  * Updates payment data.
  *

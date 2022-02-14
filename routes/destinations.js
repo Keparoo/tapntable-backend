@@ -16,12 +16,12 @@ const destinationUpdateSchema = require('../schemas/destinationUpdate.json');
 
 const router = express.Router();
 
-/** POST items/destinations, { destination }  => { id, name}
+/** POST items/destinations, { destination }  => {destination: { id, name}}
  *
  * destination should be { name } 
  *
  * This returns the newly created destination
- *  { destination: { id, name }
+ *  { destination: { id, name }}
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
@@ -69,7 +69,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** GET /items/destinations/:id  =>  { id, name }
+/** GET /items/destinations/:id  =>  {destination: { id, name }}
  *
  *  destination is { id, name }
  *
@@ -85,13 +85,13 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
 	}
 });
 
-/** PATCH items/destinations/:id, { fld1, fld2, ... } => { destination }
+/** PATCH items/destinations/:id, { fld1, fld2, ... } => {destination: { destination }}
  *
  * Updates destination name.
  *
  * fields can be: { name }
  *
- * Returns { id, name }
+ * Returns {destination: { id, name }}
  *
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */

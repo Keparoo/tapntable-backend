@@ -18,7 +18,7 @@ const userSearchSchema = require('../schemas/userSearch.json');
 
 const router = express.Router();
 
-/** POST / { user }  => { user, token }
+/** POST / { user }  => {user: { user, token }}
  *
  * Adds a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be a manager or owner.
@@ -78,9 +78,11 @@ router.get('/', ensureManager, async function(req, res, next) {
 	}
 });
 
-/** GET /[username] => { user }
+/** GET /[username] => {user: { user }}
  *
- * Returns { id, username, pin, displayName, firstName, lastName, role, isActive }
+ * user is { id, username, pin, displayName, firstName, lastName, role, isActive }
+ * 
+ * Returns: {user: { id, username, pin, displayName, firstName, lastName, role, isActive }}
  * 
  *
  * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
@@ -99,12 +101,12 @@ router.get('/:username', ensureCorrectUserOrManager, async function(
 	}
 });
 
-/** PATCH /[username] { user } => { user }
+/** PATCH /[username] { user } => {user: { user }}
  *
  * Data can include:
  *   { username, password, pin, displayName, firstName, lastName, roleId, isActive }
  *
- * Returns { id, username, pin, displayName, firstName, lastName, roleId, isActive }
+ * Returns {user: { id, username, pin, displayName, firstName, lastName, roleId, isActive }}
  *
  * Authorization required: manager or owner (roleId = 10 or 11)
  **/
