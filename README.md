@@ -331,11 +331,7 @@ DELETE /payments/:id => { deleted: id }
 
 ## Routes to be completed:
 ### User routes
-GET /users/roles
-
-### Checks routes
-GET /checks/:id/payments -- returns a list of payments related to check 
-
+GET /users/roles 
 
 ### Restaurant Info
 This will become a json file. Remove table. Routes not needed
