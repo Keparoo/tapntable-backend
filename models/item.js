@@ -17,15 +17,15 @@ class Item {
    * */
 
 	static async create({ name, description, price, categoryId, destinationId }) {
-		// const duplicateCheck = await db.query(
-		// 	`SELECT id
-		//        FROM items
-		//        WHERE id = $1`,
-		// 	[ id ]
-		// );
+		const duplicateCheck = await db.query(
+			`SELECT id
+		       FROM items
+		       WHERE name = $1`,
+			[ name ]
+		);
 
-		// if (duplicateCheck.rows[0])
-		// 	throw new BadRequestError(`Duplicate item: ${id}`);
+		if (duplicateCheck.rows[0])
+			throw new BadRequestError(`Duplicate item: ${name}`);
 
 		const result = await db.query(
 			`INSERT INTO items

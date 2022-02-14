@@ -20,16 +20,6 @@ class Check {
    * */
 
 	static async create({ userId, tableNum, numGuests, customer }) {
-		// const duplicateCheck = await db.query(
-		// 	`SELECT name
-		//    FROM item_categories
-		//    WHERE name = $1`,
-		// 	[ name ]
-		// );
-
-		// if (duplicateCheck.rows[0])
-		// 	throw new BadRequestError(`Duplicate category: ${name}`);
-
 		const result = await db.query(
 			`INSERT INTO checks
        (user_id, table_num, num_guests, customer)

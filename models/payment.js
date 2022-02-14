@@ -22,16 +22,6 @@ class Payment {
    * */
 
 	static async create({ checkId, type, tipAmt, subtotal }) {
-		// const duplicateCheck = await db.query(
-		// 	`SELECT id
-		//        FROM items
-		//        WHERE id = $1`,
-		// 	[ id ]
-		// );
-
-		// if (duplicateCheck.rows[0])
-		// 	throw new BadRequestError(`Duplicate item: ${id}`);
-
 		const result = await db.query(
 			`INSERT INTO payments
            (check_id, type, tip_amt, subtotal)
