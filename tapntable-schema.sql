@@ -6,14 +6,17 @@ name VARCHAR(25) NOT NULL
 );
 COMMENT ON TABLE user_roles IS 'List of roles that determine user permissions';
 
---User data. Display name is name shown on POS
+--Roles of user: determines access
+--role types: trainee, employee, cook, host, server, bartender, head-server, bar-manager, chef, manager, owner
+
+CREATE TYPE role AS ENUM ('trainee', 'employee', 'cook', 'host', 'server', 'bartender', 'head-server', 'bar-manager', 'chef', 'manager', 'owner');
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   pin INTEGER NOT NULL UNIQUE,
-  display_name VARCHAR(15) NOT NULL,
+  display_name VARCHAR(15) NOT NULL, --User data. Display name is name shown on POS
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   role_id INTEGER REFERENCES user_roles,
@@ -56,6 +59,8 @@ COMMENT ON TABLE item_categories IS 'Category of items for sale';
 --Station where the sent item is sent
 --Could be expanded to include printer address for each station
 --Kitchen-Hot, Kitchen-Cold, Bar, No-send
+
+--CREATE TYPE destinations AS ENUM ('Kitchen-hot', 'Kitchen-cold', 'Bar', 'No-send');
 
 CREATE TABLE destinations (
 id SERIAL PRIMARY KEY,
