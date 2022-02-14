@@ -1,0 +1,398 @@
+'use strict';
+
+const db = require('../db.js');
+const { BadRequestError, NotFoundError } = require('../expressError');
+const Check = require('./check.js');
+const {
+	commonBeforeAll,
+	commonBeforeEach,
+	commonAfterEach,
+	commonAfterAll
+} = require('./_testCommon');
+
+beforeAll(commonBeforeAll);
+beforeEach(commonBeforeEach);
+afterEach(commonAfterEach);
+afterAll(commonAfterAll);
+
+/**** create *********************************************/
+
+describe('create', () => {
+	const newCheck = {
+		id: 2,
+		userId: 2,
+		tableNum: 1,
+		customer: 'Test Customer',
+		numGuests: 2,
+		printedAt: null,
+		closedAt: null,
+		subtotal: null,
+		discountId: null,
+		discountTotal: null,
+		localTax: null,
+		stateTax: null,
+		federalTax: null,
+		isVoid: false
+	};
+
+	test('works', async () => {
+		let check = await Check.create(newCheck);
+
+		expect(check.createdAt instanceof Date).toBe(true);
+		delete check.createdAt;
+
+		expect(check).toEqual(newCheck);
+
+		const result = await db.query(
+			`SELECT user_id AS "userId",
+              table_num AS "tableNum",
+              num_guests AS "numGuests",
+              customer,
+              created_at AS "createdAt",
+              printed_at AS "printedAt",
+              closed_at AS "closedAt",
+              subtotal,
+              discount_id AS "discountId",
+              discount_total AS "discountTotal",
+              local_tax AS "localTax",
+              state_tax AS "stateTax",
+              federal_tax AS "federalTax",
+              is_void AS "isVoid"
+        FROM checks
+        WHERE customer = 'Test Customer'`
+		);
+
+		expect(result.rows[0].createdAt instanceof Date).toBe(true);
+		delete result.rows[0].createdAt;
+
+		expect(result.rows).toEqual([
+			{
+				userId: 2,
+				tableNum: 1,
+				numGuests: 2,
+				customer: 'Test Customer',
+				printedAt: null,
+				closedAt: null,
+				subtotal: null,
+				discountId: null,
+				discountTotal: null,
+				localTax: null,
+				stateTax: null,
+				federalTax: null,
+				isVoid: false
+			}
+		]);
+	});
+});
+
+/**** findAll **********************************************/
+
+// describe('findAll', () => {
+// 	test('works: find all items', async () => {
+// 		let checks = await Check.findAll();
+
+// 		expect(result.rows[0].createdAt instanceof Date).toBe(true);
+// 		delete result.rows[0].createdAt;
+// 		expect(result.rows[1].createdAt instanceof Date).toBe(true);
+// 		delete result.rows[1].createdAt;
+// 		expect(result.rows[2].createdAt instanceof Date).toBe(true);
+// 		delete result.rows[2].createdAt;
+
+// 		expect(checks).toEqual([
+// 			{
+// 				id: 2,
+// 				userId: 2,
+// 				tableNum: 1,
+// 				customer: 'Test Cust 1',
+// 				numGuests: 2,
+// 				printedAt: null,
+// 				closedAt: null,
+// 				subtotal: null,
+// 				discountId: null,
+// 				discountTotal: null,
+// 				localTax: null,
+// 				stateTax: null,
+// 				federalTax: null,
+// 				isVoid: false
+// 			},
+// 			{
+// 				id: 2,
+// 				userId: 3,
+// 				tableNum: 2,
+// 				customer: 'Test Cust 2',
+// 				numGuests: 4,
+// 				printedAt: null,
+// 				closedAt: null,
+// 				subtotal: null,
+// 				discountId: null,
+// 				discountTotal: null,
+// 				localTax: null,
+// 				stateTax: null,
+// 				federalTax: null,
+// 				isVoid: false
+// 			},
+// 			{
+// 				id: 2,
+// 				userId: 4,
+// 				tableNum: 3,
+// 				customer: 'Test Cust 3',
+// 				numGuests: 6,
+// 				printedAt: null,
+// 				closedAt: null,
+// 				subtotal: null,
+// 				discountId: null,
+// 				discountTotal: null,
+// 				localTax: null,
+// 				stateTax: null,
+// 				federalTax: null,
+// 				isVoid: false
+// 			}
+// 		]);
+// 	});
+
+// 	test('works: filter query by name', async () => {
+// 		let items = await Item.findAll({ name: '1' });
+
+// 		expect(items).toEqual([
+// 			{
+// 				id: 2,
+// 				name: 'n1',
+// 				description: 'Desc1',
+// 				price: '1.99',
+// 				category: 'Appetizer',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: true
+// 			}
+// 		]);
+// 	});
+
+// 	test('works: filter by categoryId', async () => {
+// 		let items = await Item.findAll({ categoryId: 5 });
+
+// 		expect(items).toEqual([
+// 			{
+// 				id: 3,
+// 				name: 'n2',
+// 				description: 'Desc2',
+// 				price: '2.99',
+// 				category: 'Entree',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: false
+// 			},
+// 			{
+// 				id: 4,
+// 				name: 'n3',
+// 				description: 'Desc3',
+// 				price: '3.99',
+// 				category: 'Entree',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: false
+// 			}
+// 		]);
+// });
+
+// 	test('works: filter by isActive', async () => {
+// 		let items = await Item.findAll({ isActive: false });
+
+// 		expect(items).toEqual([
+// 			{
+// 				id: 3,
+// 				name: 'n2',
+// 				description: 'Desc2',
+// 				price: '2.99',
+// 				category: 'Entree',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: false
+// 			},
+// 			{
+// 				id: 4,
+// 				name: 'n3',
+// 				description: 'Desc3',
+// 				price: '3.99',
+// 				category: 'Entree',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: false
+// 			}
+// 		]);
+// 	});
+
+// 	test('works: filter by name & isActive', async () => {
+// 		let items = await Item.findAll({ name: 'n', isActive: true });
+
+// 		expect(items).toEqual([
+// 			{
+// 				id: 2,
+// 				name: 'n1',
+// 				description: 'Desc1',
+// 				price: '1.99',
+// 				category: 'Appetizer',
+// 				destination: 'Bar',
+// 				count: null,
+// 				isActive: true
+// 			}
+// 		]);
+// 	});
+
+// 	test('works: empty list on nothing found', async () => {
+// 		let items = await Item.findAll({ name: 'nope' });
+// 		expect(items).toEqual([]);
+// 	});
+// });
+
+/**** get *************************************************/
+
+// describe('get', () => {
+// 	test('works', async () => {
+// 		let item = await Item.get(2);
+
+// 		expect(item).toEqual({
+// 			id: 2,
+// 			name: 'n1',
+// 			description: 'Desc1',
+// 			price: '1.99',
+// 			categoryId: 1,
+// 			category: 'Appetizer',
+// 			destinationId: 3,
+// 			destination: 'Bar',
+// 			count: null,
+// 			isActive: true
+// 		});
+// 	});
+
+// 	test('not found if no such item', async () => {
+// 		try {
+// 			await Item.get(99999999);
+// 			fail();
+// 		} catch (err) {
+// 			expect(err instanceof NotFoundError).toBeTruthy();
+// 		}
+// 	});
+// });
+
+/**** update ***********************************************/
+
+// describe('update', () => {
+// 	const updateData = {
+// 		name: 'New',
+// 		description: 'New Description',
+// 		price: 10.99,
+// 		categoryId: 6,
+// 		destinationId: 2,
+// 		count: 1,
+// 		isActive: false
+// 	};
+
+// 	test('works', async () => {
+// 		let item = await Item.update(2, updateData);
+
+// 		expect(item).toEqual({
+// 			id: 2,
+// 			name: 'New',
+// 			description: 'New Description',
+// 			price: '10.99',
+// 			categoryId: 6,
+// 			destinationId: 2,
+// 			count: 1,
+// 			isActive: false
+// 		});
+
+// 		const res = await db.query(
+// 			`SELECT id, name, description, price, category_id, destination_id, count, is_active
+// 	           FROM items
+// 	           WHERE id = 2`
+// 		);
+
+// 		expect(res.rows).toEqual([
+// 			{
+// 				id: 2,
+// 				name: 'New',
+// 				description: 'New Description',
+// 				price: '10.99',
+// 				category_id: 6,
+// 				destination_id: 2,
+// 				count: 1,
+// 				is_active: false
+// 			}
+// 		]);
+// 	});
+
+// 	test('works: null fields', async () => {
+// 		const updateDataSetNulls = {
+// 			name: 'New',
+// 			description: null,
+// 			count: null
+// 		};
+
+// 		let item = await Item.update(2, updateDataSetNulls);
+// 		expect(item).toEqual({
+// 			id: 2,
+// 			name: 'New',
+// 			description: null,
+// 			price: '1.99',
+// 			categoryId: 1,
+// 			destinationId: 3,
+// 			count: null,
+// 			isActive: true
+// 		});
+
+// 		const result = await db.query(
+// 			`SELECT name, description, price, category_id, destination_id, count, is_active
+// 		           FROM items
+// 		           WHERE id = 2`
+// 		);
+// 		expect(result.rows).toEqual([
+// 			{
+// 				name: 'New',
+// 				description: null,
+// 				price: '1.99',
+// 				category_id: 1,
+// 				destination_id: 3,
+// 				count: null,
+// 				is_active: true
+// 			}
+// 		]);
+// 	});
+
+// 	test('not found if no such item', async () => {
+// 		try {
+// 			await Item.update(9999999, updateData);
+// 			fail();
+// 		} catch (err) {
+// 			expect(err instanceof NotFoundError).toBeTruthy();
+// 		}
+// 	});
+
+// 	test('bad request with no data', async () => {
+// 		try {
+// 			await Item.update('c1', {});
+// 			fail();
+// 		} catch (err) {
+// 			expect(err instanceof BadRequestError).toBeTruthy();
+// 		}
+// 	});
+// });
+
+/**** remove **************************************************/
+
+// describe('remove', () => {
+// test('works', async () => {
+// 	await Item.remove(2);
+
+// 	const res = await db.query("SELECT id FROM items WHERE name='n1'");
+// 	expect(res.rows.length).toEqual(0);
+// });
+
+// test('not found if no such item', async () => {
+// 	try {
+// 		await Item.remove(99999999);
+// 		fail();
+// 	} catch (err) {
+// 		expect(err instanceof NotFoundError).toBeTruthy();
+// 	}
+// });
+// });

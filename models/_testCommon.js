@@ -16,6 +16,11 @@ async function commonBeforeAll() {
 	await db.query('DELETE FROM users');
 	await db.query("SELECT setval('users_id_seq', 1)");
 
+	// // noinspection SqlWithoutWhere
+	// await db.query('DELETE FROM checks');
+	// await db.query("SELECT setval('checks_id_seq', 1)");
+	// // await db.query('ALTER SEQUENCE checks_id_seq RESTART WITH 1');
+
 	await db.query(`
 	  INSERT INTO items (name, description, price, category_id, destination_id, is_active)
 	  VALUES  ('n1', 'Desc1', 1.99, 1, 3, true),
@@ -39,6 +44,16 @@ async function commonBeforeAll() {
 			await bcrypt.hash('password2', BCRYPT_WORK_FACTOR)
 		]
 	);
+
+	// 	await db.query(`
+	//     INSERT INTO checks(user_id,
+	//                        table_num,
+	//                        num_guests,
+	//                        customer)
+	//     VALUES  (2, 1, 2, 'Test Cust 1'),
+	//             (3, 2, 4, 'Test Cust 2'),
+	//             (3, 3, 6, 'Test Cust 3')
+	// `);
 }
 
 async function commonBeforeEach() {

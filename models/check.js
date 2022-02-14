@@ -9,9 +9,9 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Check {
 	/** Create a check (from data), update db, return new check data.
    *
-   * data should be { userId, tablId, customer, numGuests }
+   * data should be { userId, tablNum, customer, numGuests }
    *
-   * Returns { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax }
+   * Returns { id, userId, tableNum, customer, numGuests, createdAt, subtotal, localTax, stateTax, federalTax }
    * 
    * Required args { userId, tablId, numGuests }
    *
