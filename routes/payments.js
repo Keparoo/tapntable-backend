@@ -55,7 +55,9 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
 router.get('/', ensureLoggedIn, async function(req, res, next) {
 	const q = req.query;
 
-	// Convert querystring to boolean
+	// Convert query string to integer
+	if (q.checkId) q.checkId = +q.checkId;
+	// Convert query string to boolean
 	if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
 
 	try {

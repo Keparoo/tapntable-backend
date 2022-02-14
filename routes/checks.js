@@ -12,7 +12,6 @@ const {
 const { BadRequestError } = require('../expressError');
 
 const Check = require('../models/check');
-const OrdItem = require('../models/ordItem');
 
 const checkNewSchema = require('../schemas/checkNew.json');
 const checkUpdateSchema = require('../schemas/checkUpdate.json');

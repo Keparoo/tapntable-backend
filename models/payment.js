@@ -64,10 +64,15 @@ class Payment {
 		let whereExpressions = [];
 		let queryValues = [];
 
-		const { type, isVoid } = searchFilters;
+		const { checkId, type, isVoid } = searchFilters;
 
 		// For each possible search term, add to whereExpressions and queryValues so
 		// we can generate the right SQL
+
+		if (checkId) {
+			queryValues.push(checkId);
+			whereExpressions.push(`check_id = $${queryValues.length}`);
+		}
 
 		if (type) {
 			queryValues.push(type);

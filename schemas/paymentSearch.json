@@ -3,6 +3,10 @@
 	"$id": "http://our.company.com/companySearch.schema.json",
 	"type": "object",
 	"properties": {
+		"checkId": {
+			"type": "integer",
+			"minimum": 1
+		},
 		"type": {
 			"type": "string",
 			"minLength": 1
