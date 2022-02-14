@@ -17,7 +17,7 @@ class Payment {
    *
    * data should be { check_id, type, tip_amt, subtotal }
    *
-   * Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+   * Returns { id, checkId, type, tipAmt, subtotal, isVoid }
    *
    * */
 
@@ -50,7 +50,7 @@ class Payment {
    * - type
    * - isVoid
    *
-   * Returns { payments:[ { id, checkId, type, tipAmt, subtotal, isVoid }...]}
+   * Returns [ { id, checkId, type, tipAmt, subtotal, isVoid }...]
    * */
 
 	static async findAll(searchFilters = {}) {
@@ -92,7 +92,7 @@ class Payment {
 
 	/** Given a payment id, return data about the payment.
      *
-     * Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+     * Returns { id, checkId, type, tipAmt, subtotal, isVoid }
      *
      * Throws NotFoundError if not found.
      **/
@@ -124,7 +124,7 @@ class Payment {
    *
    * Data can include: { checkId, type, tipAmt, subtotal, isVoid }
    *
-   * Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
+   * Returns { id, checkId, type, tipAmt, subtotal, isVoid }
    *
    * Throws NotFoundError if not found.
    */

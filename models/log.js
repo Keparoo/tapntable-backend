@@ -16,7 +16,7 @@ class Log {
    *
    * data should be { userId, event, entity_id }
    *
-   * Returns { log: { id, userId, event, timestamp, entity_id } }
+   * Returns { id, userId, event, timestamp, entity_id }
    *
    * */
 
@@ -41,7 +41,7 @@ class Log {
    * - timestamp
    * - entityId
    *
-   * Returns { logs:[ { id, userId, event, timestamp, entity_id }...]}
+   * Returns [ { id, userId, event, timestamp, entity_id }...]
    * */
 
 	static async findAll(searchFilters = {}) {
@@ -92,7 +92,7 @@ class Log {
 
 	/** Given a log id, return the log entry.
      *
-     * Returns { log: { id, userId, event, timestamp, entity_id } }
+     * Returns { id, userId, event, timestamp, entity_id }
      *
      * Throws NotFoundError if not found.
      **/

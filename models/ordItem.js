@@ -11,7 +11,7 @@ class OrdItem {
    *
    * data should be { itemId, orderId, checkId, seatNum, itemNote }
    *
-   * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+   * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
    *
    * */
 
@@ -40,7 +40,7 @@ class OrdItem {
    * - checkId
    * - isVoid
    *
-   * Returns { ordItems: [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]}
+   * Returns [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
 	static async findAll(searchFilters = {}) {
@@ -97,7 +97,7 @@ class OrdItem {
 
 	/** Given a ordItem id, return the ordItem entry.
      *
-     * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+     * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
      *
      * Throws NotFoundError if not found.
      **/
@@ -134,7 +134,7 @@ class OrdItem {
    *
    * Data can include: { seatNum, itemNote, itemDiscountId, isVoid }
    *
-   * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+   * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
    *
    * Throws NotFoundError if not found.
    */

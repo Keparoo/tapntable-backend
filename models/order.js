@@ -11,7 +11,7 @@ class Order {
    *
    * data should be { userId }
    *
-   * Returns { order: { id, userId, sentAt} }
+   * Returns {{ id, userId, sentAt}
    *
    * */
 
@@ -34,7 +34,7 @@ class Order {
    * - userId
    * - sentAt
    *
-   * Returns { orders: [ { id, userId, sentAt}...]}
+   * Returns [ { id, userId, sentAt}...]
    * */
 
 	static async findAll(searchFilters = {}) {
@@ -73,7 +73,7 @@ class Order {
 
 	/** Given a order id, return the order entry.
      *
-     * Returns { order: { id, userId, sentAt} }
+     * Returns { id, userId, sentAt}
      *
      * Throws NotFoundError if not found.
      **/
