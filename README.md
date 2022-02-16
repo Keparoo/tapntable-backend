@@ -6,8 +6,8 @@ The Front end is a React-Redux web-based user interface that creates user termin
 ---  
 ## Database Schema  
 The current version of the database schema (v1.9) is below.
-* The orange tables represent phase 1 and are currently implemented.
-* The blue tables are for phase 2.  
+* payments, users, user_logs, checks, items, item_categories, orders, and ordered_items represent phase 1 and are currently implemented.
+* discounts, discount_details, mods, mod_categories, item_mods, item_ordered_mod, and mod_groups are for phase 2.  
 * Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
 
 ![Database Schema v1.13](tapntable-schema-v1.13.png)
