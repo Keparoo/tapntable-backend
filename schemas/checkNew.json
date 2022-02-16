@@ -1,26 +1,26 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "http://our.company.com/companyNew.schema.json",
-	"type": "object",
-	"properties": {
-		"userId": {
-			"type": "integer",
-			"minimum": 1
-		},
-		"tableNum": {
-			"type": "integer",
-			"minimum": 1
-		},
-		"customer": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 15
-		},
-		"numGuests": {
-			"type": "number",
-			"minimum": 1
-		}
-	},
-	"additionalProperties": false,
-	"required": [ "userId", "tableNum", "numGuests" ]
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/companyNew.schema.json",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tableNum": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "customer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 15
+    },
+    "numGuests": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [ "userId", "tableNum", "numGuests" ]
 }
