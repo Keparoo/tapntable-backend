@@ -6,9 +6,9 @@ const jsonschema = require('jsonschema');
 const express = require('express');
 
 const {
-	ensureManager,
-	ensureLoggedIn,
-	ensureCorrectUserOrManager
+  ensureManager,
+  ensureLoggedIn,
+  ensureCorrectUserOrManager
 } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
 const { createToken } = require('../helpers/tokens');
@@ -32,18 +32,18 @@ const router = express.Router();
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, orderedNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, orderedNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const ordItem = await OrdItem.create(req.body);
-		return res.status(201).json({ ordItem });
-	} catch (err) {
-		return next(err);
-	}
+    const ordItem = await OrdItem.create(req.body);
+    return res.status(201).json({ ordItem });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /ordered  =>
@@ -59,26 +59,27 @@ router.post('/', ensureManager, async function(req, res, next) {
  */
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
-	// Convert querystring to int
-	if (q.itemId) q.itemId = +q.itemId;
-	if (q.orderId) q.orderId = +q.orderId;
-	if (q.checkId) q.checkId = +q.checkId;
-	// Convert querystring to boolean
-	if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  const q = req.query;
+  // Convert querystring to int
+  if (q.itemId) q.itemId = +q.itemId;
+  if (q.orderId) q.orderId = +q.orderId;
+  if (q.checkId) q.checkId = +q.checkId;
+  // Convert querystring to boolean
+  if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
 
-	try {
-		const validator = jsonschema.validate(q, orderedSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, orderedSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const ordItems = await OrdItem.findAll(req.params.id, q);
-		return res.json({ ordItems });
-	} catch (err) {
-		return next(err);
-	}
+    const ordItems = await OrdItem.findAll(q);
+    // return res.json({ test: 'test' });
+    return res.json({ ordItems });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /ordered/:id  =>  {ordItem: { ordItem }}
@@ -91,12 +92,12 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const ordItem = await OrdItem.get(req.params.id);
-		return res.json({ ordItem });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const ordItem = await OrdItem.get(req.params.id);
+    return res.json({ ordItem });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** PATCH /ordered/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
@@ -111,18 +112,18 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, orderedUpdateSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, orderedUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const ordItem = await OrdItem.update(req.params.id, req.body);
-		return res.json({ ordItem });
-	} catch (err) {
-		return next(err);
-	}
+    const ordItem = await OrdItem.update(req.params.id, req.body);
+    return res.json({ ordItem });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** DELETE /ordered/:id  =>  { deleted: id }
@@ -135,12 +136,12 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
  */
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
-	try {
-		await OrdItem.remove(req.params.id);
-		return res.json({ deleted: req.params.id });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    await OrdItem.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
