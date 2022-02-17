@@ -44,18 +44,23 @@ class OrdItem {
    * */
 
   static async findAll(searchFilters = {}) {
-    let query = `SELECT id,
-                        item_id AS "itemId",
-                        order_id AS "orderId",
-                        check_id AS "checkId",
-                        seat_num AS "seatNum",
-                        completed_at AS "completedAt",
-                        completed_by AS "completedBy",
-                        delivered_at AS "deliveredAt",
-                        item_note AS "itemNote",
-                        item_discount_id AS "itemDiscountId",
-                        is_void AS "isVoid"
-                 FROM ordered_items`;
+    let query = `SELECT o.id,
+                        o.item_id AS "itemId",
+                        i.name,
+                        i.price,
+                        i.destination_id,
+                        i.count,
+                        o.order_id AS "orderId",
+                        o.check_id AS "checkId",
+                        o.seat_num AS "seatNum",
+                        o.completed_at AS "completedAt",
+                        o.completed_by AS "completedBy",
+                        o.delivered_at AS "deliveredAt",
+                        o.item_note AS "itemNote",
+                        o.item_discount_id AS "itemDiscountId",
+                        o.is_void AS "isVoid"
+                 FROM ordered_items o INNER JOIN items i
+                 ON o.item_id = i.id`;
     let whereExpressions = [];
     let queryValues = [];
 
@@ -66,22 +71,22 @@ class OrdItem {
 
     if (itemId) {
       queryValues.push(itemId);
-      whereExpressions.push(`item_id = $${queryValues.length}`);
+      whereExpressions.push(`o.item_id = $${queryValues.length}`);
     }
 
     if (orderId) {
       queryValues.push(orderId);
-      whereExpressions.push(`order_id = $${queryValues.length}`);
+      whereExpressions.push(`o.order_id = $${queryValues.length}`);
     }
 
     if (checkId) {
       queryValues.push(checkId);
-      whereExpressions.push(`check_id = $${queryValues.length}`);
+      whereExpressions.push(`o.check_id = $${queryValues.length}`);
     }
 
     if (isVoid !== undefined) {
       queryValues.push(isVoid);
-      whereExpressions.push(`is_void = $${queryValues.length}`);
+      whereExpressions.push(`o.is_void = $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -90,7 +95,7 @@ class OrdItem {
 
     // Finalize query and return results
 
-    query += ' ORDER BY id';
+    query += ' ORDER BY o.id';
     const orderedRes = await db.query(query, queryValues);
     return orderedRes.rows;
   }
