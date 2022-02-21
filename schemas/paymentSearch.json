@@ -21,6 +21,18 @@
     },
     "isVoid": {
       "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "printedAt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "closedAt": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "additionalProperties": false,

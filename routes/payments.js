@@ -51,6 +51,9 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * - type
  * - tipAmt
  * - isVoid
+ * - createdAt: a datetime (find payments after this datetime)
+ * - printedAt: a datetime (find payments after this datetime)
+ * - closedAt: a datetime (find payments after this datetime)
  *
  * Authorization required: LoggedIn
  */

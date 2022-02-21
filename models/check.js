@@ -54,9 +54,9 @@ class Check {
    * - tableNum
    * - numGuests
    * - customer
-   * - createdAt
-   * - printedAt
-   * - closedAt
+   * - createdAt (will find checks >= createdAt datetime)
+   * - printedAt (will find checks >= createdAt datetime)
+   * - closedAt (will find checks >= createdAt datetime)
    * - discountId
    * - isVoid
    *
@@ -129,17 +129,17 @@ class Check {
 
     if (createdAt) {
       queryValues.push(createdAt);
-      whereExpressions.push(`c.created_at = $${queryValues.length}`);
+      whereExpressions.push(`c.created_at >= $${queryValues.length}`);
     }
 
     if (printedAt) {
       queryValues.push(printedAt);
-      whereExpressions.push(`c.printed_at = $${queryValues.length}`);
+      whereExpressions.push(`c.printed_at >= $${queryValues.length}`);
     }
 
     if (closedAt) {
       queryValues.push(closedAt);
-      whereExpressions.push(`c.closed_at = $${queryValues.length}`);
+      whereExpressions.push(`c.closed_at >= $${queryValues.length}`);
     }
 
     if (discountId) {

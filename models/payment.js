@@ -37,8 +37,14 @@ class Payment {
   /** Find all payments (optional filter on searchFilters).
    *
    * searchFilters (all optional):
+   * - checkId
+   * - userId
    * - type
+   * - tipAmt
    * - isVoid
+   * - createdAt: a datetime (find payments after this datetime)
+   * - printedAt: a datetime (find payments after this datetime)
+   * - closedAt: a datetime (find payments after this datetime)
    *
    * Returns [ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]
    * */
@@ -61,7 +67,16 @@ class Payment {
     let whereExpressions = [];
     let queryValues = [];
 
-    const { checkId, userId, type, tipAmt, isVoid } = searchFilters;
+    const {
+      checkId,
+      userId,
+      type,
+      tipAmt,
+      isVoid,
+      createdAt,
+      printedAt,
+      closedAt
+    } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
@@ -89,6 +104,21 @@ class Payment {
     if (isVoid !== undefined) {
       queryValues.push(isVoid);
       whereExpressions.push(`p.is_void = $${queryValues.length}`);
+    }
+
+    if (createdAt) {
+      queryValues.push(createdAt);
+      whereExpressions.push(`c.created_at >= $${queryValues.length}`);
+    }
+
+    if (printedAt) {
+      queryValues.push(printedAt);
+      whereExpressions.push(`c.printed_at >= $${queryValues.length}`);
+    }
+
+    if (closedAt) {
+      queryValues.push(closedAt);
+      whereExpressions.push(`c.closed_at >= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {

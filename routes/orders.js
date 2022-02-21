@@ -6,8 +6,8 @@ const jsonschema = require('jsonschema');
 const express = require('express');
 
 const {
-	ensureManager,
-	ensureCorrectUserOrManager
+  ensureManager,
+  ensureCorrectUserOrManager
 } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
 const { createToken } = require('../helpers/tokens');
@@ -30,18 +30,18 @@ const router = express.Router();
  **/
 
 router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, orderNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, orderNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const order = await Order.create(req.body);
-		return res.status(201).json({ order });
-	} catch (err) {
-		return next(err);
-	}
+    const order = await Order.create(req.body);
+    return res.status(201).json({ order });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /orders  =>
@@ -49,28 +49,29 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Can filter on provided optional search filters:
  * - userId
- * - sentAt
+ * - sentAt (find orders after sentAt datetime)
+ * - before (find orders where sentAt is before this datetime)
  *
  * Authorization required: LoggedIn
  */
 
 router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
-	const q = req.query;
+  const q = req.query;
 
-	if (q.userId) q.userId = +q.userId;
+  if (q.userId) q.userId = +q.userId;
 
-	try {
-		const validator = jsonschema.validate(q, orderSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, orderSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const orders = await Order.findAll(q);
-		return res.json({ orders });
-	} catch (err) {
-		return next(err);
-	}
+    const orders = await Order.findAll(q);
+    return res.json({ orders });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /orders/:id  =>  { order }
@@ -83,12 +84,12 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
  */
 
 router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
-	try {
-		const order = await Order.get(req.params.id);
-		return res.json({ order });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const order = await Order.get(req.params.id);
+    return res.json({ order });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
