@@ -92,13 +92,9 @@ router.get('/', ensureManager, async function(req, res, next) {
  * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
  **/
 
-router.get('/pin/:pin', ensureCorrectUserOrManager, async function(
-  req,
-  res,
-  next
-) {
+router.post('/pin', ensureCorrectUserOrManager, async function(req, res, next) {
   try {
-    const user = await User.getUserFromPin(req.params.pin);
+    const user = await User.getUserFromPin(req.body.pin);
     return res.json({ user });
   } catch (err) {
     return next(err);
