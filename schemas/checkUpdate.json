@@ -17,7 +17,7 @@
       "minimum": 1
     },
     "printedAt": {
-      "type": "number",
+      "type": "string",
       "minimum": 1
     },
     "closedAt": {
@@ -28,24 +28,24 @@
       "type": "integer",
       "minimum": 1
     },
-    "subTotal": {
-      "type": "integer",
+    "subtotal": {
+      "type": "number",
       "minimum": 0
     },
     "discountTotal": {
-      "type": "integer",
+      "type": "number",
       "minimum": 0
     },
     "localTax": {
-      "type": "integer",
+      "type": "number",
       "minimum": 0
     },
     "stateTax": {
-      "type": "integer",
+      "type": "number",
       "minimum": 0
     },
     "federalTax": {
-      "type": "integer",
+      "type": "number",
       "minimum": 0
     },
     "isVoid": {
