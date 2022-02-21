@@ -28,50 +28,55 @@ const router = express.Router();
  **/
 
 router.post('/', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, paymentNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, paymentNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const payment = await Payment.create(req.body);
-		return res.status(201).json({ payment });
-	} catch (err) {
-		return next(err);
-	}
+    const payment = await Payment.create(req.body);
+    return res.status(201).json({ payment });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /  =>
- *   { payments:[ { id, checkId, type, tipAmt, subtotal, isVoid }...]}
+ *   { payments:[ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]}
  *
  * Can filter on provided optional search filters:
+ * - checkId
+ * - userId
  * - type
+ * - tipAmt
  * - isVoid
  *
  * Authorization required: LoggedIn
  */
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
+  const q = req.query;
 
-	// Convert query string to integer
-	if (q.checkId) q.checkId = +q.checkId;
-	// Convert query string to boolean
-	if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  // Convert query string to integer
+  if (q.checkId) q.checkId = +q.checkId;
+  if (q.userId) q.userId = +q.userId;
+  if (q.tipAmt) q.tipAmt = +q.tipAmt;
+  // Convert query string to boolean
+  if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
 
-	try {
-		const validator = jsonschema.validate(q, paymentSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, paymentSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const payments = await Payment.findAll(q);
-		return res.json({ payments });
-	} catch (err) {
-		return next(err);
-	}
+    const payments = await Payment.findAll(q);
+    return res.json({ payments });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /:id  =>  { payment }
@@ -84,12 +89,12 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const payment = await Payment.get(req.params.id);
-		return res.json({ payment });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const payment = await Payment.get(req.params.id);
+    return res.json({ payment });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** PATCH /:id { fld1, fld2, ... } => { payment: { item }}
@@ -104,18 +109,18 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, paymentUpdateSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, paymentUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const payment = await Payment.update(req.params.id, req.body);
-		return res.json({ payment });
-	} catch (err) {
-		return next(err);
-	}
+    const payment = await Payment.update(req.params.id, req.body);
+    return res.json({ payment });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** DELETE /:id  =>  { deleted: id }
@@ -127,12 +132,12 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
  */
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
-	try {
-		await Payment.remove(req.params.id);
-		return res.json({ deleted: req.params.id });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    await Payment.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;

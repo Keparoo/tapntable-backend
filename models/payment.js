@@ -40,38 +40,55 @@ class Payment {
    * - type
    * - isVoid
    *
-   * Returns [ { id, checkId, type, tipAmt, subtotal, isVoid }...]
+   * Returns [ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
-    let query = `SELECT id,
-                        check_id AS "checkId",
-                        type,
-                        tip_amt AS "tipAmt",
-                        subtotal,
-                        is_void AS "isVoid"
-                 FROM payments`;
+    let query = `SELECT p.id,
+                        p.check_id AS "checkId",
+                        c.user_id AS "userId",
+                        c.table_num AS "tableNum",
+                        c.customer,
+                        c.created_at AS "createdAt",
+                        c.printed_at AS "printedAt",
+                        c.closed_at AS "closedAt",
+                        p.type,
+                        p.tip_amt AS "tipAmt",
+                        p.subtotal,
+                        p.is_void AS "isVoid"
+                 FROM payments p INNER JOIN checks c
+                 ON p.check_id = c.id`;
     let whereExpressions = [];
     let queryValues = [];
 
-    const { checkId, type, isVoid } = searchFilters;
+    const { checkId, userId, type, tipAmt, isVoid } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
 
     if (checkId) {
       queryValues.push(checkId);
-      whereExpressions.push(`check_id = $${queryValues.length}`);
+      whereExpressions.push(`p.check_id = $${queryValues.length}`);
+    }
+
+    if (userId) {
+      queryValues.push(userId);
+      whereExpressions.push(`c.user_id = $${queryValues.length}`);
     }
 
     if (type) {
       queryValues.push(type);
-      whereExpressions.push(`type = $${queryValues.length}`);
+      whereExpressions.push(`p.type = $${queryValues.length}`);
+    }
+
+    if (tipAmt) {
+      queryValues.push(tipAmt);
+      whereExpressions.push(`p.tip_amount = $${queryValues.length}`);
     }
 
     if (isVoid !== undefined) {
       queryValues.push(isVoid);
-      whereExpressions.push(`is_void = $${queryValues.length}`);
+      whereExpressions.push(`p.is_void = $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -80,7 +97,7 @@ class Payment {
 
     // Finalize query and return results
 
-    query += ' ORDER BY check_id';
+    query += ' ORDER BY p.check_id';
     const paymentsRes = await db.query(query, queryValues);
     return paymentsRes.rows;
   }

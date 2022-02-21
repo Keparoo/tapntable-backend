@@ -1,20 +1,28 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "http://our.company.com/companySearch.schema.json",
-	"type": "object",
-	"properties": {
-		"checkId": {
-			"type": "integer",
-			"minimum": 1
-		},
-		"type": {
-			"type": "string",
-			"minLength": 1
-		},
-		"isVoid": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": []
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/companySearch.schema.json",
+  "type": "object",
+  "properties": {
+    "checkId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "userId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tipAmt": {
+      "type": "number",
+      "minimum": 0
+    },
+    "isVoid": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": []
 }
