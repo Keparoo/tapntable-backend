@@ -27,18 +27,18 @@ const router = express.Router();
  **/
 
 router.post('/', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, logNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, logNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const log = await Log.create(req.body);
-		return res.status(201).json({ log });
-	} catch (err) {
-		return next(err);
-	}
+    const log = await Log.create(req.body);
+    return res.status(201).json({ log });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /  =>
@@ -49,28 +49,32 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * - type
  * - timestamp
  * - entityId
+ * - desc (boolean, when true, sort in descending order)
+ * 
+ * Default sort is in ascending order by datetime
  *
  * Authorization required: LoggedIn
  */
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
+  const q = req.query;
 
-	if (q.userId) q.userId = +q.userId;
-	if (q.entityId) q.entityId = +q.entityId;
+  if (q.userId) q.userId = +q.userId;
+  if (q.entityId) q.entityId = +q.entityId;
+  if (q.desc) q.desc = q.desc.toLocaleLowerCase() === 'true';
 
-	try {
-		const validator = jsonschema.validate(q, logSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, logSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const logs = await Log.findAll(q);
-		return res.json({ logs });
-	} catch (err) {
-		return next(err);
-	}
+    const logs = await Log.findAll(q);
+    return res.json({ logs });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /:id  =>  { log }
@@ -83,12 +87,12 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const log = await Log.get(req.params.id);
-		return res.json({ log });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const log = await Log.get(req.params.id);
+    return res.json({ log });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
