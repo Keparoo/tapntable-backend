@@ -297,6 +297,45 @@ class User {
     return user;
   }
 
+  /** Clock a user in or out.
+   *
+   *
+   * Required:
+   *   { id,  isClockedIn }
+   *
+   * Returns { id, pin, displayName, role, isClockedIn, isActive }
+   *
+   * Throws NotFoundError if id not found.
+   *
+   */
+
+  static async timeclock(id, data) {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+    }
+
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      isClockedIn: 'is_clocked_in'
+    });
+    const idVarIdx = '$' + (values.length + 1);
+
+    const querySql = `UPDATE users 
+                      SET ${setCols} 
+                      WHERE id = ${idVarIdx} 
+                      RETURNING id,
+                                pin,
+                                display_name AS "displayName",
+                                role_id AS "roleId",
+                                is_clocked_in AS "isClockedIn",
+                                is_active AS "isActive"`;
+    const result = await db.query(querySql, [ ...values, id ]);
+    const user = result.rows[0];
+
+    if (!user) throw new NotFoundError(`No user id: ${id}`);
+
+    return user;
+  }
+
   /** Delete given user from database; returns undefined. */
 
   static async remove(username) {

@@ -15,7 +15,7 @@ const { createToken } = require('../helpers/tokens');
 const userNewSchema = require('../schemas/userNew.json');
 const userUpdateSchema = require('../schemas/userUpdate.json');
 const userSearchSchema = require('../schemas/userSearch.json');
-const userClockInSchema = require('../schemas/userClockIn.json');
+const userTimeclockSchema = require('../schemas/userTimeclock.json');
 
 const router = express.Router();
 
@@ -122,16 +122,14 @@ router.post('/timeclock', ensureCorrectUserOrManager, async function(
   next
 ) {
   try {
-    const validator = jsonschema.validate(req.body, userClockInSchema);
+    const validator = jsonschema.validate(req.body, userTimeclockSchema);
     if (!validator.valid) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
 
-    const user = await User.update(req.body.id, req.body);
-    delete user.username;
-    delete user.firstName;
-    delete user.lastName;
+    const user = await User.timeclock(req.body.id, req.body);
+
     return res.json({ user });
   } catch (err) {
     return next(err);
