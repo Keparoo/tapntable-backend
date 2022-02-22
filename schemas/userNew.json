@@ -1,55 +1,58 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"$id": "http://example.com/example.json",
-	"type": "object",
-	"properties": {
-		"username": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 25
-		},
-		"password": {
-			"type": "string",
-			"minLength": 4,
-			"maxLength": 25
-		},
-		"pin": {
-			"type": "integer",
-			"minimum": 1000,
-			"maximum": 999999
-		},
-		"displayName": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 15
-		},
-		"firstName": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 30
-		},
-		"lastName": {
-			"type": "string",
-			"minLength": 1,
-			"maxLength": 30
-		},
-		"roleId": {
-			"type": "integer",
-			"minimum": 1,
-			"maximum": 11
-		},
-		"isActive": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"username",
-		"password",
-		"pin",
-		"displayName",
-		"firstName",
-		"lastName",
-		"roleId"
-	]
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 25
+    },
+    "password": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 25
+    },
+    "pin": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 999999
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 15
+    },
+    "firstName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "lastName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "roleId": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 11
+    },
+    "isClockedIn": {
+      "type": "boolean"
+    },
+    "isActive": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "username",
+    "password",
+    "pin",
+    "displayName",
+    "firstName",
+    "lastName",
+    "roleId"
+  ]
 }

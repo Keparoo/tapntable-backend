@@ -20,6 +20,7 @@ CREATE TABLE users (
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   role_id INTEGER REFERENCES user_roles,
+  is_clocked_in BOOLEAN NOT NULL DEFAULT FALSE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 COMMENT ON TABLE users IS 'List of users (employees) and their info';

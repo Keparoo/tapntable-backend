@@ -28,7 +28,15 @@ VALUES (1,
 'TestManager',
 'Manager-First',
 'Manager-Last',
-10);
+10),
+(4,
+'employee',
+'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+4444,
+'TestEmployee',
+'Employee-First',
+'Employee-Last',
+2);
 
 -- INSERT INTO log_events (id, type)
 -- VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'open-shift'), (5, 'close-shift'), (6, 'open-day'), (7, 'close-day'), (8, 'discount-item'), (9, 'discount-check');

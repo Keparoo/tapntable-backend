@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "isClockedIn": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [ "id", "isClockedIn" ]
+}

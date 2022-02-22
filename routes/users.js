@@ -15,6 +15,7 @@ const { createToken } = require('../helpers/tokens');
 const userNewSchema = require('../schemas/userNew.json');
 const userUpdateSchema = require('../schemas/userUpdate.json');
 const userSearchSchema = require('../schemas/userSearch.json');
+const userClockInSchema = require('../schemas/userClockIn.json');
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ const router = express.Router();
  * only for admin users to add new users. The new user being added can be a manager or owner.
  *
  * This returns the newly created user and an authentication token for them:
- *  {user: { id, username, pin, displayName, firstName, lastName, role, isActive }, token }
+ *  {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, token }
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  **/
@@ -45,7 +46,7 @@ router.post('/', ensureManager, async function(req, res, next) {
   }
 });
 
-/** GET / => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
+/** GET / => { users: [ {id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, ... ] }
  *
  * Returns list of all users.
  * 
@@ -62,6 +63,7 @@ router.post('/', ensureManager, async function(req, res, next) {
 router.get('/', ensureManager, async function(req, res, next) {
   const q = req.query;
   if (q.roleId) q.roleId = +q.roleId;
+  if (q.isClockedIn) q.isClockedIn = q.isClockedIn.toLowerCase() === 'true';
   if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
 
   try {
@@ -84,9 +86,9 @@ router.get('/', ensureManager, async function(req, res, next) {
  * The device must be logged in alread with username and password and thus must already have a token.
  * This route is used for users punching in or accessing the terminal for orders
  *
- * user is { id, username, pin, displayName, firstName, lastName, role, isActive }
+ * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
  * 
- * Returns: {user: { id, pin, displayName, role, isActive }}
+ * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
  * 
  *
  * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
@@ -101,11 +103,46 @@ router.post('/pin', ensureCorrectUserOrManager, async function(req, res, next) {
   }
 });
 
+/** POST /timeclock => {pin: { user }}
+ * 
+ * This is a special route for updating the isClockedIn field in the users table
+ *
+ * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
+ * 
+ * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
+ * 
+ * Required: { userId, isClockedIn }
+ * 
+ * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+ **/
+
+router.post('/timeclock', ensureCorrectUserOrManager, async function(
+  req,
+  res,
+  next
+) {
+  try {
+    const validator = jsonschema.validate(req.body, userClockInSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const user = await User.update(req.body.id, req.body);
+    delete user.username;
+    delete user.firstName;
+    delete user.lastName;
+    return res.json({ user });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 /** GET /[username] => {user: { user }}
  *
- * user is { id, username, pin, displayName, firstName, lastName, role, isActive }
+ * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
  * 
- * Returns: {user: { id, username, pin, displayName, firstName, lastName, role, isActive }}
+ * Returns: {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }}
  * 
  *
  * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
@@ -127,9 +164,9 @@ router.get('/:username', ensureCorrectUserOrManager, async function(
 /** PATCH /[username] { user } => {user: { user }}
  *
  * Data can include:
- *   { username, password, pin, displayName, firstName, lastName, roleId, isActive }
+ *   { username, password, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }
  *
- * Returns {user: { id, username, pin, displayName, firstName, lastName, roleId, isActive }}
+ * Returns {user: { id, username, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }}
  *
  * Authorization required: manager or owner (roleId = 10 or 11)
  **/
