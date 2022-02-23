@@ -48,7 +48,7 @@ class OrdItem {
                         o.item_id AS "itemId",
                         i.name,
                         i.price,
-                        i.destination_id,
+                        i.destination_id AS "destinationId",
                         i.count,
                         o.order_id AS "orderId",
                         o.check_id AS "checkId",
