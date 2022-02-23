@@ -45,12 +45,14 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /orders  =>
- *   { orders: [ { id, userId, sentAt}...] }
+ *   { orders: [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...] }
  *
  * Can filter on provided optional search filters:
  * - userId
  * - sentAt (find orders after sentAt datetime)
+ * - destinationId
  * - before (find orders where sentAt is before this datetime)
+ * - desc (default sort is by sent_by ascending: desc=true will sort descending)
  *
  * Authorization required: LoggedIn
  */
@@ -59,6 +61,8 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
   const q = req.query;
 
   if (q.userId) q.userId = +q.userId;
+  if (q.destinationId) q.destinationId = +q.destinationId;
+  if (q.desc) q.desc = q.desc.toLocaleLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, orderSearchSchema);
