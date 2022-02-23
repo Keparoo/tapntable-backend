@@ -155,7 +155,7 @@ class Order {
     }
 
     // Finalize query and return results
-    query += ' ORDER BY sent_at';
+    query += ' ORDER BY o.sent_at';
     if (desc) query += ' DESC';
 
     const ordersRes = await db.query(query, queryValues);
@@ -204,13 +204,13 @@ class Order {
     });
     const idVarIdx = '$' + (values.length + 1);
 
-    const querySql = `UPDATE items 
+    const querySql = `UPDATE orders 
                         SET ${setCols} 
                         WHERE id = ${idVarIdx} 
                         RETURNING id, 
-                                  user_id AS "userId, 
-                                  sent_at AS "sentAt,
-                                  completed_at AS "completedAt`;
+                                  user_id AS "userId", 
+                                  sent_at AS "sentAt",
+                                  completed_at AS "completedAt"`;
 
     const result = await db.query(querySql, [ ...values, id ]);
     const order = result.rows[0];

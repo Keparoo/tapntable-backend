@@ -3,7 +3,7 @@
   "$id": "http://our.company.com/companySearch.schema.json",
   "type": "object",
   "properties": {
-    "orderCompleted": {
+    "completedAt": {
       "type": "string",
       "minLength": 1,
       "maxLength": 30
