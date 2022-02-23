@@ -92,9 +92,71 @@ class Order {
     }
 
     // Finalize query and return results
-
     query += ' ORDER BY o.sent_at';
     if (desc) query += ' DESC';
+
+    const ordersRes = await db.query(query, queryValues);
+    return ordersRes.rows;
+  }
+
+  /** Find all orders (optional filter on searchFilters).
+   *
+   * Alternate function to above
+   * 
+   * searchFilters (all optional):
+   * - userId
+   * - sentAt (find orders after sentAt datetime)
+   * - completedAt
+   * - before (find orders where sentAt is before this datetime)
+   *
+   * Returns [ { id, userId, sentAt, completedAt}...]
+   * 
+   * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
+   * */
+
+  static async findAllOrders(searchFilters = {}) {
+    let query = `SELECT id,
+                        user_id AS "userId",
+                        sent_at AS "sentAt",
+                        completed_at AS "completedAt"
+                 FROM ORDERS`;
+
+    let whereExpressions = [];
+    let queryValues = [];
+
+    const { userId, sentAt, completedAt, before, desc } = searchFilters;
+
+    // For each possible search term, add to whereExpressions and queryValues so
+    // we can generate the right SQL
+
+    if (userId) {
+      queryValues.push(userId);
+      whereExpressions.push(`user_id = $${queryValues.length}`);
+    }
+
+    if (sentAt) {
+      queryValues.push(sentAt);
+      whereExpressions.push(`sent_at >= $${queryValues.length}`);
+    }
+
+    if (completedAt) {
+      queryValues.push(completedAt);
+      whereExpressions.push(`completed_at >= $${queryValues.length}`);
+    }
+
+    if (before) {
+      queryValues.push(before);
+      whereExpressions.push(`sent_at <= $${queryValues.length}`);
+    }
+
+    if (whereExpressions.length > 0) {
+      query += ' WHERE ' + whereExpressions.join(' AND ');
+    }
+
+    // Finalize query and return results
+    query += ' ORDER BY sent_at';
+    if (desc) query += ' DESC';
+
     const ordersRes = await db.query(query, queryValues);
     return ordersRes.rows;
   }
@@ -117,6 +179,40 @@ class Order {
     );
 
     const order = orderRes.rows[0];
+
+    if (!order) throw new NotFoundError(`No order: ${id}`);
+
+    return order;
+  }
+
+  /** Update order data with `data`.
+   *
+   * This is a "partial update" --- it's fine if data doesn't contain all the
+   * fields; this only changes provided ones.
+   *
+   * Data can include: { completedAt }
+   *
+   * Returns { id, userId, sentAt, completedAt}
+   *
+   * Throws NotFoundError if not found.
+   */
+
+  static async update(id, data) {
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      completedAt: 'completed_at'
+    });
+    const idVarIdx = '$' + (values.length + 1);
+
+    const querySql = `UPDATE items 
+                        SET ${setCols} 
+                        WHERE id = ${idVarIdx} 
+                        RETURNING id, 
+                                  user_id AS "userId, 
+                                  sent_at AS "sentAt,
+                                  completed_at AS "completedAt`;
+
+    const result = await db.query(querySql, [ ...values, id ]);
+    const order = result.rows[0];
 
     if (!order) throw new NotFoundError(`No order: ${id}`);
 

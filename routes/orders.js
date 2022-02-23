@@ -16,6 +16,7 @@ const Order = require('../models/order');
 
 const orderNewSchema = require('../schemas/orderNew.json');
 const orderSearchSchema = require('../schemas/orderSearch.json');
+const orderUpdateSchema = require('../schemas/orderUpdate.json');
 
 const router = express.Router();
 
@@ -71,7 +72,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const orders = await Order.findAll(q);
+    const orders = await Order.findAllOrders(q);
     return res.json({ orders });
   } catch (err) {
     return next(err);
@@ -90,6 +91,32 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
   try {
     const order = await Order.get(req.params.id);
+    return res.json({ order });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** PATCH /:id { fld1, fld2, ... } => {order: { order }}
+ *
+ * Patches order data.
+ *
+ * fields can be: { completedAt }
+ *
+ * Returns {item: { id, userId, sentAt, completedAt}}
+ *
+ * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
+ */
+
+router.patch('/:id', ensureManager, async function(req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, orderUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const order = await Order.update(req.params.id, req.body);
     return res.json({ order });
   } catch (err) {
     return next(err);

@@ -108,7 +108,8 @@ COMMENT ON TABLE checks IS 'List of all checks';
 CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
-sent_at TIMESTAMP DEFAULT NOW()
+sent_at TIMESTAMP DEFAULT NOW(),
+completed_at TIMESTAMP
 );
 COMMENT ON TABLE orders IS 'Batch of items ordered sent to destinations';
 

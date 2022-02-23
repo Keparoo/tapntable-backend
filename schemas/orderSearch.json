@@ -16,6 +16,11 @@
       "minLength": 1,
       "maxLength": 30
     },
+    "completedAt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
     "before": {
       "type": "string",
       "minLength": 1,
