@@ -109,17 +109,18 @@ class Order {
    * - completedAt
    * - before (find orders where sentAt is before this datetime)
    *
-   * Returns [ { id, userId, sentAt, completedAt}...]
+   * Returns [ { id, userId, displayName, sentAt, completedAt}...]
    * 
    * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
    * */
 
   static async findAllOrders(searchFilters = {}) {
-    let query = `SELECT id,
-                        user_id AS "userId",
-                        sent_at AS "sentAt",
-                        completed_at AS "completedAt"
-                 FROM ORDERS`;
+    let query = `SELECT o.id,
+                        o.user_id AS "userId",
+                        u.display_name AS "displayName",
+                        o.sent_at AS "sentAt",
+                        o.completed_at AS "completedAt"
+                 FROM ORDERS o INNER JOIN users u ON o.user_id = u.id`;
 
     let whereExpressions = [];
     let queryValues = [];
@@ -131,22 +132,22 @@ class Order {
 
     if (userId) {
       queryValues.push(userId);
-      whereExpressions.push(`user_id = $${queryValues.length}`);
+      whereExpressions.push(`o.user_id = $${queryValues.length}`);
     }
 
     if (sentAt) {
       queryValues.push(sentAt);
-      whereExpressions.push(`sent_at >= $${queryValues.length}`);
+      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
     }
 
     if (completedAt) {
       queryValues.push(completedAt);
-      whereExpressions.push(`completed_at >= $${queryValues.length}`);
+      whereExpressions.push(`o.completed_at >= $${queryValues.length}`);
     }
 
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`sent_at <= $${queryValues.length}`);
+      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
