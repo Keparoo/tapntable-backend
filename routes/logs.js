@@ -18,10 +18,13 @@ const router = express.Router();
 
 /** POST / { log }  => {log: { log }}
  *
- * log should be { userId, event, entityId }
+ * log should be { userId, event, declaredTips, entityId }
+ * 
+ * userId and event are required
+ * declaredTips and entityId are optional
  *
  * This returns the newly created log
- *  { log: { id, userId, event, timestamp, entity_id } }
+ *  { log: { id, userId, event, timestamp, declaredTips, entity_id } }
  *
  * Authorization required: logged in
  **/
@@ -42,13 +45,17 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
 });
 
 /** GET /  =>
- *   { logs:[ { id, userId, event, timestamp, entity_id }...]}
+ *   { logs:[ { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }...]}
  *
  * Can filter on provided optional search filters:
  * - userId
- * - type
+ * - event
  * - timestamp
+ * - declaredTips
  * - entityId
+ * - before (Return records with timestamp values < before)
+ * - after (Return records with timestamp values > after)
+ *       Note if both before and after are used they are connected by AND not OR
  * - desc (boolean, when true, sort in descending order)
  * 
  * Default sort is in ascending order by datetime
@@ -79,9 +86,9 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /:id  =>  { log }
  *
- *  Log is { id, userId, event, timestamp, entity_id }
+ *  Log is { id, userId, event, timestamp, declaredTips, entity_id }
  * 
- * Returns: {log: { id, userId, event, timestamp, entity_id }}
+ * Returns: {log: { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }}
  *
  * Authorization required: LoggedIn
  */

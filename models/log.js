@@ -14,19 +14,22 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Log {
   /** Create a user log entry (from data), update db, return new log data.
    *
-   * data should be { userId, event, entity_id }
+   * data should be { userId, event, declaredTips, entity_id }
    *
-   * Returns { id, userId, event, timestamp, entity_id }
+   * Returns { id, userId, event, timestamp, declaredTips, entity_id }
    *
    * */
 
-  static async create({ userId, event, entityId }) {
+  static async create({ userId, event, declaredTips, entityId }) {
     const result = await db.query(
       `INSERT INTO user_logs
-           (user_id, event, entity_id )
-           VALUES ($1, $2, $3)
-           RETURNING id, user_id AS "userId", event, entity_id AS "entityId"`,
-      [ userId, event, entityId ]
+                          (user_id,
+                          event,
+                          declared_tips,
+                          entity_id )
+           VALUES ($1, $2, $3, $4)
+           RETURNING id, user_id AS "userId", event, declared_tips AS "declaredTips" entity_id AS "entityId"`,
+      [ userId, event, declaredTips, entityId ]
     );
     const log = result.rows[0];
 
@@ -39,25 +42,42 @@ class Log {
    * - userId
    * - event
    * - timestamp
+   * - declaredTips
    * - entityId
+   * - before (Return records with timestamp values < before)
+   * - after (Return records with timestamp values > after)
+   *       Note if both before and after are used they are connected by AND not OR
    * - desc (boolean when true, sort in descending order)
    * 
    * * Default sort is in ascending order by datetime
    *
-   * Returns [ { id, userId, event, timestamp, entity_id }...]
+   * Returns [ { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }...]
    * */
 
   static async findAll(searchFilters = {}) {
-    let query = `SELECT id,
-                        user_id AS "userId",
-                        event,
-                        timestamp,
-                        entity_id AS "entityId"
-                 FROM user_logs`;
+    let query = `SELECT l.id,
+                        l.user_id AS "userId",
+                        u.display_name AS "displayName",
+                        u.first_name AS "firstName",
+                        u.last_name AS "lastName",
+                        u.role,
+                        u.is_active AS "isActive",
+                        l.event,
+                        l.timestamp,
+                        l.declared_tips AS "declaredTips",
+                        l.entity_id AS "entityId"
+                 FROM user_logs l INNER JOIN users u ON l.user_id = u.id`;
     let whereExpressions = [];
     let queryValues = [];
 
-    const { userId, event, timestamp, entityId, desc } = searchFilters;
+    const {
+      userId,
+      event,
+      timestamp,
+      declaredTips,
+      entityId,
+      desc
+    } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
@@ -77,9 +97,24 @@ class Log {
       whereExpressions.push(`timestamp = $${queryValues.length}`);
     }
 
+    if (declaredTips) {
+      queryValues.push(declaredTips);
+      whereExpressions.push(`declared_tips = $${queryValues.length}`);
+    }
+
     if (entityId) {
       queryValues.push(entityId);
       whereExpressions.push(`entity_id = $${queryValues.length}`);
+    }
+
+    if (after) {
+      queryValues.push(after);
+      whereExpressions.push(`timestamp > after $${queryValues.length}`);
+    }
+
+    if (before) {
+      queryValues.push(before);
+      whereExpressions.push(`timestamp < before $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -97,19 +132,25 @@ class Log {
 
   /** Given a log id, return the log entry.
      *
-     * Returns { id, userId, event, timestamp, entity_id }
+     * Returns { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }
      *
      * Throws NotFoundError if not found.
      **/
 
   static async get(id) {
     const logRes = await db.query(
-      `SELECT id,
-              user_id AS "userId",
-              event,
-              timestamp,
-              entity_id AS "entityId"
-        FROM user_logs
+      `SELECT l.id,
+              l.user_id AS "userId",
+              u.display_name AS "displayName",
+              u.first_name AS "firstName",
+              u.last_name AS "lastName",
+              u.role,
+              u.is_active AS "isActive",
+              l.event,
+              l.timestamp,
+              l.declared_tips AS "declaredTips",
+              l.entity_id AS "entityId"
+        FROM user_logs l INNER JOIN users u ON l.user_id = u.id
         WHERE id = $1`,
       [ id ]
     );

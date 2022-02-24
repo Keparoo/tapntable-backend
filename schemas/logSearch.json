@@ -17,12 +17,26 @@
       "minLength": 1,
       "maxLength": 30
     },
+    "declaredTips": {
+      "type": "number",
+      "minimum": 1
+    },
     "entityId": {
       "type": "integer",
       "minimum": 1
     },
     "desc": {
       "type": "boolean"
+    },
+    "after": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "before": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
     }
   },
   "additionalProperties": false,

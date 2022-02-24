@@ -12,6 +12,10 @@
       "minLength": 1,
       "maxLength": 15
     },
+    "declaredTips": {
+      "type": "number",
+      "minimum": 0
+    },
     "entityId": {
       "type": "integer",
       "minimum": 1
