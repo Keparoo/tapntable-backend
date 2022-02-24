@@ -28,7 +28,7 @@ class Log {
                           declared_tips,
                           entity_id )
            VALUES ($1, $2, $3, $4)
-           RETURNING id, user_id AS "userId", event, declared_tips AS "declaredTips" entity_id AS "entityId"`,
+           RETURNING id, user_id AS "userId", event, declared_tips AS "declaredTips", entity_id AS "entityId"`,
       [ userId, event, declaredTips, entityId ]
     );
     const log = result.rows[0];
@@ -60,7 +60,7 @@ class Log {
                         u.display_name AS "displayName",
                         u.first_name AS "firstName",
                         u.last_name AS "lastName",
-                        u.role,
+                        u.role_id AS "roleId",
                         u.is_active AS "isActive",
                         l.event,
                         l.timestamp,
@@ -76,7 +76,9 @@ class Log {
       timestamp,
       declaredTips,
       entityId,
-      desc
+      desc,
+      before,
+      after
     } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
@@ -144,7 +146,7 @@ class Log {
               u.display_name AS "displayName",
               u.first_name AS "firstName",
               u.last_name AS "lastName",
-              u.role,
+              u.role_id AS "roleId",
               u.is_active AS "isActive",
               l.event,
               l.timestamp,
