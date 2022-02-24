@@ -61,7 +61,7 @@ COMMENT ON TABLE item_categories IS 'Category of items for sale';
 --Could be expanded to include printer address for each station
 --Kitchen-Hot, Kitchen-Cold, Bar, No-send
 
---CREATE TYPE destinations AS ENUM ('Kitchen-hot', 'Kitchen-cold', 'Bar', 'No-send');
+--CREATE TYPE destinations AS ENUM ('Kitchen-Hot', 'Kitchen-Cold', 'Bar', 'No-Send');
 
 CREATE TABLE destinations (
 id SERIAL PRIMARY KEY,
