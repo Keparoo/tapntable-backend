@@ -34,7 +34,7 @@ COMMENT ON TABLE users IS 'List of users (employees) and their info';
 -- );
 -- COMMENT ON TABLE log_events IS 'Type of events to log';
 
-CREATE TYPE log_event AS ENUM ('clock-in', 'clock-out', 'cash-out', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check');
+CREATE TYPE log_event AS ENUM ('clock-in', 'clock-out', 'cash-out', 'declare-cash-tips', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check');
 
 --Log of user events: clock-in, clock-out, cash-out, close-shift, close-day, and
 --logs of discounted items and checks.

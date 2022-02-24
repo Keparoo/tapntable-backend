@@ -10,7 +10,7 @@
     "event": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 15
+      "maxLength": 20
     },
     "declaredTips": {
       "type": "number",
