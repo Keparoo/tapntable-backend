@@ -1,3 +1,8 @@
+/*
+*  Note: a duplicate of this file exists in the frontend root dir.
+*  Any changes made here must be made there
+*/
+
 //Payment Method enum values
 const CASH = 'Cash';
 const MASTER_CARD = 'MC';
