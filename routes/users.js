@@ -27,7 +27,7 @@ const router = express.Router();
  * This returns the newly created user and an authentication token for them:
  *  {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, token }
  *
- * Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: manager or owner
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
@@ -57,7 +57,7 @@ router.post('/', ensureManager, async function(req, res, next) {
  * - role
  * - isActive
  *
- * Authorization required: manager or owner (roleId = 10 or 11)
+ * Authorization required: manager or owner
  **/
 
 router.get('/', ensureManager, async function(req, res, next) {
@@ -90,7 +90,7 @@ router.get('/', ensureManager, async function(req, res, next) {
  * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
  * 
  *
- * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+ * Authorization required: same user-as-:username or manager or owner
  **/
 
 router.post('/pin', ensureCorrectUserOrManager, async function(req, res, next) {
@@ -112,7 +112,7 @@ router.post('/pin', ensureCorrectUserOrManager, async function(req, res, next) {
  * 
  * Required: { userId, isClockedIn }
  * 
- * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+ * Authorization required: same user-as-:username or manager or owner
  **/
 
 router.post('/timeclock', ensureCorrectUserOrManager, async function(
