@@ -21,7 +21,9 @@ function createToken(user) {
     role: user.role || TRAINEE
   };
 
-  return jwt.sign(payload, SECRET_KEY);
+  // Set token to expire in 23 hours:
+  // Allow token to refresh at close and be good until next close
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
 }
 
 module.exports = { createToken };
