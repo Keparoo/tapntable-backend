@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require('../config');
+const { TRAINEE } = require('../constants');
 
 /** return signed JWT from user data. 
  * 
@@ -10,17 +11,17 @@ const { SECRET_KEY } = require('../config');
 */
 
 function createToken(user) {
-	console.assert(
-		user.roleId !== undefined,
-		'createToken passed user without role_id property of trainee'
-	);
+  console.assert(
+    user.role !== undefined,
+    'createToken passed user without a role: Role will be set to trainee'
+  );
 
-	let payload = {
-		username: user.username,
-		roleId: user.roleId || 1
-	};
+  let payload = {
+    username: user.username,
+    role: user.role || TRAINEE
+  };
 
-	return jwt.sign(payload, SECRET_KEY);
+  return jwt.sign(payload, SECRET_KEY);
 }
 
 module.exports = { createToken };

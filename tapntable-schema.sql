@@ -1,15 +1,15 @@
 --Role of user: determines auth access
 
-CREATE TABLE user_roles (
-id SERIAL PRIMARY KEY,
-name VARCHAR(25) NOT NULL
-);
-COMMENT ON TABLE user_roles IS 'List of roles that determine user permissions';
+-- CREATE TABLE user_roles (
+-- id SERIAL PRIMARY KEY,
+-- name VARCHAR(25) NOT NULL
+-- );
+-- COMMENT ON TABLE user_roles IS 'List of roles that determine user permissions';
 
 --Roles of user: determines access
 --role types: trainee, employee, cook, host, server, bartender, head-server, bar-manager, chef, manager, owner
 
-CREATE TYPE role AS ENUM ('trainee', 'employee', 'cook', 'host', 'server', 'bartender', 'head-server', 'bar-manager', 'chef', 'manager', 'owner');
+CREATE TYPE user_role AS ENUM ('trainee', 'employee', 'cook', 'host', 'server', 'bartender', 'head-server', 'bar-manager', 'chef', 'manager', 'owner');
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -19,7 +19,8 @@ CREATE TABLE users (
   display_name VARCHAR(15) NOT NULL, --User data. Display name is name shown on POS
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  role_id INTEGER REFERENCES user_roles,
+  --role_id INTEGER REFERENCES user_roles,
+  role USER_ROLE NOT NULL DEFAULT 'trainee',
   is_clocked_in BOOLEAN NOT NULL DEFAULT FALSE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
@@ -155,18 +156,18 @@ COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
 --Static Data about a restaurant
 
-CREATE TABLE restaurant_info (
-id VARCHAR(25) PRIMARY KEY,
-restaurant_name VARCHAR(25),
-address VARCHAR(25),
-city VARCHAR(25),
-state VARCHAR(25),
-zip_code VARCHAR(10),
-phone_number VARCHAR(13),
-website VARCHAR(25),
-local_tax_rate NUMERIC(6,3) CHECK (local_tax_rate >= 0 AND local_tax_rate <= 100),
-state_tax_rate NUMERIC(6,3) CHECK (state_tax_rate >= 0 AND state_tax_rate <= 100),
-federal_tax_rate NUMERIC(6,3) CHECK (federal_tax_rate >= 0 AND federal_tax_rate <= 100),
-week_start_mon BOOLEAN NOT NULL DEFAULT TRUE
-);
-COMMENT ON TABLE restaurant_info IS 'Restaurant info including tax rates';
+-- CREATE TABLE restaurant_info (
+-- id VARCHAR(25) PRIMARY KEY,
+-- restaurant_name VARCHAR(25),
+-- address VARCHAR(25),
+-- city VARCHAR(25),
+-- state VARCHAR(25),
+-- zip_code VARCHAR(10),
+-- phone_number VARCHAR(13),
+-- website VARCHAR(25),
+-- local_tax_rate NUMERIC(6,3) CHECK (local_tax_rate >= 0 AND local_tax_rate <= 100),
+-- state_tax_rate NUMERIC(6,3) CHECK (state_tax_rate >= 0 AND state_tax_rate <= 100),
+-- federal_tax_rate NUMERIC(6,3) CHECK (federal_tax_rate >= 0 AND federal_tax_rate <= 100),
+-- week_start_mon BOOLEAN NOT NULL DEFAULT TRUE
+-- );
+-- COMMENT ON TABLE restaurant_info IS 'Restaurant info including tax rates';

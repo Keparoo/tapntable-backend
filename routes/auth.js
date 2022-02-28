@@ -20,20 +20,20 @@ const { BadRequestError } = require('../expressError');
  */
 
 router.post('/token', async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, userAuthSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, userAuthSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const { username, password } = req.body;
-		const user = await User.authenticate(username, password);
-		const token = createToken(user);
-		return res.json({ token });
-	} catch (err) {
-		return next(err);
-	}
+    const { username, password } = req.body;
+    const user = await User.authenticate(username, password);
+    const token = createToken(user);
+    return res.json({ token });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** POST /auth/register:   { user } => { token }
@@ -42,7 +42,7 @@ router.post('/token', async function(req, res, next) {
  * 
  * Note: isActive will be set to true when a new user is registered.
  * 
- * RoleId will be set to 1 (trainee - the lowest auth level)
+ * Role will be set to 'trainee' (lowest auth level)
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
@@ -51,19 +51,19 @@ router.post('/token', async function(req, res, next) {
  */
 
 router.post('/register', async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, userRegisterSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
-		// Set roleId to 1 (trainee, lowest auth level)
-		const newUser = await User.register({ ...req.body, roleId: 1 });
-		const token = createToken(newUser);
-		return res.status(201).json({ token });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const validator = jsonschema.validate(req.body, userRegisterSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
+    // Set roleId to 'trainee' (lowest auth level)
+    const newUser = await User.register({ ...req.body, roleId: 'trainee' });
+    const token = createToken(newUser);
+    return res.status(201).json({ token });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;

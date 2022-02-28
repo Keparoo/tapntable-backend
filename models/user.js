@@ -31,8 +31,8 @@ class User {
               display_name AS "displayName",
               first_name AS "firstName",
               last_name AS "lastName",
-              role_id AS "roleId",
-              is_clocked_in AS "isClockedIn"
+              role,
+              is_clocked_in AS "isClockedIn",
               is_active AS "isActive"
            FROM users
            WHERE username = $1`,
@@ -67,7 +67,7 @@ class User {
     displayName,
     firstName,
     lastName,
-    roleId = 1,
+    role = 'trainee',
     isActive = true
   }) {
     const duplicateCheck = await db.query(
@@ -91,10 +91,10 @@ class User {
             display_name,
             first_name,
             last_name,
-            role_id,
+            role,
             is_active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role_id AS "roleId", is_clocked_in AS "isClockedIn", is_active AS "isActive"`,
+           RETURNING id, username, pin, display_name AS "displayName", first_name AS "firstName", last_name AS "lastName", role, is_clocked_in AS "isClockedIn", is_active AS "isActive"`,
       [
         username,
         hashedPassword,
@@ -102,7 +102,7 @@ class User {
         displayName,
         firstName,
         lastName,
-        roleId,
+        role,
         isActive
       ]
     );
@@ -123,7 +123,7 @@ class User {
                         display_name AS "displayName",
                         first_name AS "firstName",
                         last_name AS "lastName",
-                        role_id AS "roleId",
+                        role,
                         is_clocked_in AS "isClockedIn",
                         is_active AS "isActive"
                     FROM users`;
@@ -134,7 +134,7 @@ class User {
       firstName,
       lastName,
       displayName,
-      roleId,
+      role,
       isClockedIn,
       isActive
     } = searchFilters;
@@ -157,9 +157,9 @@ class User {
       whereExpressions.push(`display_name ILIKE $${queryValues.length}`);
     }
 
-    if (roleId) {
-      queryValues.push(roleId);
-      whereExpressions.push(`role_id = $${queryValues.length}`);
+    if (role) {
+      queryValues.push(role);
+      whereExpressions.push(`role = $${queryValues.length}`);
     }
 
     if (isClockedIn !== undefined) {
@@ -198,7 +198,7 @@ class User {
 	            display_name AS "displayName",
 	            first_name AS "firstName",
 	            last_name AS "lastName",
-	            role_id AS "roleId",
+	            role,
               is_clocked_in AS "isClockedIn",
 	            is_active AS "isActive"
 	         FROM users
@@ -229,7 +229,7 @@ class User {
       `SELECT id,
 	            pin,
 	            display_name AS "displayName",
-	            role_id AS "roleId",
+	            role,
               is_clocked_in AS "isClockedIn",
 	            is_active AS "isActive"
 	         FROM users
@@ -250,7 +250,7 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { username, password, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }
+   *   { username, password, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
    *
    * Returns { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
    *
@@ -270,7 +270,6 @@ class User {
       displayName: 'display_name',
       firstName: 'first_name',
       lastName: 'last_name',
-      roleId: 'role_id',
       isClockedIn: 'is_clocked_in',
       isActive: 'is_active'
     });
@@ -285,7 +284,7 @@ class User {
                                 display_name AS "displayName",
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                role_id AS "roleId",
+                                role,
                                 is_clocked_in AS "isClockedIn",
                                 is_active AS "isActive"`;
     const result = await db.query(querySql, [ ...values, username ]);
@@ -325,7 +324,7 @@ class User {
                       RETURNING id,
                                 pin,
                                 display_name AS "displayName",
-                                role_id AS "roleId",
+                                role,
                                 is_clocked_in AS "isClockedIn",
                                 is_active AS "isActive"`;
     const result = await db.query(querySql, [ ...values, id ]);

@@ -1,10 +1,10 @@
 --test users have the password "password"
 --test PINs: Server 1111, Bartender 2222, Manager 3333
 
-INSERT INTO user_roles (id, name)
-VALUES (1, 'trainee'), (2, 'employee'), (3, 'cook'), (4, 'host'), (5, 'server'), (6, 'bartender'), (7, 'head-server'), (8, 'bar-manager'), (9, 'chef') , (10, 'manager'), (11, 'owner');
+-- INSERT INTO user_roles (id, name)
+-- VALUES (1, 'trainee'), (2, 'employee'), (3, 'cook'), (4, 'host'), (5, 'server'), (6, 'bartender'), (7, 'head-server'), (8, 'bar-manager'), (9, 'chef') , (10, 'manager'), (11, 'owner');
 
-INSERT INTO users (id, username, password, pin, display_name, first_name, last_name, role_id)
+INSERT INTO users (id, username, password, pin, display_name, first_name, last_name, role)
 VALUES (1,
 'server',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -12,7 +12,7 @@ VALUES (1,
 'TestServer',
 'Server-First',
 'Server-Last',
-5),
+'server'),
 (2,
 'bartender',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -20,7 +20,7 @@ VALUES (1,
 'TestBartender',
 'Bartender-First',
 'Bartender-Last',
-6),
+'bartender'),
 (3,
 'manager',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -28,7 +28,7 @@ VALUES (1,
 'TestManager',
 'Manager-First',
 'Manager-Last',
-10),
+'manager'),
 (4,
 'employee',
 '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
@@ -36,7 +36,7 @@ VALUES (1,
 'TestEmployee',
 'Employee-First',
 'Employee-Last',
-2);
+'employee');
 
 -- INSERT INTO log_events (id, type)
 -- VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'open-shift'), (5, 'close-shift'), (6, 'open-day'), (7, 'close-day'), (8, 'discount-item'), (9, 'discount-check');
@@ -252,13 +252,13 @@ NULL,
 -- INSERT INTO payment_types (id, type)
 -- VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Discover'), (6, 'Apple-Pay'), (7, 'Google-Pay'), (8, 'Venmo');
 
-INSERT INTO restaurant_info (id, restaurant_name, address, city, state, zip_code, phone_number, website, state_tax_rate)
-VALUES ('1a',
-'The Duck Inn Pub',
-'447 Main St',
-'Hyannis',
-'MA',
-'02601',
-'508-827-7343',
-'www.duckinnpub.com',
-6.25);
+-- INSERT INTO restaurant_info (id, restaurant_name, address, city, state, zip_code, phone_number, website, state_tax_rate)
+-- VALUES ('1a',
+-- 'The Duck Inn Pub',
+-- '447 Main St',
+-- 'Hyannis',
+-- 'MA',
+-- '02601',
+-- '508-827-7343',
+-- 'www.duckinnpub.com',
+-- 6.25);

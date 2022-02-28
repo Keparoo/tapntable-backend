@@ -54,7 +54,7 @@ router.post('/', ensureManager, async function(req, res, next) {
  * - firstNameLike (will find case-insensitive, partial matches)
  * - lastNameLike (will find case-insensitive, partial matches)
  * - displayNameLike (will find case-insensitive, partial matches)
- * - roleId
+ * - role
  * - isActive
  *
  * Authorization required: manager or owner (roleId = 10 or 11)
@@ -62,7 +62,6 @@ router.post('/', ensureManager, async function(req, res, next) {
 
 router.get('/', ensureManager, async function(req, res, next) {
   const q = req.query;
-  if (q.roleId) q.roleId = +q.roleId;
   if (q.isClockedIn) q.isClockedIn = q.isClockedIn.toLowerCase() === 'true';
   if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
 
@@ -143,7 +142,7 @@ router.post('/timeclock', ensureCorrectUserOrManager, async function(
  * Returns: {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }}
  * 
  *
- * Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+ * Authorization required: same user-as-:username or 'manager' or 'owner'
  **/
 
 router.get('/:username', ensureCorrectUserOrManager, async function(
@@ -162,11 +161,11 @@ router.get('/:username', ensureCorrectUserOrManager, async function(
 /** PATCH /[username] { user } => {user: { user }}
  *
  * Data can include:
- *   { username, password, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }
+ *   { username, password, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
  *
- * Returns {user: { id, username, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }}
+ * Returns {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }}
  *
- * Authorization required: manager or owner (roleId = 10 or 11)
+ * Authorization required: 'manager' or 'owner'
  **/
 
 router.patch('/:username', ensureManager, async function(req, res, next) {
@@ -186,7 +185,7 @@ router.patch('/:username', ensureManager, async function(req, res, next) {
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: manager or owner (roleId = 10 or 11)
+ * Authorization required: 'manager' or 'owner'
  **/
 
 router.delete('/:username', ensureManager, async function(req, res, next) {
