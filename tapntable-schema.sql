@@ -1,5 +1,6 @@
 --Role of user: determines auth access
 
+-- Separate user_role table: deprecated
 -- CREATE TABLE user_roles (
 -- id SERIAL PRIMARY KEY,
 -- name VARCHAR(25) NOT NULL
@@ -26,6 +27,7 @@ CREATE TABLE users (
 );
 COMMENT ON TABLE users IS 'List of users (employees) and their info';
 
+--Separate log event table: deprecated
 --Types of log events: clock-in, clock-out, cash-out, close-shift, close-day,
 --discount-item, discount-check
 
@@ -59,6 +61,7 @@ name VARCHAR(25) NOT NULL
 );
 COMMENT ON TABLE item_categories IS 'Category of items for sale';
 
+--Separate destination table: deprecated
 --Station where the sent item is sent
 --Could be expanded to include printer address for each station
 --Kitchen-Hot, Kitchen-Cold, Bar, No-send
@@ -134,6 +137,7 @@ COMMENT ON TABLE ordered_items IS 'Item ordered with modifications and info';
 
 --Types of payment: Cash, MC, Visa, Amex etc
 
+-- Separate payment type table: deprecated
 -- CREATE TABLE payment_types (
 -- id SERIAL PRIMARY KEY,
 -- type VARCHAR(15) NOT NULL
@@ -156,6 +160,7 @@ COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
 --Static Data about a restaurant
 
+-- Static data moved to json file: restaurantConfig.json
 -- CREATE TABLE restaurant_info (
 -- id VARCHAR(25) PRIMARY KEY,
 -- restaurant_name VARCHAR(25),
