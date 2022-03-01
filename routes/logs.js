@@ -68,7 +68,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
   if (q.userId) q.userId = +q.userId;
   if (q.entityId) q.entityId = +q.entityId;
-  if (q.desc) q.desc = q.desc.toLocaleLowerCase() === 'true';
+  if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, logSearchSchema);

@@ -96,7 +96,7 @@ class Log {
 
     if (timestamp) {
       queryValues.push(timestamp);
-      whereExpressions.push(`timestamp = $${queryValues.length}`);
+      whereExpressions.push(`l.timestamp = $${queryValues.length}`);
     }
 
     if (declaredTips) {
@@ -111,12 +111,12 @@ class Log {
 
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`l.timestamp <= $${queryValues.length}`);
+      whereExpressions.push(`l.timestamp >= $${queryValues.length}`);
     }
 
     if (after) {
       queryValues.push(after);
-      whereExpressions.push(`l.timestamp >= $${queryValues.length}`);
+      whereExpressions.push(`l.timestamp <= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
