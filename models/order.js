@@ -162,9 +162,11 @@ class Order {
     return ordersRes.rows;
   }
 
-  /** Given a order id, return the order entry.
+  /** Given a order id, return the order entry and related ordered_items.
      *
-     * Returns { id, userId, sentAt}
+     * Returns { id, userId, sentAt, items}
+     * 
+     * Where items is [{id, userId, sentAt, completedAt, name, price, categoryId, isActive, orderId, itemId, checkId, completedBy, deliveredAt, itemNote, discountId, isVoid }]
      *
      * Throws NotFoundError if not found.
      **/
@@ -182,6 +184,34 @@ class Order {
     const order = orderRes.rows[0];
 
     if (!order) throw new NotFoundError(`No order: ${id}`);
+
+    const ordItemsRes = await db.query(
+      `SELECT
+            o.id,
+            o.user_id AS "userId",
+            o.sent_at AS "sentAt",
+            o.completed_at AS "completedAt",
+            oi.id,
+            i.name,
+            i.price,
+            i.category_id AS "categoryId",
+            i.is_active AS "isActive",
+            oi.order_id AS "orderId",
+            oi.item_id AS "itemId",
+            oi.check_id AS "checkId",
+            oi.completed_at AS "completedAt",
+            oi.completed_by AS "completedBy",
+            oi.delivered_at AS "deliveredAt",
+            oi.item_note AS "itemNote",
+            oi.item_discount_id AS "discountId",
+            oi.is_void AS "isVoid"
+      FROM orders o INNER JOIN ordered_items oi ON o.id = oi.order_id
+      INNER JOIN items i ON oi.item_id = i.id
+      WHERE o.id = $1`,
+      [ id ]
+    );
+
+    order.items = ordItemsRes.rows;
 
     return order;
   }

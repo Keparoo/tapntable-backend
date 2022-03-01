@@ -109,14 +109,14 @@ class Log {
       whereExpressions.push(`entity_id = $${queryValues.length}`);
     }
 
-    if (after) {
-      queryValues.push(after);
-      whereExpressions.push(`timestamp > after $${queryValues.length}`);
-    }
-
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`timestamp < before $${queryValues.length}`);
+      whereExpressions.push(`l.timestamp <= $${queryValues.length}`);
+    }
+
+    if (after) {
+      queryValues.push(after);
+      whereExpressions.push(`l.timestamp >= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {

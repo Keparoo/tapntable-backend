@@ -6,8 +6,8 @@ const jsonschema = require('jsonschema');
 const express = require('express');
 
 const {
-	ensureManager,
-	ensureCorrectUserOrManager
+  ensureManager,
+  ensureCorrectUserOrManager
 } = require('../middleware/auth');
 const { BadRequestError } = require('../expressError');
 
@@ -33,18 +33,18 @@ const router = express.Router();
  **/
 
 router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, checkNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, checkNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const check = await Check.create(req.body);
-		return res.status(201).json({ check });
-	} catch (err) {
-		return next(err);
-	}
+    const check = await Check.create(req.body);
+    return res.status(201).json({ check });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /checks  =>
@@ -66,30 +66,27 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  */
 
 router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
-	const q = req.query;
-	// Convert querystring to int
-	if (q.userId) q.userId = +q.userId;
-	if (q.numGuests) q.numGuests = +q.numGuests;
-	if (q.tableNum) q.tableNum = +q.tableNum;
-	if (q.createdAt) q.createdAt = +q.createdAt;
-	if (q.printedAt) q.printedAt = +q.printedAt;
-	if (q.closedAt) q.closedAt = +q.closedAt;
-	if (q.discountId) q.discountId = +q.discountId;
-	// Convert querystring to boolean
-	if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  const q = req.query;
+  // Convert querystring to int
+  if (q.userId) q.userId = +q.userId;
+  if (q.numGuests) q.numGuests = +q.numGuests;
+  if (q.tableNum) q.tableNum = +q.tableNum;
+  if (q.discountId) q.discountId = +q.discountId;
+  // Convert querystring to boolean
+  if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
 
-	try {
-		const validator = jsonschema.validate(q, checkSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, checkSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const checks = await Check.findAll(q);
-		return res.json({ checks });
-	} catch (err) {
-		return next(err);
-	}
+    const checks = await Check.findAll(q);
+    return res.json({ checks });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /checks/:id  =>  {check: { check }}
@@ -100,12 +97,12 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
  */
 
 router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
-	try {
-		const check = await Check.get(req.params.id);
-		return res.json({ check });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const check = await Check.get(req.params.id);
+    return res.json({ check });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** PATCH /checks/:id { fld1, fld2, ... } => {check: { check }}
@@ -120,22 +117,22 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  */
 
 router.patch('/:id', ensureCorrectUserOrManager, async function(
-	req,
-	res,
-	next
+  req,
+  res,
+  next
 ) {
-	try {
-		const validator = jsonschema.validate(req.body, checkUpdateSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, checkUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const check = await Check.update(req.params.id, req.body);
-		return res.json({ check });
-	} catch (err) {
-		return next(err);
-	}
+    const check = await Check.update(req.params.id, req.body);
+    return res.json({ check });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** DELETE /checks/:id  =>  { deleted: id }
@@ -148,12 +145,12 @@ router.patch('/:id', ensureCorrectUserOrManager, async function(
  */
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
-	try {
-		await Check.remove(req.params.id);
-		return res.json({ deleted: req.params.id });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    await Check.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;

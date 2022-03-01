@@ -40,7 +40,7 @@ class OrdItem {
    * - checkId
    * - isVoid
    *
-   * Returns [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
+   * Returns [ { id, itemId, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -53,18 +53,19 @@ class OrdItem {
                         o.order_id AS "orderId",
                         o.check_id AS "checkId",
                         o.seat_num AS "seatNum",
+                        orders.sent_at AS "sentAt",
                         o.completed_at AS "completedAt",
                         o.completed_by AS "completedBy",
                         o.delivered_at AS "deliveredAt",
                         o.item_note AS "itemNote",
                         o.item_discount_id AS "itemDiscountId",
                         o.is_void AS "isVoid"
-                 FROM ordered_items o INNER JOIN items i
-                 ON o.item_id = i.id`;
+                 FROM ordered_items o INNER JOIN items i ON o.item_id = i.id
+                 INNER JOIN orders ON o.order_id = orders.id`;
     let whereExpressions = [];
     let queryValues = [];
 
-    const { itemId, orderId, checkId, isVoid } = searchFilters;
+    const { itemId, orderId, checkId, sentAt, isVoid } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
@@ -82,6 +83,11 @@ class OrdItem {
     if (checkId) {
       queryValues.push(checkId);
       whereExpressions.push(`o.check_id = $${queryValues.length}`);
+    }
+
+    if (sentAt) {
+      queryValues.push(sentAt);
+      whereExpressions.push(`orders.sent_at >= $${queryValues.length}`);
     }
 
     if (isVoid !== undefined) {
