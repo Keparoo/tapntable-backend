@@ -337,7 +337,9 @@ The folder structure should be similar to this:
 tapntable-backend
 tapntable-frontend
 ```
-It’s important to have this structure because there will be two different deployments, one for the front-end and one for the backend.
+It’s important to have this structure because there will be two different deployments, one for the front-end and one for the backend.  
+ 
+From the backend folder run the following commands
 
 ```
 $ heroku login
