@@ -329,12 +329,35 @@ DELETE /payments/:id => { deleted: id }
 
 ---
 
-## Routes to be completed:
-### User routes
-GET /users/roles 
+##
+Deployment to Heroku:
 
-### Restaurant Info
-This will become a json file. Remove table. Routes not needed
-POST /info  
-PATCH /info
+The folder structure should be similar to this:
+```
+tapntable-backend
+tapntable-frontend
+```
+It’s important to have this structure because there will be two different deployments, one for the front-end and one for the backend.
 
+```
+$ heroku login
+$ heroku create NAME_OF_APP
+$ echo "web: node server.js" > Procfile
+$ heroku git:remote -a NAME_OF_APP
+$ git add .
+$ git commit -m "ready to deploy backend"
+```
+
+These commands will create a web application and the Procfile which tells Heroku what command to run to start the server.
+
+Now that the remote is named, run the following commands in the tapntable-backend folder. Next, push the code to Heroku and copy the local database (which is named tapntable) to the production one (so that there will be  seed data in production)
+
+```
+$ git push heroku master
+$ heroku addons:create heroku-postgresql:hobby-dev -a NAME_OF_APP
+$ heroku pg:push tapntable DATABASE_URL -a NAME_OF_APP
+$ heroku config:set PGSSLMODE=no-verify
+$ heroku open
+```
+
+If there are any errors, run heroku logs -t -a NAME_OF_APP
