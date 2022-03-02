@@ -5,15 +5,18 @@
 require('dotenv').config();
 require('colors');
 
-const SECRET_KEY = process.env.SECRET_KEY || 'new-secret-dev';
+//dev secret key: 'new-secret-dev'
+const SECRET_KEY =
+  process.env.SECRET_KEY ||
+  '6m0fCyItmph1tN5qLRlz59D1llzDWiSJL0TzBWe8EhTxPQchWgKexbrfuUJtVDi';
 
 const PORT = +process.env.PORT || 3001;
 
 // Use dev database, testing database, or via env var, production database
 function getDatabaseUri() {
-	return process.env.NODE_ENV === 'test'
-		? 'tapntable_test'
-		: process.env.DATABASE_URL || 'tapntable';
+  return process.env.NODE_ENV === 'test'
+    ? 'tapntable_test'
+    : process.env.DATABASE_URL || 'tapntable';
 }
 
 // Speed up bcrypt during tests, since the algorithm safety isn't being tested
@@ -29,8 +32,8 @@ console.log('Database:'.yellow, getDatabaseUri());
 console.log('---');
 
 module.exports = {
-	SECRET_KEY,
-	PORT,
-	BCRYPT_WORK_FACTOR,
-	getDatabaseUri
+  SECRET_KEY,
+  PORT,
+  BCRYPT_WORK_FACTOR,
+  getDatabaseUri
 };
