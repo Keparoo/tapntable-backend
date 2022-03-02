@@ -3,6 +3,10 @@
 
 The Front end is a React-Redux web-based user interface that creates user terminals for servers and bartenders as well as destination points for sent orders (kitchen and service bar)
 
+## Deployment
+The backend is currently deployed to:
+https://tapntable.herokuapp.com/
+
 ---  
 ## Database Schema  
 The current version of the database schema (v1.9) is below.
@@ -338,7 +342,7 @@ tapntable-backend
 tapntable-frontend
 ```
 It’s important to have this structure because there will be two different deployments, one for the front-end and one for the backend.  
- 
+
 From the backend folder run the following commands
 
 ```
@@ -355,7 +359,7 @@ These commands will create a web application and the Procfile which tells Heroku
 Now that the remote is named, run the following commands in the tapntable-backend folder. Next, push the code to Heroku and copy the local database (which is named tapntable) to the production one (so that there will be  seed data in production)
 
 ```
-$ git push heroku master
+$ git push heroku main
 $ heroku addons:create heroku-postgresql:hobby-dev -a NAME_OF_APP
 $ heroku pg:push tapntable DATABASE_URL -a NAME_OF_APP
 $ heroku config:set PGSSLMODE=no-verify
