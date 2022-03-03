@@ -137,17 +137,19 @@ class Order {
 
     if (sentAt) {
       queryValues.push(sentAt);
-      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
+      whereExpressions.push(`o.sent_at >= $${queryValues.length}::timestamptz`);
     }
 
     if (completedAt) {
       queryValues.push(completedAt);
-      whereExpressions.push(`o.completed_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `o.completed_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
+      whereExpressions.push(`o.sent_at <= $${queryValues.length}::timestamptz`);
     }
 
     if (whereExpressions.length > 0) {

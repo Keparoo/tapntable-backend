@@ -96,7 +96,9 @@ class Log {
 
     if (createdAt) {
       queryValues.push(createdAt);
-      whereExpressions.push(`l.created_at = $${queryValues.length}`);
+      whereExpressions.push(
+        `l.created_at = $${queryValues.length}::timestamptz`
+      );
     }
 
     if (declaredTips) {
@@ -111,12 +113,16 @@ class Log {
 
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`l.created_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `l.created_at <= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (after) {
       queryValues.push(after);
-      whereExpressions.push(`l.created_at <= $${queryValues.length}`);
+      whereExpressions.push(
+        `l.created_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (whereExpressions.length > 0) {

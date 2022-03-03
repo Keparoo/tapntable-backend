@@ -129,17 +129,23 @@ class Check {
 
     if (createdAt) {
       queryValues.push(createdAt);
-      whereExpressions.push(`c.created_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `c.created_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (printedAt) {
       queryValues.push(printedAt);
-      whereExpressions.push(`c.printed_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `c.printed_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (closedAt) {
       queryValues.push(closedAt);
-      whereExpressions.push(`c.closed_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `c.closed_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (discountId) {

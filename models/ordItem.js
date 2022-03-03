@@ -87,7 +87,9 @@ class OrdItem {
 
     if (sentAt) {
       queryValues.push(sentAt);
-      whereExpressions.push(`orders.sent_at >= $${queryValues.length}`);
+      whereExpressions.push(
+        `orders.sent_at >= $${queryValues.length}::timestamptz`
+      );
     }
 
     if (isVoid !== undefined) {
