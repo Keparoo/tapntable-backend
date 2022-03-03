@@ -24,7 +24,7 @@ const router = express.Router();
  * declaredTips and entityId are optional
  *
  * This returns the newly created log
- *  { log: { id, userId, event, timestamp, declaredTips, entity_id } }
+ *  { log: { id, userId, event, createdAt, declaredTips, entity_id } }
  *
  * Authorization required: logged in
  **/
@@ -45,12 +45,12 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
 });
 
 /** GET /  =>
- *   { logs:[ { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }...]}
+ *   { logs:[ { id, userId, displayName, firstName, LastName, role, isActive, event, createdAt, declaredTips, entity_id }...]}
  *
  * Can filter on provided optional search filters:
  * - userId
  * - event
- * - timestamp
+ * - createdAt
  * - declaredTips
  * - entityId
  * - before (Return records with timestamp values < before)
@@ -88,7 +88,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  *
  *  Log is { id, userId, event, timestamp, declaredTips, entity_id }
  * 
- * Returns: {log: { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }}
+ * Returns: {log: { id, userId, displayName, firstName, LastName, role, isActive, event, createdAt, declaredTips, entity_id }}
  *
  * Authorization required: LoggedIn
  */

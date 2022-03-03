@@ -16,7 +16,7 @@ class Log {
    *
    * data should be { userId, event, declaredTips, entity_id }
    *
-   * Returns { id, userId, event, timestamp, declaredTips, entity_id }
+   * Returns { id, userId, event, createdAt, declaredTips, entity_id }
    *
    * */
 
@@ -28,7 +28,7 @@ class Log {
                           declared_tips,
                           entity_id )
            VALUES ($1, $2, $3, $4)
-           RETURNING id, user_id AS "userId", event, declared_tips AS "declaredTips", entity_id AS "entityId"`,
+           RETURNING id, user_id AS "userId", event, created_at AS createdAt, declared_tips AS "declaredTips", entity_id AS "entityId"`,
       [ userId, event, declaredTips, entityId ]
     );
     const log = result.rows[0];
@@ -51,7 +51,7 @@ class Log {
    * 
    * * Default sort is in ascending order by datetime
    *
-   * Returns [ { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }...]
+   * Returns [ { id, userId, displayName, firstName, LastName, role, isActive, event, createdAt, declaredTips, entity_id }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -63,7 +63,7 @@ class Log {
                         u.role,
                         u.is_active AS "isActive",
                         l.event,
-                        l.timestamp,
+                        l.created_at AS "createdAt",
                         l.declared_tips AS "declaredTips",
                         l.entity_id AS "entityId"
                  FROM user_logs l INNER JOIN users u ON l.user_id = u.id`;
@@ -73,7 +73,7 @@ class Log {
     const {
       userId,
       event,
-      timestamp,
+      createdAt,
       declaredTips,
       entityId,
       desc,
@@ -94,9 +94,9 @@ class Log {
       whereExpressions.push(`event = $${queryValues.length}`);
     }
 
-    if (timestamp) {
-      queryValues.push(timestamp);
-      whereExpressions.push(`l.timestamp = $${queryValues.length}`);
+    if (createdAt) {
+      queryValues.push(createdAt);
+      whereExpressions.push(`l.created_at = $${queryValues.length}`);
     }
 
     if (declaredTips) {
@@ -111,12 +111,12 @@ class Log {
 
     if (before) {
       queryValues.push(before);
-      whereExpressions.push(`l.timestamp >= $${queryValues.length}`);
+      whereExpressions.push(`l.created_at >= $${queryValues.length}`);
     }
 
     if (after) {
       queryValues.push(after);
-      whereExpressions.push(`l.timestamp <= $${queryValues.length}`);
+      whereExpressions.push(`l.created_at <= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -125,7 +125,7 @@ class Log {
 
     // Finalize query and return results
 
-    query += ' ORDER BY timestamp';
+    query += ' ORDER BY created_at';
     if (desc) query += ' DESC';
 
     const logsRes = await db.query(query, queryValues);
@@ -134,7 +134,7 @@ class Log {
 
   /** Given a log id, return the log entry.
      *
-     * Returns { id, userId, displayName, firstName, LastName, role, isActive, event, timestamp, declaredTips, entity_id }
+     * Returns { id, userId, displayName, firstName, LastName, role, isActive, event, createdAt, declaredTips, entity_id }
      *
      * Throws NotFoundError if not found.
      **/
@@ -149,11 +149,11 @@ class Log {
               u.role,
               u.is_active AS "isActive",
               l.event,
-              l.timestamp,
+              l.created_at AS "createdAt",
               l.declared_tips AS "declaredTips",
               l.entity_id AS "entityId"
         FROM user_logs l INNER JOIN users u ON l.user_id = u.id
-        WHERE id = $1`,
+        WHERE l.id = $1`,
       [ id ]
     );
 

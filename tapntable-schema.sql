@@ -47,7 +47,7 @@ id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 -- log_event_id INTEGER REFERENCES log_events,
 event LOG_EVENT NOT NULL,
-timestamp TIMESTAMP DEFAULT NOW(),
+created_at TIMESTAMP DEFAULT NOW(),
 declared_tips NUMERIC(6,2),
 entity_id INTEGER --eg. item_ordered_id, or check_id
 );

@@ -12,10 +12,10 @@
       "minLength": 1,
       "maxLength": 20
     },
-    "timestamp": {
+    "createdAt": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 30
+      "maxLength": 50
     },
     "declaredTips": {
       "type": "number",
@@ -31,12 +31,12 @@
     "after": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 25
+      "maxLength": 50
     },
     "before": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 25
+      "maxLength": 50
     }
   },
   "additionalProperties": false,
