@@ -54,6 +54,7 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * - createdAt: a datetime (find payments after this datetime)
  * - printedAt: a datetime (find payments after this datetime)
  * - closedAt: a datetime (find payments after this datetime)
+ * - isOpen: isOpen=true returns records where tip_amount is null
  *
  * Authorization required: LoggedIn
  */
@@ -67,6 +68,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   if (q.tipAmt) q.tipAmt = +q.tipAmt;
   // Convert query string to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, paymentSearchSchema);

@@ -45,6 +45,7 @@ class Payment {
    * - createdAt: a datetime (find payments after this datetime)
    * - printedAt: a datetime (find payments after this datetime)
    * - closedAt: a datetime (find payments after this datetime)
+   * - isOpen = true: returns records where tip_amount is null
    *
    * Returns [ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]
    * */
@@ -75,7 +76,8 @@ class Payment {
       isVoid,
       createdAt,
       printedAt,
-      closedAt
+      closedAt,
+      isOpen
     } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
@@ -125,6 +127,10 @@ class Payment {
       whereExpressions.push(
         `c.closed_at >= $${queryValues.length}::timestamptz`
       );
+    }
+
+    if (isOpen) {
+      whereExpressions.push(`p.tip_amt IS NULL`);
     }
 
     if (whereExpressions.length > 0) {

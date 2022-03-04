@@ -61,6 +61,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
    * - closedAt
    * - discountId
    * - isVoid
+   * - isOpen=true returns records where closed_at is null
  *
  * Authorization required: Logged in to own account
  */

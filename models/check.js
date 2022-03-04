@@ -59,6 +59,7 @@ class Check {
    * - closedAt (will find checks >= createdAt datetime)
    * - discountId
    * - isVoid
+   * - isOpen=true returns records where closed_at is null
    *
    * Returns [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}
    * 
@@ -160,7 +161,6 @@ class Check {
     }
 
     if (isOpen) {
-      queryValues.push(isOpen);
       whereExpressions.push(`c.closed_at IS NULL`);
     }
 
@@ -171,7 +171,6 @@ class Check {
     // Finalize query and return results
 
     query += ' ORDER BY c.created_at';
-    console.log('*************Query', query);
     const checkRes = await db.query(query, queryValues);
     return checkRes.rows;
   }

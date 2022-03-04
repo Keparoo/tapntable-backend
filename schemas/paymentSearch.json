@@ -22,6 +22,9 @@
     "isVoid": {
       "type": "boolean"
     },
+    "isOpen": {
+      "type": "boolean"
+    },
     "createdAt": {
       "type": "string",
       "minLength": 1
