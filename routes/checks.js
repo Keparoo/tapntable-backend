@@ -74,6 +74,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
   if (q.discountId) q.discountId = +q.discountId;
   // Convert querystring to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, checkSearchSchema);

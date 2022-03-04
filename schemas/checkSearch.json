@@ -41,6 +41,9 @@
     },
     "isVoid": {
       "type": "boolean"
+    },
+    "isOpen": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false,

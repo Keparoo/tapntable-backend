@@ -96,6 +96,7 @@ class Check {
       printedAt,
       closedAt,
       discountId,
+      isOpen,
       isVoid
     } = searchFilters;
 
@@ -158,6 +159,11 @@ class Check {
       whereExpressions.push(`c.is_void = $${queryValues.length}`);
     }
 
+    if (isOpen) {
+      queryValues.push(isOpen);
+      whereExpressions.push(`c.closed_at IS NULL`);
+    }
+
     if (whereExpressions.length > 0) {
       query += ' WHERE ' + whereExpressions.join(' AND ');
     }
@@ -165,6 +171,7 @@ class Check {
     // Finalize query and return results
 
     query += ' ORDER BY c.created_at';
+    console.log('*************Query', query);
     const checkRes = await db.query(query, queryValues);
     return checkRes.rows;
   }
