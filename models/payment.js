@@ -171,6 +171,25 @@ class Payment {
     return payment;
   }
 
+  static async getTotals() {
+    const start = '2022-03-04T19:52:58.251Z';
+    const end = new Date();
+    const paymentRes = await db.query(
+      `SELECT p.id,
+              COUNT(p.type),
+              SUM(p.tip_amt) AS "tipAmtSum",
+              SUM(p.subtotal) AS "subtotalSum",
+              p.is_void AS "isVoid"
+        FROM payments p INNER JOIN checks c ON p.check_id = c.id
+        WHERE c.created_at >= $1::timestamptz AND c.created_at <= $2::timestamptz
+        GROUP BY p.type, p.id, c.created_at
+        ORDER BY c.created_at`,
+      [ start, end ]
+    );
+
+    return paymentRes.rows;
+  }
+
   /** Update payment data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain all the

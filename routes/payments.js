@@ -14,6 +14,7 @@ const Payment = require('../models/payment');
 const paymentNewSchema = require('../schemas/paymentNew.json');
 const paymentUpdateSchema = require('../schemas/paymentUpdate.json');
 const paymentSearchSchema = require('../schemas/paymentSearch.json');
+const paymentTotalsSearchSchema = require('../schemas/paymentTotalsSearch.json');
 
 const router = express.Router();
 
@@ -78,6 +79,48 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
     }
 
     const payments = await Payment.findAll(q);
+    return res.json({ payments });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** GET /totals  =>
+ *   { payments:[ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]}
+ *
+ * Can filter on provided optional search filters:
+ * - checkId
+ * - userId
+ * - type
+ * - tipAmt
+ * - isVoid
+ * - createdAt: a datetime (find payments after this datetime)
+ * - printedAt: a datetime (find payments after this datetime)
+ * - closedAt: a datetime (find payments after this datetime)
+ * - isOpen: isOpen=true returns records where tip_amount is null
+ *
+ * Authorization required: LoggedIn
+ */
+
+router.get('/totals', ensureLoggedIn, async function(req, res, next) {
+  const q = req.query;
+
+  // Convert query string to integer
+  // if (q.checkId) q.checkId = +q.checkId;
+  // if (q.userId) q.userId = +q.userId;
+  // if (q.tipAmt) q.tipAmt = +q.tipAmt;
+  // Convert query string to boolean
+  if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
+
+  try {
+    const validator = jsonschema.validate(q, paymentTotalsSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const payments = await Payment.getTotals(q);
     return res.json({ payments });
   } catch (err) {
     return next(err);
