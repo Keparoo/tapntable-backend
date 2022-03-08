@@ -24,22 +24,26 @@ const router = express.Router();
  * This returns the newly created item
  *  {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
- * Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: manager or owner
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, itemNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, itemNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const item = await Item.create(req.body);
-		return res.status(201).json({ item });
-	} catch (err) {
-		return next(err);
-	}
+    if (req.body.name) req.body.name = req.body.name.trim();
+    if (req.body.description)
+      req.body.description = req.body.description.trim();
+
+    const item = await Item.create(req.body);
+    return res.status(201).json({ item });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /  =>
@@ -57,26 +61,26 @@ router.post('/', ensureManager, async function(req, res, next) {
  */
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
-	// Convert querystring to int
-	if (q.categoryId) q.categoryId = +q.categoryId;
-	if (q.destinationId) q.destinationId = +q.destinationId;
-	if (q.count) q.count = +q.count;
-	// Convert querystring to boolean
-	if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
+  const q = req.query;
+  // Convert querystring to int
+  if (q.categoryId) q.categoryId = +q.categoryId;
+  if (q.destinationId) q.destinationId = +q.destinationId;
+  if (q.count) q.count = +q.count;
+  // Convert querystring to boolean
+  if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
 
-	try {
-		const validator = jsonschema.validate(q, itemSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, itemSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const items = await Item.findAll(q);
-		return res.json({ items });
-	} catch (err) {
-		return next(err);
-	}
+    const items = await Item.findAll(q);
+    return res.json({ items });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /:id  =>  {item: { item }}
@@ -89,12 +93,12 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const item = await Item.get(req.params.id);
-		return res.json({ item });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const item = await Item.get(req.params.id);
+    return res.json({ item });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** PATCH /:id { fld1, fld2, ... } => {item: { item }}
@@ -105,22 +109,27 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * Returns {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
+ * Throws BadRequestError if name (case insensitive) is already in db
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, itemUpdateSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, itemUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const item = await Item.update(req.params.id, req.body);
-		return res.json({ item });
-	} catch (err) {
-		return next(err);
-	}
+    if (req.body.name) req.body.name = req.body.name.trim();
+    if (req.body.description)
+      req.body.description = req.body.description.trim();
+
+    const item = await Item.update(req.params.id, req.body);
+    return res.json({ item });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** DELETE /:id  =>  { deleted: id }
@@ -133,12 +142,12 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
  */
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
-	try {
-		await Item.remove(req.params.id);
-		return res.json({ deleted: req.params.id });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    await Item.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
