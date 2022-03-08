@@ -11,11 +11,10 @@ class Check {
    *
    * data should be { userId, tablNum, customer, numGuests }
    *
-   * Returns { id, userId, tableNum, customer, numGuests, createdAt, subtotal, localTax, stateTax, federalTax }
+   * Returns { id, userId, tableNum, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    * 
    * Required args { userId, tablId, numGuests }
-   *
-   * Throws BadRequestError if item already in database.
+   * Optional args { customer }
    * 
    * */
 
@@ -60,6 +59,11 @@ class Check {
    * - discountId
    * - isVoid
    * - isOpen=true returns records where closed_at is null
+   * - start returns records where createdAt >= start
+   * - end returns records where createdAt <= end
+   * 
+   * Note if start and end are used they are used as an AND statement: 
+   * createdAt >= start AND createdAt <= end
    *
    * Returns [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}
    * 
@@ -98,7 +102,9 @@ class Check {
       closedAt,
       discountId,
       isOpen,
-      isVoid
+      isVoid,
+      start,
+      end
     } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
@@ -164,6 +170,20 @@ class Check {
       whereExpressions.push(`c.closed_at IS NULL`);
     }
 
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(
+        `c.created_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(
+        `c.created_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
     if (whereExpressions.length > 0) {
       query += ' WHERE ' + whereExpressions.join(' AND ');
     }
@@ -221,7 +241,7 @@ class Check {
    *
    * Data can include: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    *
-   * Returns { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+   * Returns { id, userId, tableNum, customer, numGuests, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    * 
    * Throws NotFoundError if not found.
    */
@@ -248,10 +268,14 @@ class Check {
                       RETURNING id,
                       user_id AS "userId",
                       table_num AS "tableNum",
-                      num_guests AS "numGuests",
                       customer,
+                      num_guests AS "numGuests",
                       created_at AS "createdAt",
+                      printed_at AS "printedAt",
+                      closed_at AS "closedAt",
+                      discount_id AS "discountId",
                       subtotal,
+                      discount_total AS "discountTotal",
                       local_tax AS "localTax",
                       state_tax AS "stateTax",
                       federal_tax AS "federalTax",
@@ -268,7 +292,7 @@ class Check {
    *
    * Throws NotFoundError if check not found.
    * 
-   * This should not be done once a check has been used
+   * This should not be done once a check has been inserted
    * check should be voided instead is_void=true
    **/
 

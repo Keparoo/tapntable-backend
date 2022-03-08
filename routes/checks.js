@@ -24,12 +24,13 @@ const router = express.Router();
 
 /** POST /checks { check }  => {check: { check }}
  *
- * check should be { userId, tablId, numGuests, customer } 
+ * Required args { userId, tablId, numGuests }
+ * Optional args { customer }
  *
  * This returns the newly created item
- *  {check: { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax } }
+ *  {check: { id, userId, tableNum, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid } }
  *
- * Authorization required: logged in to own account
+ * Authorization required: logged in to own account or manager
  **/
 
 router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
@@ -39,6 +40,8 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
+
+    if (req.body.customer) req.body.customer = req.body.customer.trim();
 
     const check = await Check.create(req.body);
     return res.status(201).json({ check });
@@ -51,19 +54,24 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  *   { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
-   * - userId 
-   * - employee (will find case-insensitive, partial matches)
-   * - tableNum
-   * - numGuests
-   * - customer
-   * - createdAt
-   * - printedAt
-   * - closedAt
-   * - discountId
-   * - isVoid
-   * - isOpen=true returns records where closed_at is null
+ * - userId 
+ * - employee (will find case-insensitive, partial matches)
+ * - tableNum
+ * - numGuests
+ * - customer
+ * - createdAt (will find checks >= createdAt datetime)
+ * - printedAt (will find checks >= createdAt datetime)
+ * - closedAt (will find checks >= createdAt datetime)
+ * - discountId
+ * - isVoid
+ * - isOpen=true returns records where closed_at is null
+ * - start returns records where createdAt >= start
+ * - end returns records where createdAt <= end
+ * 
+ * Note if start and end are used they are used as an AND statement: 
+ * createdAt >= start AND createdAt <= end
  *
- * Authorization required: Logged in to own account
+ * Authorization required: Logged in to own account or manager
  */
 
 router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
@@ -93,9 +101,11 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
 
 /** GET /checks/:id  =>  {check: { check }}
  *
- *  Check is { id, user_id, table_num, num_guests, customer, created_at, subtotal, local_tax, state_tax, federal_tax }
+ *  Check is { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * 
+ * Throws NotFoundError if not found.
  *
- * Authorization required: Logged in to own account
+ * Authorization required: Logged in to own account or manager
  */
 
 router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
@@ -111,11 +121,13 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Updates check data.
  *
- * fields can be: { userId, employee, tableNum, numGuests, customer, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
+ * Columns to change can be: { tableNum, numGuests, customer, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
  *
- * Returns {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+ * Returns {check: { id, userId, tableNum, customer, numGuests, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+ * 
+ * Throws NotFoundError if not found
  *
- * Authorization required: Logged in to own account
+ * Authorization required: Logged in to own account or manager
  */
 
 router.patch('/:id', ensureCorrectUserOrManager, async function(
@@ -130,6 +142,8 @@ router.patch('/:id', ensureCorrectUserOrManager, async function(
       throw new BadRequestError(errs);
     }
 
+    if (req.body.customer) req.body.customer = req.body.customer.trim();
+
     const check = await Check.update(req.params.id, req.body);
     return res.json({ check });
   } catch (err) {
@@ -141,7 +155,7 @@ router.patch('/:id', ensureCorrectUserOrManager, async function(
  *
  * Authorization required: manager or owner (RoleId = 10 or 11)
  * 
- * Note: Check should not be deleted once they have been used in any way. Instead: * is_void=true
+ * Note: Check should not be deleted once they have been inserted. Instead: * is_void=true
  * This route should only run if an item is created accidentally and needs to be immediately deleted.
  * 
  */
