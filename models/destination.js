@@ -7,42 +7,42 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 /** Related functions for destinations. */
 
 class Destination {
-	/** Create a destination (from data), update db, return new destination data.
+  /** Create a destination (from data), update db, return new destination data.
    *
    * data should be { name }
    *
    * Returns { id, name }
    *
-   * Throws BadRequestError if item already in database.
+   * Throws BadRequestError if destination with same name (case insensitive) in database.
    * 
    * This model may add another field for printer ip address
    * 
    * */
 
-	static async create({ name }) {
-		const duplicateCheck = await db.query(
-			`SELECT name
+  static async create({ name }) {
+    const duplicateCheck = await db.query(
+      `SELECT name
 		   FROM destinations
-		   WHERE name = $1`,
-			[ name ]
-		);
+		   WHERE name ILIKE $1`,
+      [ name ]
+    );
 
-		if (duplicateCheck.rows[0])
-			throw new BadRequestError(`Duplicate destination: ${name}`);
+    if (duplicateCheck.rows[0])
+      throw new BadRequestError(`${duplicateCheck.rows[0]} is already exists`);
 
-		const result = await db.query(
-			`INSERT INTO destinations
+    const result = await db.query(
+      `INSERT INTO destinations
            (name)
            VALUES ($1)
            RETURNING id, name`,
-			[ name ]
-		);
-		const category = result.rows[0];
+      [ name ]
+    );
+    const category = result.rows[0];
 
-		return category;
-	}
+    return category;
+  }
 
-	/** Find all destinations.
+  /** Find all destinations.
    *
    * searchFilters (all optional):
    * - name (will find case-insensitive, partial matches)
@@ -50,34 +50,34 @@ class Destination {
    * Returns [{ id, name }, ...]
    * */
 
-	static async findAll(searchFilters = {}) {
-		let query = `SELECT id, name
+  static async findAll(searchFilters = {}) {
+    let query = `SELECT id, name
                  FROM destinations`;
-		let whereExpressions = [];
-		let queryValues = [];
+    let whereExpressions = [];
+    let queryValues = [];
 
-		const { name } = searchFilters;
+    const { name } = searchFilters;
 
-		// For each possible search term, add to whereExpressions and queryValues so
-		// we can generate the right SQL
+    // For each possible search term, add to whereExpressions and queryValues so
+    // we can generate the right SQL
 
-		if (name) {
-			queryValues.push(`%${name}%`);
-			whereExpressions.push(`name ILIKE $${queryValues.length}`);
-		}
+    if (name) {
+      queryValues.push(`%${name}%`);
+      whereExpressions.push(`name ILIKE $${queryValues.length}`);
+    }
 
-		if (whereExpressions.length > 0) {
-			query += ' WHERE ' + whereExpressions.join(' AND ');
-		}
+    if (whereExpressions.length > 0) {
+      query += ' WHERE ' + whereExpressions.join(' AND ');
+    }
 
-		// Finalize query and return results
+    // Finalize query and return results
 
-		query += ' ORDER BY name';
-		const destinationRes = await db.query(query, queryValues);
-		return destinationRes.rows;
-	}
+    query += ' ORDER BY name';
+    const destinationRes = await db.query(query, queryValues);
+    return destinationRes.rows;
+  }
 
-	/** Given a category id, return id and name.
+  /** Given a category id, return id and name.
      *
      * Returns { id, name }
      *
@@ -85,22 +85,22 @@ class Destination {
      * 
      **/
 
-	static async get(id) {
-		const itemRes = await db.query(
-			`SELECT id, name
+  static async get(id) {
+    const itemRes = await db.query(
+      `SELECT id, name
        FROM destinations
        WHERE id = $1`,
-			[ id ]
-		);
+      [ id ]
+    );
 
-		const destination = itemRes.rows[0];
+    const destination = itemRes.rows[0];
 
-		if (!destination) throw new NotFoundError(`No destination: ${id}`);
+    if (!destination) throw new NotFoundError(`No destination: ${id}`);
 
-		return destination;
-	}
+    return destination;
+  }
 
-	/** Update destination name with `data`.
+  /** Update destination name with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
@@ -114,24 +114,37 @@ class Destination {
    * Throws NotFoundError if not found.
    */
 
-	static async update(id, data) {
-		const { setCols, values } = sqlForPartialUpdate(data, {});
-		const destVarIdx = '$' + (values.length + 1);
+  static async update(id, data) {
+    if (data.name) {
+      const duplicateCheck = await db.query(
+        `SELECT name
+         FROM destinations
+         WHERE name ILIKE $1`,
+        [ data.name ]
+      );
 
-		const querySql = `UPDATE destinations 
+      if (duplicateCheck.rows[0])
+        throw new BadRequestError(
+          `${duplicateCheck.rows[0]} is already exists`
+        );
+    }
+    const { setCols, values } = sqlForPartialUpdate(data, {});
+    const destVarIdx = '$' + (values.length + 1);
+
+    const querySql = `UPDATE destinations 
                         SET ${setCols} 
                         WHERE id = ${destVarIdx} 
                         RETURNING id, 
                                   name`;
-		const result = await db.query(querySql, [ ...values, id ]);
-		const destination = result.rows[0];
+    const result = await db.query(querySql, [ ...values, id ]);
+    const destination = result.rows[0];
 
-		if (!destination) throw new NotFoundError(`No destination: ${id}`);
+    if (!destination) throw new NotFoundError(`No destination: ${id}`);
 
-		return destination;
-	}
+    return destination;
+  }
 
-	/** Delete given destination from database; returns undefined.
+  /** Delete given destination from database; returns undefined.
    *
    * Throws NotFoundError if destination not found.
    * 
@@ -139,18 +152,18 @@ class Destination {
    * Possibly implement an is_active field if needed
    **/
 
-	static async remove(id) {
-		const result = await db.query(
-			`DELETE
+  static async remove(id) {
+    const result = await db.query(
+      `DELETE
        FROM destinations
        WHERE id = $1
        RETURNING id`,
-			[ id ]
-		);
-		const destination = result.rows[0];
+      [ id ]
+    );
+    const destination = result.rows[0];
 
-		if (!destination) throw new NotFoundError(`No destination: ${id}`);
-	}
+    if (!destination) throw new NotFoundError(`No destination: ${id}`);
+  }
 }
 
 module.exports = Destination;

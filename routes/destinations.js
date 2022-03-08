@@ -28,18 +28,20 @@ const router = express.Router();
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, destinationNewSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, destinationNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const destination = await Destination.create(req.body);
-		return res.status(201).json({ destination });
-	} catch (err) {
-		return next(err);
-	}
+    if (req.body.name) req.body.name = req.body.name.trim();
+
+    const destination = await Destination.create(req.body);
+    return res.status(201).json({ destination });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET items/destinations  =>
@@ -53,20 +55,20 @@ router.post('/', ensureManager, async function(req, res, next) {
  */
 
 router.get('/', ensureLoggedIn, async function(req, res, next) {
-	const q = req.query;
+  const q = req.query;
 
-	try {
-		const validator = jsonschema.validate(q, destinationSearchSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(q, destinationSearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const destinations = await Destination.findAll(q);
-		return res.json({ destinations });
-	} catch (err) {
-		return next(err);
-	}
+    const destinations = await Destination.findAll(q);
+    return res.json({ destinations });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** GET /items/destinations/:id  =>  {destination: { id, name }}
@@ -77,12 +79,12 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
-	try {
-		const destination = await Destination.get(req.params.id);
-		return res.json({ destination });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    const destination = await Destination.get(req.params.id);
+    return res.json({ destination });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** PATCH items/destinations/:id, { fld1, fld2, ... } => {destination: { destination }}
@@ -97,18 +99,20 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
-	try {
-		const validator = jsonschema.validate(req.body, destinationUpdateSchema);
-		if (!validator.valid) {
-			const errs = validator.errors.map((e) => e.stack);
-			throw new BadRequestError(errs);
-		}
+  try {
+    const validator = jsonschema.validate(req.body, destinationUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-		const destination = await Destination.update(req.params.id, req.body);
-		return res.json({ destination });
-	} catch (err) {
-		return next(err);
-	}
+    if (req.body.name) req.body.name = req.body.name.trim();
+
+    const destination = await Destination.update(req.params.id, req.body);
+    return res.json({ destination });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /** DELETE /destinations/id  =>  { deleted: id }
@@ -121,12 +125,12 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
  */
 
 router.delete('/:id', ensureManager, async function(req, res, next) {
-	try {
-		await Destination.remove(req.params.id);
-		return res.json({ deleted: req.params.id });
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    await Destination.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
