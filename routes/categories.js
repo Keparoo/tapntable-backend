@@ -111,7 +111,9 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const category = await Category.update(req.params.id, req.body);
+    trimmedBody = req.body((item) => item.trim());
+
+    const category = await Category.update(req.params.id, trimmedBody);
     return res.json({ category });
   } catch (err) {
     return next(err);
