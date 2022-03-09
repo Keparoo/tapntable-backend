@@ -45,6 +45,9 @@ class Payment {
    * - createdAt: a datetime (find payments after this datetime)
    * - printedAt: a datetime (find payments after this datetime)
    * - closedAt: a datetime (find payments after this datetime)
+   * - start (find payments where start <= createdAt)
+   * - end (find payments where end >= createdAt)
+   * - desc
    * - isOpen = true: returns records where tip_amount is null
    *
    * Returns [ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]
@@ -77,6 +80,9 @@ class Payment {
       createdAt,
       printedAt,
       closedAt,
+      start,
+      end,
+      desc,
       isOpen
     } = searchFilters;
 
@@ -129,6 +135,20 @@ class Payment {
       );
     }
 
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(
+        `c.created_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(
+        `c.created_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
     if (isOpen) {
       whereExpressions.push(`p.tip_amt IS NULL`);
     }
@@ -140,26 +160,99 @@ class Payment {
     // Finalize query and return results
 
     query += ' ORDER BY p.check_id';
+    if (desc) query += ' DESC';
+
     const paymentsRes = await db.query(query, queryValues);
     return paymentsRes.rows;
   }
 
+  /** get payment totals  =>
+ *   { payments:[ { id, paymentType, tipAmtSum, subtotalSum, isVoid }...]}
+ *
+ * Can filter on provided optional search filters:
+ * - start
+ * - end
+ * - desc
+ * - isVoid
+ *
+ * Authorization required: LoggedIn
+ */
+
+  static async getTotals(searchFilters = {}) {
+    // const start = '2022-03-04T19:52:58.251Z';
+    // const end = new Date();
+    let query = `SELECT p.id,
+                          COUNT(p.type) AS "paymentType",
+                          SUM(p.tip_amt) AS "tipAmtSum",
+                          SUM(p.subtotal) AS "subtotalSum",
+                          p.is_void AS "isVoid"
+                  FROM payments p INNER JOIN checks c ON p.check_id = c.id`;
+    let whereExpressions = [];
+    let queryValues = [];
+
+    const { start, end, desc } = searchFilters;
+
+    // For each possible search term, add to whereExpressions and queryValues so
+    // we can generate the right SQL
+
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(
+        `c.created_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(
+        `c.created_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (isVoid !== undefined) {
+      queryValues.push(isVoid);
+      whereExpressions.push(
+        `c.created_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (whereExpressions.length > 0) {
+      query += ' WHERE ' + whereExpressions.join(' AND ');
+    }
+
+    // Finalize query and return results
+
+    query += ' GROUP BY p.type, p.id, c.created_at';
+    query += ' ORDER BY p.check_id';
+    if (desc) query += ' DESC';
+
+    const paymentRes = await db.query(query, queryValues);
+    return paymentRes.rows;
+  }
+
   /** Given a payment id, return data about the payment.
      *
-     * Returns { id, checkId, type, tipAmt, subtotal, isVoid }
+     * Returns { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }
      *
      * Throws NotFoundError if not found.
      **/
 
   static async get(id) {
     const paymentRes = await db.query(
-      `SELECT id,
-              check_id AS "checkId",
-              type,
-              tip_amt AS "tipAmt",
-              subtotal,
-              is_void AS "isVoid"
-        FROM payments
+      `SELECT p.id,
+              p.check_id AS "checkId",
+              c.user_id AS "userId",
+              c.table_num AS "tableNum",
+              c.customer,
+              c.created_at AS "createdAt",
+              c.printed_at AS "printedAt",
+              c.closed_at AS "closedAt",
+              p.type,
+              p.tip_amt AS "tipAmt",
+              p.subtotal,
+              p.is_void AS "isVoid"
+        FROM payments p INNER JOIN checks c
+        ON p.check_id = c.id
         WHERE id = $1`,
       [ id ]
     );
@@ -169,25 +262,6 @@ class Payment {
     if (!payment) throw new NotFoundError(`No payment: ${id}`);
 
     return payment;
-  }
-
-  static async getTotals() {
-    const start = '2022-03-04T19:52:58.251Z';
-    const end = new Date();
-    const paymentRes = await db.query(
-      `SELECT p.id,
-              COUNT(p.type),
-              SUM(p.tip_amt) AS "tipAmtSum",
-              SUM(p.subtotal) AS "subtotalSum",
-              p.is_void AS "isVoid"
-        FROM payments p INNER JOIN checks c ON p.check_id = c.id
-        WHERE c.created_at >= $1::timestamptz AND c.created_at <= $2::timestamptz
-        GROUP BY p.type, p.id, c.created_at
-        ORDER BY c.created_at`,
-      [ start, end ]
-    );
-
-    return paymentRes.rows;
   }
 
   /** Update payment data with `data`.

@@ -52,9 +52,12 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * - type
  * - tipAmt
  * - isVoid
- * - createdAt: a datetime (find payments after this datetime)
- * - printedAt: a datetime (find payments after this datetime)
- * - closedAt: a datetime (find payments after this datetime)
+ * - createdAt: a datetime (find payments after >= this datetime)
+ * - printedAt: a datetime (find payments after >= this datetime)
+ * - closedAt: a datetime (find payments after >= this datetime)
+ * - start (find payments where start <= createdAt)
+ * - end (find payments where end >= createdAt)
+ * - desc
  * - isOpen: isOpen=true returns records where tip_amount is null
  *
  * Authorization required: LoggedIn
@@ -70,6 +73,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   // Convert query string to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
   if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
+  if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, paymentSearchSchema);
@@ -86,18 +90,13 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 });
 
 /** GET /totals  =>
- *   { payments:[ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]}
+ *   { payments:[ { id, paymentType, tipAmtSum, subtotalSum, isVoid }...]}
  *
  * Can filter on provided optional search filters:
- * - checkId
- * - userId
- * - type
- * - tipAmt
+ * - start
+ * - end
+ * - desc
  * - isVoid
- * - createdAt: a datetime (find payments after this datetime)
- * - printedAt: a datetime (find payments after this datetime)
- * - closedAt: a datetime (find payments after this datetime)
- * - isOpen: isOpen=true returns records where tip_amount is null
  *
  * Authorization required: LoggedIn
  */
@@ -105,13 +104,8 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 router.get('/totals', ensureLoggedIn, async function(req, res, next) {
   const q = req.query;
 
-  // Convert query string to integer
-  // if (q.checkId) q.checkId = +q.checkId;
-  // if (q.userId) q.userId = +q.userId;
-  // if (q.tipAmt) q.tipAmt = +q.tipAmt;
   // Convert query string to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
-  if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, paymentTotalsSearchSchema);
@@ -129,9 +123,9 @@ router.get('/totals', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /:id  =>  { payment }
  *
- *  Payment is { id, checkId, type, tipAmt, subtotal, isVoid }
+ *  Payment is { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }
  * 
- * Returns {payment: { id, checkId, type, tipAmt, subtotal, isVoid }}
+ * Returns {payment: { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }}
  *
  * Authorization required: LoggedIn
  */

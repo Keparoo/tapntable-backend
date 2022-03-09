@@ -3,39 +3,8 @@
   "$id": "http://our.company.com/companySearch.schema.json",
   "type": "object",
   "properties": {
-    "checkId": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "userId": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "type": {
-      "type": "string",
-      "minLength": 1
-    },
-    "tipAmt": {
-      "type": "number",
-      "minimum": 0
-    },
     "isVoid": {
       "type": "boolean"
-    },
-    "isOpen": {
-      "type": "boolean"
-    },
-    "createdAt": {
-      "type": "string",
-      "minLength": 1
-    },
-    "printedAt": {
-      "type": "string",
-      "minLength": 1
-    },
-    "closedAt": {
-      "type": "string",
-      "minLength": 1
     },
     "start": {
       "type": "string",
