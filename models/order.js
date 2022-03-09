@@ -67,7 +67,15 @@ class Order {
     let whereExpressions = [];
     let queryValues = [];
 
-    const { userId, sentAt, destinationId, before, desc } = searchFilters;
+    const {
+      userId,
+      sentAt,
+      destinationId,
+      before,
+      start,
+      end,
+      desc
+    } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
