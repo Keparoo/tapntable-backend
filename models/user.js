@@ -113,6 +113,14 @@ class User {
 
   /** Find all users.
    *
+   * Can filter on provided optional search filters:
+   * - firstNameLike (will find case-insensitive, partial matches)
+   * - lastNameLike (will find case-insensitive, partial matches)
+   * - displayNameLike (will find case-insensitive, partial matches)
+   * - role,
+   * - isClockedIn,
+   * - isActive
+   * 
    * Returns [{ id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, ...]
    **/
 
@@ -136,7 +144,8 @@ class User {
       displayName,
       role,
       isClockedIn,
-      isActive
+      isActive,
+      desc
     } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
@@ -179,6 +188,8 @@ class User {
     // Finalize query and return results
 
     query += ' ORDER BY last_name';
+    if (desc) query += ' DESC';
+
     const usersRes = await db.query(query, queryValues);
     return usersRes.rows;
   }

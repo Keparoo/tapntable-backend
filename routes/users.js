@@ -20,6 +20,8 @@ const userTimeclockSchema = require('../schemas/userTimeclock.json');
 const router = express.Router();
 
 /** POST / { user }  => {user: { user, token }}
+ * 
+ * Required fields: {username, password, pin, displayName, firstName, lastName, role}
  *
  * Adds a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be a manager or owner.
@@ -38,6 +40,13 @@ router.post('/', ensureManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
+    if (req.body.username) req.body.username = req.body.username.trim();
+    if (req.body.password) req.body.password = req.body.password.trim();
+    if (req.body.displayName)
+      req.body.displayName = req.body.displayName.trim();
+    if (req.body.firstName) req.body.firstName = req.body.firstName.trim();
+    if (req.body.lastName) req.body.lastName = req.body.lastName.trim();
+
     const user = await User.register(req.body);
     const token = createToken(user);
     return res.status(201).json({ user, token });
@@ -54,8 +63,10 @@ router.post('/', ensureManager, async function(req, res, next) {
  * - firstNameLike (will find case-insensitive, partial matches)
  * - lastNameLike (will find case-insensitive, partial matches)
  * - displayNameLike (will find case-insensitive, partial matches)
- * - role
+ * - role,
+ * - isClockedIn,
  * - isActive
+ * - desc
  *
  * Authorization required: manager or owner
  **/
@@ -64,6 +75,7 @@ router.get('/', ensureManager, async function(req, res, next) {
   const q = req.query;
   if (q.isClockedIn) q.isClockedIn = q.isClockedIn.toLowerCase() === 'true';
   if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
+  if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, userSearchSchema);
@@ -175,6 +187,13 @@ router.patch('/:username', ensureManager, async function(req, res, next) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
+
+    if (req.body.username) req.body.username = req.body.username.trim();
+    if (req.body.password) req.body.password = req.body.password.trim();
+    if (req.body.displayName)
+      req.body.displayName = req.body.displayName.trim();
+    if (req.body.firstName) req.body.firstName = req.body.firstName.trim();
+    if (req.body.lastName) req.body.lastName = req.body.lastName.trim();
 
     const user = await User.update(req.params.username, req.body);
     return res.json({ user });
