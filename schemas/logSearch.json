@@ -15,7 +15,7 @@
     "createdAt": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 50
+      "maxLength": 27
     },
     "declaredTips": {
       "type": "number",
@@ -31,12 +31,22 @@
     "after": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 50
+      "maxLength": 27
     },
     "before": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 50
+      "maxLength": 27
+    },
+    "start": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 27
+    },
+    "end": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 27
     }
   },
   "additionalProperties": false,

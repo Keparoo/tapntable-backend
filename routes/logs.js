@@ -22,6 +22,9 @@ const router = express.Router();
  * 
  * userId and event are required
  * declaredTips and entityId are optional
+ * 
+ * log_event enum type values:
+ * 'clock-in', 'clock-out', 'cash-out', 'declare-cash-tips', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check'
  *
  * This returns the newly created log
  *  { log: { id, userId, event, createdAt, declaredTips, entity_id } }
@@ -53,10 +56,12 @@ router.post('/', ensureLoggedIn, async function(req, res, next) {
  * - createdAt
  * - declaredTips
  * - entityId
- * - before (Return records with timestamp values < before)
- * - after (Return records with timestamp values > after)
+ * - before (Return records with createdAt values < before)
+ * - after (Return records with createdAt values > after)
  *       Note if both before and after are used they are connected by AND not OR
  * - desc (boolean, when true, sort in descending order)
+ * - start (Return records where createdAt >= start)
+ * - end (Return records where createdAt <= end)
  * 
  * Default sort is in ascending order by datetime
  *

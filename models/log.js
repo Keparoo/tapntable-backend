@@ -8,13 +8,14 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /**
  * log_event enum type values:
- * 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item', 'delete-item-ordered' 'void-item', 'void-check'
+ * 'clock-in', 'clock-out', 'cash-out', 'declare-cash-tips', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check'
  */
 
 class Log {
   /** Create a user log entry (from data), update db, return new log data.
    *
-   * data should be { userId, event, declaredTips, entity_id }
+   * Required fields: { userId, event, declaredTips, entityId }
+   * Optional fields: { declaredTips, entityId }
    *
    * Returns { id, userId, event, createdAt, declaredTips, entity_id }
    *
@@ -44,10 +45,12 @@ class Log {
    * - timestamp
    * - declaredTips
    * - entityId
-   * - before (Return records with timestamp values < before)
-   * - after (Return records with timestamp values > after)
+   * - before (Return records with createdAt values <= before)
+   * - after (Return records with createdAt values >= after)
    *       Note if both before and after are used they are connected by AND not OR
    * - desc (boolean when true, sort in descending order)
+   * - start (Return records where createdAt >= start)
+   * - end (Return records where createdAt <= end)
    * 
    * * Default sort is in ascending order by datetime
    *
@@ -78,7 +81,9 @@ class Log {
       entityId,
       desc,
       before,
-      after
+      after,
+      start,
+      end
     } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
@@ -120,6 +125,20 @@ class Log {
 
     if (after) {
       queryValues.push(after);
+      whereExpressions.push(
+        `l.created_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(
+        `l.created_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (end) {
+      queryValues.push(end);
       whereExpressions.push(
         `l.created_at >= $${queryValues.length}::timestamptz`
       );
