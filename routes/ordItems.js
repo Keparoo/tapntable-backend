@@ -39,6 +39,8 @@ router.post('/', ensureManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
+    if (req.body.itemNote) req.body.itemNote = req.body.itemNote.trim();
+
     const ordItem = await OrdItem.create(req.body);
     return res.status(201).json({ ordItem });
   } catch (err) {
