@@ -224,7 +224,8 @@ class Order {
             oi.is_void AS "isVoid"
       FROM orders o INNER JOIN ordered_items oi ON o.id = oi.order_id
       INNER JOIN items i ON oi.item_id = i.id
-      WHERE o.id = $1`,
+      WHERE o.id = $1
+      ORDER BY i.category_id, oi.item_id`,
       [ id ]
     );
 
