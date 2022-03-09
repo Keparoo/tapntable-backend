@@ -38,9 +38,13 @@ class OrdItem {
    * - itemId
    * - orderId
    * - checkId
+   * - sentAt (return ordered_items sent after >= sentAt)
    * - isVoid
+   * - start (return ordered_items sent after >= sentAt)
+   * - end (return ordered_items sent before <= sentAt)
+   * - desc
    *
-   * Returns [ { id, itemId, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
+   * Returns [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -65,7 +69,16 @@ class OrdItem {
     let whereExpressions = [];
     let queryValues = [];
 
-    const { itemId, orderId, checkId, sentAt, isVoid } = searchFilters;
+    const {
+      itemId,
+      orderId,
+      checkId,
+      sentAt,
+      start,
+      end,
+      desc,
+      isVoid
+    } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
@@ -92,6 +105,20 @@ class OrdItem {
       );
     }
 
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(
+        `orders.sent_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(
+        `orders.sent_at <= $${queryValues.length}::timestamptz`
+      );
+    }
+
     if (isVoid !== undefined) {
       queryValues.push(isVoid);
       whereExpressions.push(`o.is_void = $${queryValues.length}`);
@@ -104,6 +131,8 @@ class OrdItem {
     // Finalize query and return results
 
     query += ' ORDER BY o.id';
+    if (desc) query += ' DESC';
+
     const orderedRes = await db.query(query, queryValues);
     return orderedRes.rows;
   }

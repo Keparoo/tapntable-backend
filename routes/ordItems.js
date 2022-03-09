@@ -28,7 +28,7 @@ const router = express.Router();
  * This returns the newly created ordered item
  *  { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
  *
- * Authorization required: logged into currend user
+ * Authorization required: manager
  **/
 
 router.post('/', ensureManager, async function(req, res, next) {
@@ -47,13 +47,17 @@ router.post('/', ensureManager, async function(req, res, next) {
 });
 
 /** GET /ordered  =>
- *   { ordItems: [ { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+ *   { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
   * - itemId
   * - orderId
   * - checkId
+  * - sentAt (return ordered_items sent after >= sentAt)
   * - isVoid
+  * - start (return ordered_items sent after >= sentAt)
+  * - end (return ordered_items sent before <= sentAt)
+  * - desc
  *
  * Authorization required: logged into current user
  */
@@ -66,6 +70,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   if (q.checkId) q.checkId = +q.checkId;
   // Convert querystring to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
+  if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, orderedSearchSchema);
@@ -75,7 +80,6 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
     }
 
     const ordItems = await OrdItem.findAll(q);
-    // return res.json({ test: 'test' });
     return res.json({ ordItems });
   } catch (err) {
     return next(err);
@@ -118,6 +122,8 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
+
+    if (req.body.itemNote) req.body.itemNote = req.body.itemNote.trim();
 
     const ordItem = await OrdItem.update(req.params.id, req.body);
     return res.json({ ordItem });

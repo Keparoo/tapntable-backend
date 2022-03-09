@@ -19,7 +19,18 @@
       "type": "string",
       "minLength": 1
     },
+    "start": {
+      "type": "string",
+      "minLength": 1
+    },
+    "end": {
+      "type": "string",
+      "minLength": 1
+    },
     "isVoid": {
+      "type": "boolean"
+    },
+    "desc": {
       "type": "boolean"
     }
   },
