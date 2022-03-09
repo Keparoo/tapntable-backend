@@ -29,6 +29,10 @@
       "type": "string",
       "minLength": 1
     },
+    "printedAt": {
+      "type": "string",
+      "minLength": 1
+    },
     "start": {
       "type": "string",
       "minLength": 1

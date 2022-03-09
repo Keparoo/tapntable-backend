@@ -181,16 +181,15 @@ class Payment {
   static async getTotals(searchFilters = {}) {
     // const start = '2022-03-04T19:52:58.251Z';
     // const end = new Date();
-    let query = `SELECT p.id,
-                          COUNT(p.type) AS "paymentType",
-                          SUM(p.tip_amt) AS "tipAmtSum",
-                          SUM(p.subtotal) AS "subtotalSum",
-                          p.is_void AS "isVoid"
+    let query = `SELECT type,
+                        p.tip_amt,
+                        SUM(p.subtotal) AS "subtotalSum",
+                        p.is_void AS "isVoid"
                   FROM payments p INNER JOIN checks c ON p.check_id = c.id`;
     let whereExpressions = [];
     let queryValues = [];
 
-    const { start, end, desc } = searchFilters;
+    const { start, end, desc, isVoid } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
