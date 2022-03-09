@@ -14,17 +14,27 @@
     "sentAt": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 30
+      "maxLength": 27
     },
     "completedAt": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 30
+      "maxLength": 27
     },
     "before": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 30
+      "maxLength": 27
+    },
+    "start": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 27
+    },
+    "end": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 27
     },
     "desc": {
       "type": "boolean"

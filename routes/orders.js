@@ -22,7 +22,7 @@ const router = express.Router();
 
 /** POST /orders { order }  => {order: { order }}
  *
- * order should be { userId }
+ * Required data { userId }
  *
  * This returns the newly created order
  *  { order: { id, userId, sentAt} }
@@ -46,7 +46,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /orders  =>
- *   { orders: [ { id, userId, displayName, sentAt, completedAt}...] }
+ *   { orders: [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...] }
  *
  * Can filter on provided optional search filters:
  * - userId
@@ -54,6 +54,11 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  * - destinationId
  * - before (find orders where sentAt is before this datetime)
  * - desc (default sort is by sent_by ascending: desc=true will sort descending)
+ * - start (return orders where start <= sentAt)
+ * - end (return orders where end >= sentAt)
+ * 
+ * Note if both start and end are used, they are connected by an AND:
+ * ...where start <= sentAt AND end >= sentAt
  *
  * Authorization required: LoggedIn
  */
@@ -83,7 +88,9 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Order is { id, userId, sentAt}
  * 
- * Returns { order: { id, userId, sentAt}}
+ * Returns { id, userId, sentAt, items}
+ * 
+ * Where items is [{id, userId, sentAt, completedAt, name, orderedItemId, price, categoryId, isActive, orderId, itemId, checkId, completedAt, completedBy, deliveredAt, itemNote, discountId, isVoid }]
  *
  * Authorization required: LoggedIn
  */

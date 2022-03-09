@@ -9,7 +9,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Order {
   /** Create an order entry (from data), update db, return new order data.
    *
-   * data should be { userId }
+   * Required data:  { userId }
    *
    * Returns {{ id, userId, sentAt}
    *
@@ -35,6 +35,11 @@ class Order {
    * - sentAt (find orders after sentAt datetime)
    * - destinationId
    * - before (find orders where sentAt is before this datetime)
+   * - start (return orders where start <= sentAt)
+   * - end (return orders where end >= sentAt)
+   * 
+   * Note if both start and end are used, they are connected by an AND:
+   * ...where start <= sentAt AND end >= sentAt
    *
    * Returns [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...]
    * 
@@ -85,6 +90,16 @@ class Order {
     if (before) {
       queryValues.push(before);
       whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
+    }
+
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -168,7 +183,7 @@ class Order {
      *
      * Returns { id, userId, sentAt, items}
      * 
-     * Where items is [{id, userId, sentAt, completedAt, name, price, categoryId, isActive, orderId, itemId, checkId, completedBy, deliveredAt, itemNote, discountId, isVoid }]
+     * Where items is [{id, userId, sentAt, completedAt, name, orderedItemId, price, categoryId, isActive, orderId, itemId, checkId, completedAt, completedBy, deliveredAt, itemNote, discountId, isVoid }]
      *
      * Throws NotFoundError if not found.
      **/
@@ -193,7 +208,7 @@ class Order {
             o.user_id AS "userId",
             o.sent_at AS "sentAt",
             o.completed_at AS "completedAt",
-            oi.id,
+            oi.id AS "orderedItemId",
             i.name,
             i.price,
             i.category_id AS "categoryId",
