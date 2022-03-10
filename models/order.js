@@ -30,100 +30,6 @@ class Order {
 
   /** Find all orders (optional filter on searchFilters).
    *
-   * searchFilters (all optional):
-   * - userId
-   * - sentAt (find orders after sentAt datetime)
-   * - destinationId
-   * - before (find orders where sentAt is before this datetime)
-   * - start (return orders where start <= sentAt)
-   * - end (return orders where end >= sentAt)
-   * 
-   * Note if both start and end are used, they are connected by an AND:
-   * ...where start <= sentAt AND end >= sentAt
-   *
-   * Returns [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...]
-   * 
-   * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
-   * */
-
-  static async findAll(searchFilters = {}) {
-    let query = `SELECT o.id,
-                        o.user_id AS "userId",
-                        o.sent_at AS "sentAt",
-                        oi.item_id AS "itemId",
-                        i.name,
-                        i.price,
-                        i.category_id AS "categoryId",
-                        i.count,
-                        i.destination_id AS "destinationId",
-                        oi.check_id AS "checkId",
-                        oi.seat_num AS "seatNum",
-                        oi.item_note AS "itemNote",
-                        oi.is_void AS "isVoid"
-                 FROM orders o
-                 JOIN ordered_items oi ON o.id = oi.order_id
-                 JOIN items i ON oi.item_id = i.id`;
-
-    let whereExpressions = [];
-    let queryValues = [];
-
-    const {
-      userId,
-      sentAt,
-      destinationId,
-      before,
-      start,
-      end,
-      desc
-    } = searchFilters;
-
-    // For each possible search term, add to whereExpressions and queryValues so
-    // we can generate the right SQL
-
-    if (userId) {
-      queryValues.push(userId);
-      whereExpressions.push(`o.user_id = $${queryValues.length}`);
-    }
-
-    if (destinationId) {
-      queryValues.push(destinationId);
-      whereExpressions.push(`i.destination_id = $${queryValues.length}`);
-    }
-
-    if (sentAt) {
-      queryValues.push(sentAt);
-      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
-    }
-
-    if (before) {
-      queryValues.push(before);
-      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
-    }
-
-    if (start) {
-      queryValues.push(start);
-      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
-    }
-
-    if (end) {
-      queryValues.push(end);
-      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
-    }
-
-    if (whereExpressions.length > 0) {
-      query += ' WHERE ' + whereExpressions.join(' AND ');
-    }
-
-    // Finalize query and return results
-    query += ' ORDER BY o.sent_at';
-    if (desc) query += ' DESC';
-
-    const ordersRes = await db.query(query, queryValues);
-    return ordersRes.rows;
-  }
-
-  /** Find all orders (optional filter on searchFilters).
-   *
    * Alternate function to above
    * 
    * searchFilters (all optional):
@@ -131,24 +37,42 @@ class Order {
    * - sentAt (find orders after sentAt datetime)
    * - completedAt
    * - before (find orders where sentAt is before this datetime)
+   * - isOpen=true returns orders where completedAt is null
+   * - start (return orders where start <= sentAt)
+   * - end (return orders where end >= sentAt)
+   * - desc
    *
-   * Returns [ { id, userId, displayName, sentAt, completedAt}...]
+   * Returns [ { id, userId, displayName, tableNum, checkId, numGuests, sentAt, completedAt}...]
    * 
    * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
    * */
 
-  static async findAllOrders(searchFilters = {}) {
+  static async findAll(searchFilters = {}) {
     let query = `SELECT o.id,
                         o.user_id AS "userId",
                         u.display_name AS "displayName",
+                        c.table_num AS "tableNum",
+                        c.id AS "checkId",
+                        c.num_guests AS "numGuests",
                         o.sent_at AS "sentAt",
                         o.completed_at AS "completedAt"
-                 FROM ORDERS o INNER JOIN users u ON o.user_id = u.id`;
+                 FROM ORDERS o INNER JOIN users u ON o.user_id = u.id
+                 INNER JOIN ordered_items oi on o.id = oi.order_id
+                 INNER JOIN checks c on oi.check_id = c.id`;
 
     let whereExpressions = [];
     let queryValues = [];
 
-    const { userId, sentAt, completedAt, before, desc } = searchFilters;
+    const {
+      userId,
+      sentAt,
+      completedAt,
+      before,
+      start,
+      end,
+      desc,
+      isOpen
+    } = searchFilters;
 
     // For each possible search term, add to whereExpressions and queryValues so
     // we can generate the right SQL
@@ -173,6 +97,20 @@ class Order {
     if (before) {
       queryValues.push(before);
       whereExpressions.push(`o.sent_at <= $${queryValues.length}::timestamptz`);
+    }
+
+    if (start) {
+      queryValues.push(start);
+      whereExpressions.push(`o.sent_at <= $${queryValues.length}`);
+    }
+
+    if (end) {
+      queryValues.push(end);
+      whereExpressions.push(`o.sent_at >= $${queryValues.length}`);
+    }
+
+    if (isOpen) {
+      whereExpressions.push(`o.completed_at IS NULL`);
     }
 
     if (whereExpressions.length > 0) {

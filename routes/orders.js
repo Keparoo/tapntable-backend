@@ -51,11 +51,12 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  * Can filter on provided optional search filters:
  * - userId
  * - sentAt (find orders after sentAt datetime)
- * - destinationId
+ * - completedAt
  * - before (find orders where sentAt is before this datetime)
- * - desc (default sort is by sent_by ascending: desc=true will sort descending)
+ * - isOpen=true returns orders where completedAt is null
  * - start (return orders where start <= sentAt)
  * - end (return orders where end >= sentAt)
+ * - desc
  * 
  * Note if both start and end are used, they are connected by an AND:
  * ...where start <= sentAt AND end >= sentAt
@@ -67,8 +68,8 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
   const q = req.query;
 
   if (q.userId) q.userId = +q.userId;
-  if (q.destinationId) q.destinationId = +q.destinationId;
-  if (q.desc) q.desc = q.desc.toLocaleLowerCase() === 'true';
+  if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
+  if (q.isOpen) q.isOpen = q.isOpen.toLowerCase() === 'true';
 
   try {
     const validator = jsonschema.validate(q, orderSearchSchema);
@@ -77,7 +78,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const orders = await Order.findAllOrders(q);
+    const orders = await Order.findAll(q);
     return res.json({ orders });
   } catch (err) {
     return next(err);
