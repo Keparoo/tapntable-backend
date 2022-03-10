@@ -18,7 +18,7 @@ const router = express.Router();
 
 /** POST / { log }  => {log: { log }}
  *
- * log should be { userId, event, declaredTips, entityId }
+ * log fields are { userId, event, declaredTips, entityId }
  * 
  * userId and event are required
  * declaredTips and entityId are optional

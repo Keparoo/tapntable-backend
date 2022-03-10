@@ -82,13 +82,14 @@ POST /users {username, password, pin, displayName, firstName, lastName, role} =>
 
 GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, ... ] }
 * Returns a list of all users
-  * Optional search-query: firstName, Filters for items like firstName, case insensitive
-  * Optional search-query: lastName, Filters for items like lastName, case insensitive
-  * Optional search-query: displayName, Filters for items like display_name, case insensitive
-  * Optional search-query: role: Filters for items with role that matches
-  * Optional search-query: isClockedIn: Filters for items with is_clocked_in that matches
-  * Optional search-query: isActive: Filters for items with is_active that matches
-  * Optional search-query: desc: List returned is sorted by lastName, desc=true reverses sort
+* Optional filter queries:
+  * firstName, Filters for items like firstName, case insensitive
+  * lastName, Filters for items like lastName, case insensitive
+  * displayName, Filters for items like display_name, case insensitive
+  * role: Filters for items with role that matches
+  * isClockedIn: Filters for items with is_clocked_in that matches
+  * isActive: Filters for items with is_active that matches
+  * desc: List returned is sorted by lastName, desc=true reverses sort
 * Authorization required: manager or owner
 
 GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
@@ -118,27 +119,36 @@ DELETE /users/:username => { deleted: username }
 * Returns the username deleted
 * Throws NotFoundError if user not found
 * Authorization required: manager or owner
-* **Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false**
-
-**All tests for user model and user routes pass**  
+* **Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false** 
 
 ## Logs routes
 POST /users/logs { userId, event, entity_id } => { log: { id, userId, event, timestamp, entity_id } }
-* Required fields: { userId, event, entity_id }
+* Required fields: { userId, event }
+* Optional fields: { declaredTips, entityId}
 * timestamp is automatically set
+log_event enum type values:
+  'clock-in', 'clock-out', 'cash-out', 'declare-cash-tips', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check'
+* Returns: { log: { id, userId, event, createdAt, declaredTips, entity_id } }
 * Authorization required: user is logged in
 
-GET /users/logs => { logs:[ { id, userId, event, timestamp, entity_id }...]}
+GET /users/logs => { logs:[ { id, userId, displayName, firstName, LastName, role, isActive, event, createdAt, declaredTips, entity_id }...]}
 * Returns a list of all logs
-  * Optional search-query: userId
-  * Optional search-query: type
-  * Optional search-query: timestamp
-  * Optional search-query: entityId
+Optional filter queries:
+  * userId
+  * event
+  * createdAt
+  * declaredTips
+  * entityId
+  * before (Return records with createdAt values < before) to be deprecated
+  * after (Return records with createdAt values > after) to be deprecated
+  * desc (default sort by createAt, desc=true reversed sort)
+  * start (Return records where createdAt >= start)
+  * end (Return records where createdAt <= end)
 * Authorization required: user is logged in
 
-GET /users/logs/:id  => {log: { id, userId, event, timestamp, entity_id }}
-* Returns log record for requested item
-* Throws NotFoundError if user not found
+GET /users/logs/:id  => {log: { id, userId, event, timestamp, declaredTips, entity_id }}
+* Returns log record matching log id
+* Throws NotFoundError if id not found
 * Authorization required: user is logged in
 
 ### Items routes

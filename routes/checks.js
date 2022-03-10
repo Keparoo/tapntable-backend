@@ -25,7 +25,7 @@ const router = express.Router();
 /** POST /checks { check }  => {check: { check }}
  *
  * Required args { userId, tablId, numGuests }
- * Optional args { customer }
+ * Optional args { customer } This is a name/description for bar tabs
  *
  * This returns the newly created item
  *  {check: { id, userId, tableNum, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid } }

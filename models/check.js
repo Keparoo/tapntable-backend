@@ -9,7 +9,8 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Check {
   /** Create a check (from data), update db, return new check data.
    *
-   * data should be { userId, tablNum, customer, numGuests }
+   * Required fields { userId, tablNum, numGuests }
+   * Optional fields { customer } This is a name/description for bar tabs
    *
    * Returns { id, userId, tableNum, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }
    * 
