@@ -326,7 +326,7 @@ POST /ordered { ordItem }  => {ordItem: { ordItem }}
 * Returns: { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
 * Authorization required: current user or manager or owner
 
-GET /ordered  { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+GET /ordered  => { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
 * Returns a list of all ordered items
 * Optional filter queries:
   * itemId
@@ -339,24 +339,58 @@ GET /ordered  { ordItems: [ { id, itemId, name, price, destinationId, count, ord
   * desc (sorted by id, desc=true reverses sort)
   * Authorization required: logged into current user
 
-GET /ordered/:id -- return the item ordered  
-PATCH /ordered/:id  
-DELETE /ordered/:id
+GET /ordered/:id  =>  {ordItem: { ordItem }}
+* Returns the item matching id
+* Returns: {ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+* Throws NotFoundError if item doesn't exist
+* Authorization required: loggedin
+
+PATCH /ordered/:id  { fld1, fld2, ... } => {ordItem: { ordItem }}
+* Updates ordered item
+* Fields can be: { seatNum, itemNote, itemDiscountId, isVoid }
+* Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+* Authorization required: Authorization required: manager or owner
+
+DELETE /ordered/:id =>  { deleted: id }
+* Deletes ordered item
+* Returns { deleted: id }
+* This route should only run if an item is created accidentally and needs to be immediately deleted.
+* Authorization manager or owner
 
 ### Payments
 POST /payments { check_id, type, tip_amt, subtotal } => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }  
 * Required fields: { check_id, type, subtotal }
 * is_void is set to false
+* Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
 * Authorization required: logged in to current user
 
-GET /payments => { payments:[ { id, checkId, type, tipAmt, subtotal, isVoid }...]}
+GET /payments => { payments:[ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]}
 * Returns a list of all payments
-  * Optional search-query: type
-  * Optional search-query: isVoid
+  * checkId
+  * userId
+  * type
+  * tipAmt
+  * isVoid
+  * isCreatedAt a datetime (find payments after this datetime)
+  * printedAt a datetime (find payments after this datetime)
+  * closedAt a datetime (find payments after this datetime)
+  * start (find payments where start <= createdAt)
+  * end (find payments where end >= createdAt)
+  * desc (sort is by check_id: desc=true reverses sort)
+  * isOpen=true returns records where tip_amount is null
+* Returns [ { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }...]
 * Authorization required: user is logged in
 
+GET /payments/totals { payments:[ { id, paymentType, tipAmtSum, subtotalSum, isVoid }...]}
+* Returns a summary of payments
+* Optional query filters:
+  * start (find payments where start <= createdAt)
+  * end (find payments where end >= createdAt)
+  * desc desc (sort is by id: desc=true reverses sort)
+  * isVoid
+
 GET /payments/:id => { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
-* Returns record for requested payment
+* Returns {payment: { id, checkId, userId, tableNum, customer, createdAt, printedAt, closedAt, type, tipAmt, subtotal, isVoid }}
 * Throws NotFoundError if user not found
 * Authorization required: user is logged in
 
@@ -364,7 +398,7 @@ PATCH /payments/:id => { payment: { id, checkId, type, tipAmt, subtotal, isVoid 
 * Data can include: { checkId, type, tipAmt, subtotal, isVoid }
 * Returns { payment: { id, checkId, type, tipAmt, subtotal, isVoid } }
 * Throws NotFoundError if user not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: logged in
 
 DELETE /payments/:id => { deleted: id }
 * Returns the id of deleted payment

@@ -150,7 +150,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
  */
 
-router.patch('/:id', ensureManager, async function(req, res, next) {
+router.patch('/:id', ensureLoggedIn, async function(req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, paymentUpdateSchema);
     if (!validator.valid) {
