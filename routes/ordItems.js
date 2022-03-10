@@ -23,15 +23,16 @@ const router = express.Router();
 
 /** POST /ordered { ordItem }  => {ordItem: { ordItem }}
  *
- * ordItem should be { itemId, orderId, checkId, seatNum, itemNote } 
+ * Required Items: { itemId, orderId, checkId }
+ * Optional Items: { seatNum, itemNote }
  *
  * This returns the newly created ordered item
  *  { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
  *
- * Authorization required: manager
+ * Authorization required: ensureCorrectUserOrManager
  **/
 
-router.post('/', ensureManager, async function(req, res, next) {
+router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, orderedNewSchema);
     if (!validator.valid) {
@@ -94,7 +95,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  * 
  * Returns: {ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
- * Authorization required: logged into current user
+ * Authorization required: logged in
  */
 
 router.get('/:id', ensureLoggedIn, async function(req, res, next) {
@@ -114,7 +115,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
- * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: Authorization required: manager or owner
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
@@ -136,7 +137,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 
 /** DELETE /ordered/:id  =>  { deleted: id }
  *
- * Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: manager or owner
  * 
  * Note: Ordered items should not be deleted once they have been used in any way. Instead: * is_void=true
  * This route should only run if an item is created accidentally and needs to be immediately deleted.

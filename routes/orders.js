@@ -113,7 +113,7 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Returns {item: { id, userId, sentAt, completedAt}}
  *
- * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: Authorization required: manager or owner
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {

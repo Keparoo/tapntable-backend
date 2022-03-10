@@ -157,16 +157,17 @@ POST /items  { name, description, price, category_id, destination_id }  => {item
 * Required fields: { name, price, category_id, destination_id }
 * count is set to NULL
 * isActive is set to true
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 GET /items => { items: [ { id, name, description, price, category_id, destination_id, count, is_active }, ...] }
 * Returns a list of all items
-  * Optional search-query: name, Filters for items like name, case insensitive
-  * Optional search-query: description, Filters for items like name, case insensitive
-  * Optional search-query: categoryId: Filters for items with category_id that matches
-  * Optional search-query: destinationId: Filters for items with destinationy_id that matches
-  * Optional search-query: count: Filters for items with count that matches
-  * Optional search-query: isActive: Filters for items with is_active that matches
+* Optional filter queries:
+  * name, Filters for items like name, case insensitive
+  * description, Filters for items like name, case insensitive
+  * categoryId: Filters for items with category_id that matches
+  * destinationId: Filters for items with destinationy_id that matches
+  * count: Filters for items with count that matches
+  * isActive: Filters for items with is_active that matches
 * Authorization required: user is logged in
 
 
@@ -179,12 +180,12 @@ PATCH /items/:id => { id, name, description, price, category_id, destination_id,
 * Data can include: { name, description, price, category_id, destination_id, count, is_active }
 * Returns { id, name, description, price, category_id, destination_id, count, is_active }
 * Throws NotFoundError if user not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 DELETE /items/:id => { deleted: id }
 * Returns the id of deleted item
 * Throws NotFoundError if item not found
-* Authorization required: manager or owner (roleId = 10 or 11)  
+* Authorization required: manager or owner 
 **(Items should not be deleted, instead is_active=false)**
 
 **All item model and routes tests pass**
@@ -250,25 +251,30 @@ DELETE /items/destinations/:id => {deleted: id}
 ### Checks routes
 POST /checks  { userId, tablId, customer, numGuests } => { id, user_id, table_num, num_guests, customer, created_at, sub_total, local_tax, state_tax, federal_tax }
 * Required fields: { userId, tablId, numGuests }
+* Optional fields: { customer } This is a name/description for bar tabs
 * created_at is timestamped with current datetime
 * is_void is set to false
 * Authorization required: logged in to current user
 
-GET /checks => { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
+GET /checks => { checks: [{ id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }, ...]}}
 * Returns a list of all checks
-  * Optional search-query: userId: Filters for items with user_id that matches
-  * Optional search-query: employee, Filters for checks like displayName, case insensitive
-  * Optional search-query: tableNum: Filters for items with tableNum that matches 
-  * Optional search-query: numGuests: Filters for items with numGuests that matches
-  * Optional search-query: customer, Filters for checks like customer, case insensitive
-  * Optional search-query: createdAt: Filters for items with createdAt that matches
-  * Optional search-query: printedAt: Filters for items with printedAt that matches
-  * Optional search-query: closedAt: Filters for items with closedAt that matches
-  * Optional search-query: discountId: Filters for items with discountId that matches
-  * Optional search-query: isVoid: Filters for items with isVoid that matches
+* Optional filter queries:
+  * userId: Filters for items with user_id that matches
+  * employee, Filters for checks like displayName, case insensitive
+  * tableNum: Filters for items with tableNum that matches 
+  * numGuests: Filters for items with numGuests that matches
+  * customer, Filters for checks like customer, case insensitive
+  * createdAt: Filters for items with createdAt that matches
+  * printedAt: Filters for items with printedAt that matches
+  * closedAt: Filters for items with closedAt that matches
+  * discountId: Filters for items with discountId that matches
+  * isVoid: Filters for items with isVoid that matches
+  * isOpen=true returns records where closed_at is null
+  * start returns records where createdAt >= start
+  * end returns records where createdAt <= end
 * Authorization required: logged in to current user
 
-GET /checks/:id  => {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subTotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
+GET /checks/:id  => {check: { id, userId, employee, tableNum, numGuests, customer, createdAt, printedAt, closedAt, discountId, subtotal, discountTotal, localTax, stateTax, federalTax, isVoid }}
 * Returns check record that matches id
 * Throws NotFoundError if user not found
 * Authorization required: logged in to current user
@@ -281,28 +287,58 @@ PATCH /checks/:id => {check: { id, userId, employee, tableNum, numGuests, custom
 DELETE /checks/:id
 * Returns the id of deleted item
 * Throws NotFoundError if item not found
-* Authorization required: manager or owner (roleId = 10 or 11)  
+* Authorization required: manager or owner  
 **(Checks should not be deleted, instead is_void=true)**
 
 ### Orders routes
-POST /checks/orders { userId } => { order: { id, userId, sentAt} }
+POST /orders { userId } => { order: { id, userId, sentAt} }
 * Required fields { userId }
 * sentAt automatically timestamped
 * Authorization required: logged in to current user
 
-GET /checks/orders => { tickets: [ { id, userId, sentAt}...]}
-* Returns a list of all tickets
-  * Optional search-query: userId 
-  * Optional search-query: sentAt
+GET /orders => { orders: [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...]}
+* Returns a list of all orders
+* Optional filter queries:
+  * userId 
+  * sentAt (find orders after sentAt datetime)
+  * completedAt
+  * before (find orders where sentAt is before this datetime)
+  * isOpen=true returns orders where completedAt is null
+  * start (return orders where start <= sentAt)
+  * end (return orders where end >= sentAt)
+  * desc (default sort is by sentAt, desc=true reverses sort)
 * Authorization required: logged in to current user
 
-GET /checks/orders/:id  
-* Returns record for requested ticket
+GET /orders/:id  
+* Returns { id, userId, sentAt, items}
+  * items is a list: [{id, userId, sentAt, completedAt, name, orderedItemId, price, categoryId, isActive, orderId, itemId, checkId, completedAt, completedBy, deliveredAt, itemNote, discountId, isVoid }]
 * Throws NotFoundError if user not found
 * Authorization required: user is logged in
 
-### Ordered routes
-GET /ordered  
+PATCH /orders/:id
+* Fields can be {completedAt}
+* Returns {item: { id, userId, sentAt, completedAt}}
+* Authorization required: Authorization required: manager or owner
+
+### OrdItems routes
+POST /ordered { ordItem }  => {ordItem: { ordItem }}
+* Required fields: { itemId, orderId, checkI
+* Returns: { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+* Authorization required: current user or manager or owner
+
+GET /ordered  { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+* Returns a list of all ordered items
+* Optional filter queries:
+  * itemId
+  * orderId
+  * checkid
+  * sentAt (return ordered_items sent after >= sentAt)
+  * isVoid
+  * start (return ordered_items sent after >= sentAt)
+  * end (return ordered_items sent before <= sentAt)
+  * desc (sorted by id, desc=true reverses sort)
+  * Authorization required: logged into current user
+
 GET /ordered/:id -- return the item ordered  
 PATCH /ordered/:id  
 DELETE /ordered/:id
