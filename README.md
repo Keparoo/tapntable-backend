@@ -26,7 +26,8 @@ User currently includes these fields:
 * display_name (Name displayed on frontend interface and printed checks)
 * first_name
 * last_name
-* role_id (role determining POS response and allowed actions)
+* role (role determining POS response and allowed actions: This is an enum)
+* is_clocked_in
 * is_active (Boolean, to mark employees no longer active)
 
 Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. The way that it is implemented in every system I've ever seen is by using a PIN. A user "logs in" upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders.
@@ -39,42 +40,20 @@ Users that don't create orders (cooks for instance) only punch in and out. They 
 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
 
-Thus, I'm working out some authentication questions:
-Logging in from an office computer or remotely a username/password makes sense.
-
-From the server/bartender terminals I'm trying to figure out the best plan. Here are a few possible solutions:
-
-1. The terminals are "set up once" and always have a token to access the database
-    * Only access from the office or from another location would require login
-    * This is what appears to be happening at most restaurants currently. Sometimes this is a closed system with the database hosted locally, but now more systems use cloud databases.
-    * The server/bar terminals are typically always running the software, and auto-boot upon powerup.
-    * Users never use the local operating system.
-    * Servers/Bartenders simply enter their unique pin to clock-in/create checks
-    * Perhaps a token could be refreshed regulary (see option 3)
-    * This would be the easiest. Are there potential security issues?
-
-2. When the manager closes a day the token is refreshed and is now ready for the next day
-    * This would allow an employee to log in even if a manager hasn't logged in to start the day
-    * The system generates a new token and stores it locally.
-    * Now that the system has been started, employees can access with their pin
-    * The employee role will decide the actions of the POS and what they can do
-    * It would be helpful if this could be done on one terminal and all server terminals would "logged in"
-    * Could cause problems if a user with inadequate access has to start a day
-
-Update: My current thinking is to separate the idea of authenticating to the database and authenticating to the user terminals. Currently, the backend is set up with username/password authentication that creates a token that contains username and roleId. I'm thinking that the terminals can act as a "manager" and be given a manager's token. The interface will query a user's roleId and allow or disallow functionality based on that. To interact with the terminals a user has a pin.  
-If a user needed to access the backend from somewhere other than a restaurant terminal, they would need to authenicate with username and password.
+Each terminal must be logged into once a day with username and password. This will set a token which expires in 23 hours. Employees using the terminals will be identified by their pin to determine what they see and can do on a terminal. The token that was set (probably by a manger) will be the token used for all db queries from that terminal. In practice, a manager could refresh the tokens when performing the nightly "close-day" functions so that the terminals are ready to go in the morning without the need of the manager to be there.
 
 ## Routes
 ### Auth Routes
 POST /auth/token {username, password} => { token }  
 * All fields are required
 * Returns JWT token which can be used to authenticate further requests  
-* Token fields: { username, RoleId, iat }  
+* Token fields: { username, role, iat, exp }  
+* Roles are: { 'trainee', 'employee', 'cook', 'host', 'server', 'bartender', 'head-server', 'bar-manager', 'chef', 'manager', 'owner' }
 * Authorization required: none
 
-POST /auth/register { username, password, pin, displayName, firstName, lastName, roleId } => { token }  
+POST /auth/register { username, password, pin, displayName, firstName, lastName, role } => { token }  
 * All fields are required
-* roleId is set to 1 automatically (trainee: lowest auth level) 
+* role is set to trainee: lowest auth level
 * isActive is set to true automatically upon creation  
 * Returns JWT token which can be used to authenticate further requests  
 * Authorization required: none
@@ -86,43 +65,59 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 * authenticateJWT
 * ensureLoggedIn
 * ensureManager
-  * must have roleId >= 10 (Manager or Owner)
+  * must have role (Manager or Owner)
 * ensureCorrectUserOrManager
   * must be same user or have roleId >= 10 (Manager or Owner)
 
 **All middleware tests currently pass**
   
 ### User Routes
-POST /users {username, password, pin, displayName, firstName, lastName, roleId, isActive} => { token }
-* Required fields: username, password, pin, displayName, firstName, lastName, roleId
+POST /users {username, password, pin, displayName, firstName, lastName, role} => { token }
+* Required fields: username, password, pin, displayName, firstName, lastName, role
+* role defaults to 'trainee' if the value is omitted
 * isActive is optional. If ommitted, defaults to true
+* isClockedIn is automatically set to false
 * Returns a JWT token which can be used to authenticate further requests
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
-GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isActive }, ... ] }
+GET /users => { users: [ {id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }, ... ] }
 * Returns a list of all users
   * Optional search-query: firstName, Filters for items like firstName, case insensitive
   * Optional search-query: lastName, Filters for items like lastName, case insensitive
   * Optional search-query: displayName, Filters for items like display_name, case insensitive
-  * Optional search-query: roleId: Filters for items with role_id that matches
+  * Optional search-query: role: Filters for items with role that matches
+  * Optional search-query: isClockedIn: Filters for items with is_clocked_in that matches
   * Optional search-query: isActive: Filters for items with is_active that matches
-* Authorization required: manager or owner (roleId = 10 or 11)
+  * Optional search-query: desc: List returned is sorted by lastName, desc=true reverses sort
+* Authorization required: manager or owner
 
-GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isActive }
-* Returns user record for requested user
+GET /users/:username => { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
+* Returns user record for requested user matching username
 * Throws NotFoundError if user not found
-* Authorization required: same user-as-:username or manager or owner (roleId = 10 or 11)
+* Authorization required: same user-as-:username or manager or owner
+
+POST /users/pin => { pin: {user} }
+* This route is for a user to locally identify themselves with a pin. The device must already have a valid token stored
+* Required: pin
+* Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
+* Authorization required: same user-as-:username or manager or owner
+
+POST /users/timeclock => { pin: {user} }
+* This is a special route for updating the isClockedIn field in the users table
+* Required: { userId, isClockedIn }
+* Returns: { user: { id, pin, displayName, role, isClockedIn, isActive } }
+* Authorization required: same user-as-:username or manager or owner
 
 PATCH /users/:username => {user}
-* Data can include: { username, password, pin, displayName, firstName, lastName, roleId, isActive }
-* Returns { id, username, pin, displayName, firstName, lastName, roleId, isActive }
+* Data can include: { username, password, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
+* Returns { id, username, pin, displayName, firstName, lastName, roleId, isClockedIn, isActive }
 * Throws NotFoundError if user not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 DELETE /users/:username => { deleted: username }
 * Returns the username deleted
 * Throws NotFoundError if user not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 * **Once a user has any activity (first time punching in) deleting should not be allowed: instead is_active=false**
 
 **All tests for user model and user routes pass**  

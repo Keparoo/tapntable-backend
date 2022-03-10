@@ -91,17 +91,14 @@ router.get('/', ensureManager, async function(req, res, next) {
   }
 });
 
-/** GET /pin => {pin: { user }}
+/** POST /pin => {pin: { user }}
  * 
  * This route is for a user to locally identify themselves on a device.
  * The device must be logged in alread with username and password and thus must already have a token.
  * This route is used for users punching in or accessing the terminal for orders
  *
- * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
- * 
  * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
  * 
- *
  * Authorization required: same user-as-:username or manager or owner
  **/
 
@@ -117,12 +114,9 @@ router.post('/pin', ensureCorrectUserOrManager, async function(req, res, next) {
 /** POST /timeclock => {pin: { user }}
  * 
  * This is a special route for updating the isClockedIn field in the users table
- *
- * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
- * 
- * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
  * 
  * Required: { userId, isClockedIn }
+ * Returns: {user: { id, pin, displayName, role, isClockedIn, isActive }}
  * 
  * Authorization required: same user-as-:username or manager or owner
  **/
@@ -149,11 +143,8 @@ router.post('/timeclock', ensureCorrectUserOrManager, async function(
 
 /** GET /[username] => {user: { user }}
  *
- * user is { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }
- * 
  * Returns: {user: { id, username, pin, displayName, firstName, lastName, role, isClockedIn, isActive }}
  * 
- *
  * Authorization required: same user-as-:username or 'manager' or 'owner'
  **/
 
