@@ -162,7 +162,7 @@ COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
 CREATE TABLE mod_categories (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(20)
+  name VARCHAR(20) NOT NULL
 )
 COMMENT ON TABLE mod_categories IS 'Category names for mods'
 
@@ -170,13 +170,13 @@ COMMENT ON TABLE mod_categories IS 'Category names for mods'
 
 CREATE TABLE mods (
 id SERIAL PRIMARY KEY,
-name TEXT,
+name TEXT NOT NULL,
 mod_cat_id INTEGER REFERENCES mod_categories,
-mod_price NUMERIC
+mod_price NUMERIC(6,2)
 )
 COMMENT ON TABLE mods IS 'Available mods for ordered items'
 
---Many to many join table for ordered_items and mods
+--Many to many join table between ordered_items and mods
 
 CREATE TABLE ordered_items_mods (
   ordered_items_id INTEGER REFERENCES ordered_items,
@@ -189,13 +189,13 @@ COMMENT ON TABLE ordered_item_mod IS 'Many to many join table for ordered_items 
 
 CREATE TABLE mod_groups (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(20),
+  name VARCHAR(20) NOT NULL,
   num_choices INTEGER CHECK (subtotal >= 0),
   is_required BOOLEAN DEFAULT FALSE
 )
 COMMENT ON TABLE mod_groups_details IS 'Name and behavior of a mod group'
 
---Many to may join between items and mod_groups
+--Many to many join table between items and mod_groups
 
 CREATE TABLE items_mod_groups (
   item_id INTEGER REFERENCES items,
@@ -204,7 +204,7 @@ CREATE TABLE items_mod_groups (
 )
 COMMENT ON TABLE item_mods IS 'Many to may join between items and mod_groups'
 
---Many to manyu join Table for mods and mod_groups
+--Many to many join table between mods and mod_groups
 
 CREATE TABLE mods_mod_groups (
   mods_id INTEGER REFERENCES mods,
