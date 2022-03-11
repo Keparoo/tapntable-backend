@@ -213,117 +213,272 @@ VALUES ('Chicken Wings',
 11.99,
 8,
 2),
-('Coke',
-NULL,
-.99,
-9,
-4),
-('Diet Coke',
-NULL,
-.99,
-9,
-4),
-('Sprite',
-NULL,
-.99,
-9,
-4),
-('Lemonade',
-NULL,
-.99,
-9,
-4),
-('Ice Tea',
-NULL,
-.99,
-9,
-4),
-('Cosmopolitan',
-NULL,
-11,
-12,
-3),
-('Lemon Drop Martini',
-NULL,
-10,
-12,
-3),
-('Espresso Martini',
-NULL,
-12,
-12,
-3),
-('Dark and Stormy',
-NULL,
-9,
-12,
-3),
-('Long Island Ice Tea',
-NULL,
-9,
-12,
-3),
-('Boschetto Pinot Grigio Glass',
-NULL,
-9,
-11,
-3),
-('La Crema Chardonnay Glass',
-NULL,
-9,
-11,
-3),
-('14 Hands Merlot Glass',
-NULL,
-8,
-11,
-3),
-('Wildhorse Pinot Noir Glass',
-NULL,
-8,
-11,
-3),
-('Sterling Cabernet Glass',
-NULL,
-8,
-11,
-3),
-('Curious Traveler',
-NULL,
-4,
-10,
-3),
-('Sam Adams',
-NULL,
-5,
-10,
-3),
-('Blue Moon',
-NULL,
-6,
-10,
-3),
-('Whales Tale',
-NULL,
-5,
-10,
-3),
-('Mayflower Porter',
-NULL,
-6,
-10,
-3);
+('Coke', NULL, .99, 9, 4),
+('Diet Coke', NULL, .99, 9, 4),
+('Sprite', NULL, .99, 9, 4),
+('Lemonade', NULL, .99, 9, 4),
+('Ice Tea', NULL, .99, 9, 4),
+
+('Cosmopolitan', NULL, 11, 12, 3),
+('Lemon Drop Martini', NULL, 10, 12, 3),
+('Espresso Martini', NULL, 12, 12, 3),
+('Dark and Stormy', NULL, 9, 12, 3),
+('Long Island Ice Tea', NULL, 9, 12, 3),
+
+('Boschetto Pinot Grigio Glass', NULL, 9, 11, 3),
+('La Crema Chardonnay Glass', NULL, 9, 11, 3),
+('14 Hands Merlot Glass', NULL, 8, 11, 3),
+('Wildhorse Pinot Noir Glass', NULL, 8, 11, 3),
+('Sterling Cabernet Glass', NULL, 8, 11, 3),
+
+('Curious Traveler', NULL, 4, 10, 3),
+('Sam Adams', NULL, 5, 10, 3),
+('Blue Moon', NULL, 6, 10, 3),
+('Whales Tale', NULL, 5, 10, 3),
+('Mayflower Porter', NULL, 6, 10, 3);
 
 -- INSERT INTO payment_types (id, type)
 -- VALUES (1, 'Cash'), (2, 'MC'), (3, 'Visa'), (4, 'Amex'), (5, 'Discover'), (6, 'Apple-Pay'), (7, 'Google-Pay'), (8, 'Venmo');
 
--- INSERT INTO restaurant_info (id, restaurant_name, address, city, state, zip_code, phone_number, website, state_tax_rate)
--- VALUES ('1a',
--- 'The Duck Inn Pub',
--- '447 Main St',
--- 'Hyannis',
--- 'MA',
--- '02601',
--- '508-827-7343',
--- 'www.duckinnpub.com',
--- 6.25);
+INSERT INTO mod_categories (id, name)
+VALUES (1, 'Food'), (2, 'Drink'), (3, 'Misc');
+
+INSERT INTO mods (name, mod_cat_id, mod_price)
+VALUES ('Rare', 1, NULL), --1
+('Med-Rare', 1, NULL),
+('Med', 1, NULL),
+('Med-Well', 1, NULL),
+('Well', 1, NULL),
+
+('American Cheese', 1, .99), --6
+('Cheddar', 1, .99),
+('Swiss', 1, .99),
+('Mozzarella', 1, .99),
+('Bacon', 1, .99),
+('Portabello Mushrooms', 1, .99),
+('Sauteed Onions', 1, .99),
+('Sauteed Peppers', 1, .99),
+
+('Fries', 1, NULL), --14
+('Baked Potato', 1, NULL),
+('Mashed Potato', 1, NULL),
+('Rice', 1, NULL),
+('Double Veg', 1, NULL),
+
+('Broccoli', 1, NULL), --19
+('Corn', 1, NULL),
+('Spinach', 1, NULL),
+('Carrots', 1, NULL),
+('Double Starch', 1, NULL),
+
+('Italian Dressing', 1, NULL), --24
+('Balsamic Vinaigrette', 1, NULL),
+('Raspberry Vinaigrette', 1, NULL),
+('No Dressing', 1, NULL),
+
+('Plain', 1, NULL), --28
+('Mild', 1, NULL),
+('Hot', 1, NULL),
+('Four-Alarm', 1, NULL),
+('Cajun-Garlic', 1, NULL),
+
+('Add Chicken', 1, 4.99), --33
+('Add Shrimp', 1, 7.99),
+('Add Lobster', 1, 9.99),
+('Add Steak Tips', 1, 6.99),
+('Add Crab Cake', 1, 6.99),
+
+('Gluten Free', 1, NULL), --38
+('Vegetarian', 1, NULL),
+('No Garlic', 1, NULL),
+('No Onion', 1, NULL),
+('No Anchovy', 1, NULL),
+('No Bacon', 1, NULL),
+('No Croutons', 1, NULL),
+('No Bread', 1, NULL),
+('No Lettuce', 1, NULL),
+('No Tomato', 1, NULL),
+('No Olive', 1, NULL),
+
+('As App', 1, NULL), --49
+('As Entree', 1, NULL),
+('Split Plate', 1, NULL),
+
+('Tonic', 2, NULL), --52
+('Soda', 2, NULL),
+('Water', 2, NULL),
+('Coke', 2, NULL),
+('Diet Coke', 2, NULL),
+('7-Up', 2, NULL),
+('Red Bull', 2, 2.00),
+('Rocks on Side', 2, NULL),
+('No Ice', 2, NULL),
+('Extra Ice', 2, NULL),
+
+('Olive', 2, NULL), --62
+('Onion', 2, NULL),
+('Twist', 2, NULL),
+('Lemon', 2, NULL),
+('Lime', 2, NULL),
+('Orange', 2, NULL),
+('Extra Olive', 2, NULL),
+('Extra Onion', 2, NULL),
+('Extra Lemon', 2, NULL),
+('Extra Lime', 2, NULL),
+('Extra Orange', 2, NULL),
+
+('Beer Glass', 2, NULL), --73
+('Tall Glass', 2, NULL),
+('Rocks Glass', 2, NULL),
+('Shot Glass', 2, NULL),
+
+('Takeout', 3, NULL), --77
+('Utensils', 3, NULL),
+('Extra Napkins', 3, NULL),
+('Paper Plates', 3, NULL),
+
+('NO', 3, NULL), --81
+('Extra', 3, NULL),
+('**Allergy**', 3, NULL),
+('**See Server**', 3, NULL);
+
+INSERT INTO mod_groups (id, name, num_choices, is_required)
+VALUES (1, 'Temp', 1, TRUE),
+(2, 'Burger Add-Ons', 1, TRUE),
+(3, 'Starch', 1, TRUE),
+(4, 'Vegetable', 1, TRUE),
+(5, 'Dressing', 1, TRUE),
+(6, 'Salad Mods', NULL, FALSE),
+(7, 'Wing Temp', 1, TRUE),
+(8, 'Salad Add-Ons', 1, FALSE),
+(9, 'Food', NULL, FALSE),
+(10, 'Drink', NULL, FALSE),
+(11, 'Takeout', NULL, FALSE),
+(12, 'Misc', NULL, FALSE);
+
+INSERT INTO items_mod_groups(item_id, mod_groups_id)
+VALUES(13, 1), --Angry Angus, Temp
+(19, 1), --Sirloin Tips, Temp
+(24, 1), --Rib Eye Steak, Temp
+(13, 3), --Angry Angus, Starch
+(19, 3), --Sirloin Tips, Starch
+(24, 3), --Rib Eye Steak, Starch
+(17, 3), --The Cape Codder, Starch
+(20, 3), --Baked Stuffed Haddock, Starch
+(21, 3), --Fish & Chips, Starch
+(9, 8), --Caesar Salad, Salad Mods
+(10, 8), --Walnut Chicken Salad, Salad Mods
+(11, 8), --The Wedge Salad, Salad Mods
+(11, 6), --The Wedge Salad, Salad Dressing
+(12, 8); --Baby Duck, Salad Mods
+
+INSERT INTO mods_mod_groups(mods_id, mod_groups_id)
+VALUES(1, 1), --Rare, Temp
+(2, 1), --Med-Rare, Temp
+(3, 1), --Med, Temp
+(4, 1), --Med-Well, Temp
+(5, 1), --Well, Temp
+
+(6, 2), --American Cheese, Burger Cheese
+(7, 2), --Cheddar, Burger Cheese
+(8, 2), --Swiss, Burger Cheese
+(9, 2), --Mozarella, Burger Cheese
+(10, 2), --Bacon, Burger Cheese
+(11, 2), --Portabello Mushrooms, Burger Cheese
+(12, 2), --Sauteed Onions, Burger Cheese
+(13, 2), --Sauteed Peppers, Burger Cheese
+
+(14, 3), --Fries, Starch
+(15, 3), --Baked Potato, Starch
+(16, 3), --Mashed Potato, Starch
+(17, 3), --Rice, Starch
+(18, 3), --Double Veg, Starch
+
+(19, 4), --Broccoli, Vegetable
+(20, 4), --Corn, Vegetable
+(21, 4), --Spinach, Vegetable
+(22, 4), --Carrots, Vegetable
+(23, 4), --Double Starch, Vegetable
+
+(24, 5), --Italian Dressing, Dressing
+(25, 5), --Balsamic Vinaigrette, Dressing
+(26, 5), --Rasperry Vinaigrette, Dressing
+(27, 5), --No Dressing, Dressing
+
+(24, 6), --Italian Dressing, Salad Mods
+(25, 6), --Balsamic Vinaigrette, Salad Mods
+(26, 6), --Rasperry Vinaigrette, Salad Mods
+(27, 6), --No Dressing, Salad Mods
+(41, 6), --No Onion, Salad Mods
+(42, 6), --No Anchovy, Salad Mods
+(43, 6), --No Bacon, Salad Mods
+(44, 6), --No Croutons, Salad Mods
+(46, 6), --No Lettuce, Salad Mods
+(47, 6), --No Tomato, Salad Mods
+(48, 6), --No Olive, Salad Mods
+
+(28, 7), --Plain, Wing-Temp
+(29, 7), --Mild, Wing-Temp
+(30, 7), --Hot, Wing-Temp
+(31, 7), --Four-Alarm, Wing-Temp
+(32, 7), --Cajun-Garlic, Wing-Temp
+
+(33, 8), --Add Chicken, Salad Add-Ons
+(34, 8), --Add Shrimp, Salad Add-Ons
+(35, 8), --Add Lobster, Salad Add-Ons
+(36, 8), --Add Steak Tips, Salad Add-Ons
+(37, 8), --Add Crab Cake, Salad Add-Ons
+
+(38, 9), --Gluten Free, Food
+(39, 9), --Vegetarian, Food
+(40, 9), --No Garlic, Food
+(41, 9), --No Onion, Food
+(42, 9), --No Anchovy, Food
+(43, 9), --No Bacon, Food
+(44, 9), --No Croutons, Food
+(45, 9), --No Bread, Food
+(46, 9), --No Lettuce, Food
+(47, 9), --No Tomato, Food
+(48, 9), --No Olive, Food
+
+(49, 9), --As App, Food
+(50, 9), --As Entree, Food
+(51, 9), --Split Plate, Food
+
+(52, 10), --Tonic, Drink
+(53, 10), --Soda, Drink
+(54, 10), --Water, Drink
+(55, 10), --Coke, Drink
+(56, 10), --Diet Coke, Drink
+(57, 10), --7-Up, Drink
+(58, 10), --Red Bull, Drink
+(59, 10), --Rocks on Side, Drink
+(60, 10), --No Ice, Drink
+(61, 10), --Extra Ice, Drink
+
+(62, 10), --Olive, Drink
+(63, 10), --Onion, Drink
+(64, 10), --Twist, Drink
+(65, 10), --Lemon, Drink
+(66, 10), --Lime, Drink
+(67, 10), --Orange, Drink
+(68, 10), --Extra Olive, Drink
+(69, 10), --Extra Onion, Drink
+(70, 10), --Extra Lemon, Drink
+(71, 10), --Extra Lime, Drink
+(72, 10), --Extra Orange, Drink
+
+(73, 10), --Beer Glass, Drink
+(74, 10), --Tall Glass, Drink
+(75, 10), --Rocks Glass, Drink
+(76, 10), --Shot Glass, Drink
+
+(77, 11), --Takeout, Takeout
+(78, 11), --Utensils, Takeout
+(79, 11), --Extra Napkins, Takeout
+(80, 11), --Paper Plates, Takeout
+
+(81, 12), --NO, Misc
+(82, 12), --Extra, Misc
+(83, 12), --**Allergy**, Misc
+(84, 12); --**See Server**, Misc
