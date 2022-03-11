@@ -318,29 +318,35 @@ VALUES ('Rare', 1, NULL), --1
 ('Olive', 2, NULL), --62
 ('Onion', 2, NULL),
 ('Twist', 2, NULL),
+('Cherry', 2, NULL),
 ('Lemon', 2, NULL),
 ('Lime', 2, NULL),
 ('Orange', 2, NULL),
 ('Extra Olive', 2, NULL),
 ('Extra Onion', 2, NULL),
+('Extra Cherry', 2, NULL),
 ('Extra Lemon', 2, NULL),
 ('Extra Lime', 2, NULL),
 ('Extra Orange', 2, NULL),
 
-('Beer Glass', 2, NULL), --73
+('Beer Glass', 2, NULL), --75
 ('Tall Glass', 2, NULL),
 ('Rocks Glass', 2, NULL),
 ('Shot Glass', 2, NULL),
 
-('Takeout', 3, NULL), --77
+('Takeout', 3, NULL), --79
 ('Utensils', 3, NULL),
 ('Extra Napkins', 3, NULL),
 ('Paper Plates', 3, NULL),
 
-('NO', 3, NULL), --81
+('NO', 3, NULL), --83
 ('Extra', 3, NULL),
 ('**Allergy**', 3, NULL),
-('**See Server**', 3, NULL);
+('**See Server**', 3, NULL),
+
+('Soup', 1, NULL), --87
+('Salad', 1, NULL),
+('Fries', 1, NULL);
 
 INSERT INTO mod_groups (id, name, num_choices, is_required)
 VALUES (1, 'Temp', 1, TRUE),
@@ -354,7 +360,8 @@ VALUES (1, 'Temp', 1, TRUE),
 (9, 'Food', NULL, FALSE),
 (10, 'Drink', NULL, FALSE),
 (11, 'Takeout', NULL, FALSE),
-(12, 'Misc', NULL, FALSE);
+(12, 'Misc', NULL, FALSE),
+(13, 'Side Dishes', 2, TRUE);
 
 INSERT INTO items_mod_groups(item_id, mod_groups_id)
 VALUES(13, 1), --Angry Angus, Temp
@@ -459,26 +466,32 @@ VALUES(1, 1), --Rare, Temp
 (62, 10), --Olive, Drink
 (63, 10), --Onion, Drink
 (64, 10), --Twist, Drink
-(65, 10), --Lemon, Drink
-(66, 10), --Lime, Drink
-(67, 10), --Orange, Drink
-(68, 10), --Extra Olive, Drink
-(69, 10), --Extra Onion, Drink
-(70, 10), --Extra Lemon, Drink
-(71, 10), --Extra Lime, Drink
-(72, 10), --Extra Orange, Drink
+(65, 10), --Cherry, Drink
+(66, 10), --Lemon, Drink
+(67, 10), --Lime, Drink
+(68, 10), --Orange, Drink
+(69, 10), --Extra Olive, Drink
+(70, 10), --Extra Onion, Drink
+(71, 10), --Extra Cherry, Drink
+(72, 10), --Extra Lemon, Drink
+(73, 10), --Extra Lime, Drink
+(74, 10), --Extra Orange, Drink
 
-(73, 10), --Beer Glass, Drink
-(74, 10), --Tall Glass, Drink
-(75, 10), --Rocks Glass, Drink
-(76, 10), --Shot Glass, Drink
+(75, 10), --Beer Glass, Drink
+(76, 10), --Tall Glass, Drink
+(77, 10), --Rocks Glass, Drink
+(78, 10), --Shot Glass, Drink
 
-(77, 11), --Takeout, Takeout
-(78, 11), --Utensils, Takeout
-(79, 11), --Extra Napkins, Takeout
-(80, 11), --Paper Plates, Takeout
+(79, 11), --Takeout, Takeout
+(80, 11), --Utensils, Takeout
+(81, 11), --Extra Napkins, Takeout
+(82, 11), --Paper Plates, Takeout
 
-(81, 12), --NO, Misc
-(82, 12), --Extra, Misc
-(83, 12), --**Allergy**, Misc
-(84, 12); --**See Server**, Misc
+(83, 12), --NO, Misc
+(84, 12), --Extra, Misc
+(85, 12), --**Allergy**, Misc
+(86, 12), --**See Server**, Misc
+
+(87, 13), --Soup, Side Dishes
+(88, 13), --Salad, Side Dishes
+(89, 13); --Fries, Side Dishes
