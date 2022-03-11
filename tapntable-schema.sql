@@ -158,21 +158,57 @@ is_void BOOLEAN DEFAULT FALSE
 );
 COMMENT ON TABLE payments IS 'List of payment. A check can have more than one';
 
---Static Data about a restaurant
+--Category names of item mods
 
--- Static data moved to json file: restaurantConfig.json
--- CREATE TABLE restaurant_info (
--- id VARCHAR(25) PRIMARY KEY,
--- restaurant_name VARCHAR(25),
--- address VARCHAR(25),
--- city VARCHAR(25),
--- state VARCHAR(25),
--- zip_code VARCHAR(10),
--- phone_number VARCHAR(13),
--- website VARCHAR(25),
--- local_tax_rate NUMERIC(6,3) CHECK (local_tax_rate >= 0 AND local_tax_rate <= 100),
--- state_tax_rate NUMERIC(6,3) CHECK (state_tax_rate >= 0 AND state_tax_rate <= 100),
--- federal_tax_rate NUMERIC(6,3) CHECK (federal_tax_rate >= 0 AND federal_tax_rate <= 100),
--- week_start_mon BOOLEAN NOT NULL DEFAULT TRUE
--- );
--- COMMENT ON TABLE restaurant_info IS 'Restaurant info including tax rates';
+CREATE TABLE mod_categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20)
+)
+COMMENT ON TABLE mod_categories IS 'Category names for mods'
+
+--Item modifications (item note, Med-Rare, No-Onions, etc)
+
+CREATE TABLE mods (
+id SERIAL PRIMARY KEY,
+name TEXT,
+mod_cat_id INTEGER REFERENCES mod_categories,
+mod_price NUMERIC
+)
+COMMENT ON TABLE mods IS 'Available mods for ordered items'
+
+--Many to many join table for ordered_items and mods
+
+CREATE TABLE ordered_items_mods (
+  ordered_items_id INTEGER REFERENCES ordered_items,
+  mods_id INTEGER REFERENCES mods,
+  PRIMARY KEY (ordered_items_id, mods_id)
+)
+COMMENT ON TABLE ordered_item_mod IS 'Many to many join table for ordered_items and mods'
+
+--Name and behavior of a mod group
+
+CREATE TABLE mod_groups (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20),
+  num_choices INTEGER CHECK (subtotal >= 0),
+  is_required BOOLEAN DEFAULT FALSE
+)
+COMMENT ON TABLE mod_groups_details IS 'Name and behavior of a mod group'
+
+--Many to may join between items and mod_groups
+
+CREATE TABLE items_mod_groups (
+  item_id INTEGER REFERENCES items,
+  mod_groups_id INTEGER REFERENCES mod_groups
+  PRIMARY KEY (item_id, mod_groups_id)
+)
+COMMENT ON TABLE item_mods IS 'Many to may join between items and mod_groups'
+
+--Many to manyu join Table for mods and mod_groups
+
+CREATE TABLE mods_mod_groups (
+  mods_id INTEGER REFERENCES mods,
+  mod_groups_id INTEGER REFERENCES mod_groups,
+  PRIMARY KEY (mods_id, mod_groups_id)
+)
+COMMENT ON TABLE mod_group IS 'Many to many join table for mods & mod_groups'
