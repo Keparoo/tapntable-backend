@@ -172,7 +172,8 @@ CREATE TABLE mods (
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL,
 mod_cat_id INTEGER REFERENCES mod_categories,
-mod_price NUMERIC(6,2)
+mod_price NUMERIC(6,2),
+is_active BOOLEAN DEFAULT TRUE
 );
 COMMENT ON TABLE mods IS 'Available mods for ordered items';
 
