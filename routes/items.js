@@ -110,7 +110,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  * Returns {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
  * Throws BadRequestError if name (case insensitive) is already in db
- * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: Authorization required: manager or owner
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
@@ -134,7 +134,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
 
 /** DELETE /:id  =>  { deleted: id }
  *
- * Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: manager or owner
  * 
  * Note: Items should not be deleted once they have been used in any way. Instead: * is_active=false
  * This route should only run if an item is created accidentally and needs to be immediately deleted.
