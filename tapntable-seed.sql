@@ -363,7 +363,7 @@ VALUES (1, 'Temp', 1, TRUE),
 (12, 'Misc', NULL, FALSE),
 (13, 'Side Dishes', 2, TRUE);
 
-INSERT INTO items_mod_groups(item_id, mod_groups_id)
+INSERT INTO items_mod_groups(item_id, mod_group_id)
 VALUES(13, 1), --Angry Angus, Temp
 (19, 1), --Sirloin Tips, Temp
 (24, 1), --Rib Eye Steak, Temp
@@ -379,7 +379,7 @@ VALUES(13, 1), --Angry Angus, Temp
 (11, 6), --The Wedge Salad, Salad Dressing
 (12, 8); --Baby Duck, Salad Mods
 
-INSERT INTO mods_mod_groups(mods_id, mod_groups_id)
+INSERT INTO mods_mod_groups(mod_id, mod_group_id)
 VALUES(1, 1), --Rare, Temp
 (2, 1), --Med-Rare, Temp
 (3, 1), --Med, Temp

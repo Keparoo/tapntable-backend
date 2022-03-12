@@ -180,9 +180,9 @@ COMMENT ON TABLE mods IS 'Available mods for ordered items';
 --Many to many join table between ordered_items and mods
 
 CREATE TABLE ordered_items_mods (
-  ordered_items_id INTEGER REFERENCES ordered_items,
-  mods_id INTEGER REFERENCES mods,
-  PRIMARY KEY (ordered_items_id, mods_id)
+  ordered_item_id INTEGER REFERENCES ordered_items,
+  mod_id INTEGER REFERENCES mods,
+  PRIMARY KEY (ordered_item_id, mod_id)
 );
 COMMENT ON TABLE ordered_items_mods IS 'Many to many join table for ordered_items and mods';
 
@@ -200,16 +200,16 @@ COMMENT ON TABLE mod_groups IS 'Name and behavior of a mod group';
 
 CREATE TABLE items_mod_groups (
   item_id INTEGER REFERENCES items,
-  mod_groups_id INTEGER REFERENCES mod_groups,
-  PRIMARY KEY (item_id, mod_groups_id)
+  mod_group_id INTEGER REFERENCES mod_groups,
+  PRIMARY KEY (item_id, mod_group_id)
 );
 COMMENT ON TABLE items_mod_groups IS 'Many to may join between items and mod_groups';
 
 --Many to many join table between mods and mod_groups
 
 CREATE TABLE mods_mod_groups (
-  mods_id INTEGER REFERENCES mods,
-  mod_groups_id INTEGER REFERENCES mod_groups,
-  PRIMARY KEY (mods_id, mod_groups_id)
+  mod_id INTEGER REFERENCES mods,
+  mod_group_id INTEGER REFERENCES mod_groups,
+  PRIMARY KEY (mod_id, mod_group_id)
 );
 COMMENT ON TABLE mods_mod_groups IS 'Many to many join table for mods & mod_groups';

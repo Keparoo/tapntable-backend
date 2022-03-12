@@ -6,7 +6,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for items. */
 
-class Item {
+class Mod {
   /** Create a mod (from data), update db, return new mod data.
    *
    * Required fields: { name, mod_cat_id }
@@ -97,7 +97,7 @@ class Item {
 
     if (modPrice) {
       queryValues.push(modPrice);
-      whereExpressions.push(`m.price = $${queryValues.length}`);
+      whereExpressions.push(`m.mod_price = $${queryValues.length}`);
     }
 
     if (isActive !== undefined) {
@@ -125,7 +125,7 @@ class Item {
      **/
 
   static async get(id) {
-    const itemRes = await db.query(
+    const modRes = await db.query(
       `SELECT m.id,
               m.name,
               m.mod_cat_id AS "modCatId",
@@ -195,6 +195,9 @@ class Item {
   }
 
   /** Delete given mod from database; returns undefined.
+   * 
+   * Mods should not be deleted from database after entries have been posted
+   * Instead mod should be marked isActive=false
    *
    * Throws NotFoundError if item not found.
    **/
