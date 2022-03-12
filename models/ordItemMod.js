@@ -6,7 +6,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for adding a mod to an ordered item. */
 
-class OrderedItemMod {
+class OrdItemMod {
   /** Add a mod to an ordered item.
    *
    * Required fields: { ordItemId, modId }
@@ -63,7 +63,8 @@ class OrderedItemMod {
    * */
 
   static async findAll(searchFilters = {}) {
-    let query = `SELECT oi.item_id AS "OrdItemId",
+    let query = `SELECT oim.ordered_item_id AS "ordItemId",
+                        oi.item_id AS "itemId",
                         i.name AS "itemName",
                         oi.item_note AS "itemNote",
                         m.id AS "modId",
@@ -71,9 +72,9 @@ class OrderedItemMod {
                         m.mod_cat_id AS "modCatId",
                         m.mod_price AS "modPrice",
                         m.is_active AS "isActive"
-                   FROM ordered_items_mods o
-                   INNER JOIN mods m ON o.mod_id = m.id
-                   INNER JOIN ordered_items oi ON o.ordered_item_id = oi.id
+                   FROM ordered_items_mods oim
+                   INNER JOIN mods m ON oim.mod_id = m.id
+                   INNER JOIN ordered_items oi ON oim.ordered_item_id = oi.id
                    INNER JOIN items i on oi.item_id = i.id`;
     let whereExpressions = [];
     let queryValues = [];
@@ -96,7 +97,7 @@ class OrderedItemMod {
     }
 
     if (modName) {
-      queryValues.push(modName);
+      queryValues.push(`%${modName}%`);
       whereExpressions.push(`m.name ILIKE $${queryValues.length}`);
     }
 
@@ -127,7 +128,7 @@ class OrderedItemMod {
     return modsRes.rows;
   }
 
-  /** Given an ordItemId, return a list of all related mods.
+  /** Given an ordItemId, return a list of all mods.
      *
      * Returns { ordItemId, modId, modName, modCatId, modPrice, isActive, itemId, itemNote, itemName }
      *
@@ -233,4 +234,4 @@ class OrderedItemMod {
   }
 }
 
-module.exports = OrderedItemMod;
+module.exports = OrdItemMod;

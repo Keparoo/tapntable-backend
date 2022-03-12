@@ -20,6 +20,7 @@ const logsRoutes = require('./routes/logs');
 const ordersRoutes = require('./routes/orders');
 const orderedRoutes = require('./routes/ordItems');
 const modsRoutes = require('./routes/mods');
+const modItemRoutes = require('./routes/ordItemMods');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/ordered', orderedRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
 app.use('/mods', modsRoutes);
+app.use('/moditem', modItemRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
