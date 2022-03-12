@@ -28,10 +28,16 @@ class Item {
       throw new BadRequestError(`${duplicateCheck.rows[0]} already exists`);
 
     const result = await db.query(
-      `INSERT INTO items
-           (name, description, price, category_id, destination_id)
+      `INSERT INTO items (name, description, price, category_id, destination_id)
            VALUES ($1, $2, $3, $4, $5)
-           RETURNING id, name, description, price, category_id AS "categoryId", destination_id AS "destinationId", count, is_active AS "isActive"`,
+           RETURNING id,
+                      name,
+                      description,
+                      price,
+                      category_id AS "categoryId",
+                      destination_id AS "destinationId",
+                      count,
+                      is_active AS "isActive"`,
       [ name, description, price, categoryId, destinationId ]
     );
     const item = result.rows[0];
