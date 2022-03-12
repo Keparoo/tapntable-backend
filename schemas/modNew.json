@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/companyNew.schema.json",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "modCatId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "modPrice": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false,
+  "required": [ "name", "modCatId" ]
+}
