@@ -9,8 +9,8 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Mod {
   /** Create a mod (from data), update db, return new mod data.
    *
-   * Required fields: { name, mod_cat_id }
-   * Optional fields: { mod_price }
+   * Required fields: { name, modCatId }
+   * Optional fields: { modPrice }
    *
    * Returns { id, name, modCatId, modPrice, isActive}
    *
@@ -19,21 +19,23 @@ class Mod {
 
   static async create({ name, modCatId, modPrice }) {
     const duplicateCheck = await db.query(
-      `SELECT id
+      `SELECT name
 		       FROM mods
 		       WHERE name ILIKE $1`,
       [ name ]
     );
 
     if (duplicateCheck.rows[0])
-      throw new BadRequestError(`${duplicateCheck.rows[0]} already exists`);
+      throw new BadRequestError(
+        `${duplicateCheck.rows[0].name} already exists`
+      );
 
     const result = await db.query(
-      `INSERT INTO mods (name, modCatId, modPrice)
+      `INSERT INTO mods (name, mod_cat_id, mod_price)
            VALUES ($1, $2, $3)
            RETURNING id,
                       name,
-                      mod_cat_id AS "modCatId,
+                      mod_cat_id AS "modCatId",
                       mod_price AS "modPrice",
                       is_active AS "isActive"`,
       [ name, modCatId, modPrice ]
@@ -111,7 +113,7 @@ class Mod {
 
     // Finalize query and return results
 
-    query += ' ORDER BY i.name';
+    query += ' ORDER BY m.name';
     if (desc) query += ' DESC';
     const modsRes = await db.query(query, queryValues);
     return modsRes.rows;
@@ -161,14 +163,16 @@ class Mod {
   static async update(id, data) {
     if (data.name) {
       const duplicateCheck = await db.query(
-        `SELECT id
+        `SELECT name
              FROM mods
              WHERE name ILIKE $1`,
         [ data.name ]
       );
 
       if (duplicateCheck.rows[0])
-        throw new BadRequestError(`${duplicateCheck.rows[0]} already exists`);
+        throw new BadRequestError(
+          `${duplicateCheck.rows[0].id} already exists`
+        );
     }
 
     const { setCols, values } = sqlForPartialUpdate(data, {
@@ -199,7 +203,7 @@ class Mod {
    * Mods should not be deleted from database after entries have been posted
    * Instead mod should be marked isActive=false
    *
-   * Throws NotFoundError if item not found.
+   * Throws NotFoundError if mod is not found.
    **/
 
   static async remove(id) {
