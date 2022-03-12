@@ -39,9 +39,9 @@ class OrderedItemMod {
 
     const result = await db.query(
       `INSERT INTO ordered_items_mods (ordered_item_id, mod_id)
-           VALUES ($1, $2)
-           RETURNING ordered_item_id AS "orderedItemId",
-                      mod_id AS "modId"`,
+        VALUES ($1, $2)
+        RETURNING ordered_item_id AS "orderedItemId",
+                  mod_id AS "modId"`,
       [ ordItemId, modId ]
     );
     const mod = result.rows[0];
@@ -220,14 +220,16 @@ class OrderedItemMod {
   static async remove(ordItemId, modId) {
     const result = await db.query(
       `DELETE
-             FROM ordered_items_mods
-             WHERE ordered_item_id = $1 AND mod_id = $2
-             RETURNING ordered_item_id, mod_id`,
+      FROM ordered_items_mods
+      WHERE ordered_item_id = $1 AND mod_id = $2
+      RETURNING ordered_item_id AS "ordItemId",
+                mod_id AS "modId"`,
       [ ordItemId, modId ]
     );
-    const mod = result.rows[0];
+    const ordItemMod = result.rows[0];
 
-    if (!mod) throw new NotFoundError(`No ordered-item mod: ${id}`);
+    if (!ordItemMod)
+      throw new NotFoundError(`No ordered-item mod: ${ordItemId}, ${modId}`);
   }
 }
 
