@@ -38,7 +38,7 @@ app.use('/orders', ordersRoutes);
 app.use('/ordered', orderedRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
-app.use('/mods, modsRoutes');
+app.use('/mods', modsRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {

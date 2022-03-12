@@ -62,11 +62,11 @@ class Mod {
     let query = `SELECT m.id,
                         m.name,
                         m.mod_cat_id AS "modCatId",
-                        c.name AS "modCat,
+                        c.name AS "modCat",
                         m.mod_price AS "modPrice",
                         m.is_active AS "isActive"
                    FROM mods m INNER JOIN mod_categories c
-                   ON m.id = c.id`;
+                   ON m.mod_cat_id = c.id`;
     let whereExpressions = [];
     let queryValues = [];
 
@@ -89,7 +89,7 @@ class Mod {
 
     if (categoryId) {
       queryValues.push(categoryId);
-      whereExpressions.push(`m.category_id = $${queryValues.length}`);
+      whereExpressions.push(`m.mod_cat_id = $${queryValues.length}`);
     }
 
     if (modCat) {
@@ -182,7 +182,7 @@ class Mod {
     });
     const idVarIdx = '$' + (values.length + 1);
 
-    const querySql = `UPDATE items 
+    const querySql = `UPDATE mods 
                         SET ${setCols} 
                         WHERE id = ${idVarIdx} 
                         RETURNING id, 
@@ -209,7 +209,7 @@ class Mod {
   static async remove(id) {
     const result = await db.query(
       `DELETE
-             FROM items
+             FROM mods
              WHERE id = $1
              RETURNING id`,
       [ id ]

@@ -63,6 +63,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   const q = req.query;
   // Convert querystring to int
   if (q.categoryId) q.categoryId = +q.categoryId;
+  if (q.modPrice) q.modPrice = +q.modPrice;
   // Convert querystring to boolean
   if (q.isActive) q.isActive = q.isActive.toLowerCase() === 'true';
   if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
