@@ -19,6 +19,7 @@ const paymentsRoutes = require('./routes/payments');
 const logsRoutes = require('./routes/logs');
 const ordersRoutes = require('./routes/orders');
 const orderedRoutes = require('./routes/ordItems');
+const modsRoutes = require('./routes/mods');
 
 const app = express();
 
@@ -37,21 +38,22 @@ app.use('/orders', ordersRoutes);
 app.use('/ordered', orderedRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
+app.use('/mods, modsRoutes');
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
-	return next(new NotFoundError());
+  return next(new NotFoundError());
 });
 
 /** Generic error handler; anything unhandled goes here. */
 app.use(function(err, req, res, next) {
-	if (process.env.NODE_ENV !== 'test') console.error(err.stack);
-	const status = err.status || 500;
-	const message = err.message;
+  if (process.env.NODE_ENV !== 'test') console.error(err.stack);
+  const status = err.status || 500;
+  const message = err.message;
 
-	return res.status(status).json({
-		error: { message, status }
-	});
+  return res.status(status).json({
+    error: { message, status }
+  });
 });
 
 module.exports = app;
