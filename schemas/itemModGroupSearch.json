@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/companySearch.schema.json",
+  "type": "object",
+  "properties": {
+    "itemId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "itemName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "modGroupId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "modGroupName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "desc": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}

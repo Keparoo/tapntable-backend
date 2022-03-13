@@ -6,7 +6,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for adding a mod to an ordered item. */
 
-class itemModGroup {
+class ItemModGroup {
   /** Associate an item with a mod group.
    *
    * Required fields: { itemId, modGroupId }
@@ -66,7 +66,7 @@ class itemModGroup {
                         i.name AS "itemName",
                         img.mod_group_id AS "modGroupId",
                         mg.name AS "modGroupName"
-                  FROM item_mod_groups img
+                  FROM items_mod_groups img
                   INNER JOIN items i ON img.item_id = i.id
                   INNER JOIN mod_groups mg ON img.mod_group_id = mg.id`;
     let whereExpressions = [];
@@ -93,7 +93,7 @@ class itemModGroup {
     }
 
     if (modGroupName) {
-      queryValues.push(modGroupName);
+      queryValues.push(`%${modGroupName}%`);
       whereExpressions.push(`mg.name ILIKE $${queryValues.length}`);
     }
 
@@ -120,10 +120,9 @@ class itemModGroup {
     const groupRes = await db.query(
       `SELECT img.item_id AS "itemId",
               i.name AS "itemName",
-              img.mod_group_id AS "modGroupId",
-        FROM item_mod_groups img
+              img.mod_group_id AS "modGroupId"
+        FROM items_mod_groups img
         INNER JOIN items i ON img.item_id = i.id
-        INNER JOIN mod_groups mg ON img.mod_group_id = mg.id
         WHERE img.item_id = $1`,
       [ itemId ]
     );
@@ -195,9 +194,9 @@ class itemModGroup {
   static async remove(itemId, modGroupId) {
     const result = await db.query(
       `DELETE
-      FROM items_mod_groups
-      WHERE item_id = $1 AND mod_group_id = $2
-      RETURNING item_id AS "itemId",
+       FROM items_mod_groups
+       WHERE item_id = $1 AND mod_group_id = $2
+       RETURNING item_id AS "itemId",
                 mod_group_id AS "modGroupId"`,
       [ itemId, modGroupId ]
     );
@@ -208,4 +207,4 @@ class itemModGroup {
   }
 }
 
-module.exports = itemModGroup;
+module.exports = ItemModGroup;

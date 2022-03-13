@@ -6,7 +6,7 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for adding a mod to an ordered item. */
 
-class modsModGroup {
+class ModsModGroup {
   /** Add a mod to a mod group.
    *
    * Required fields: { modId, modGroupId }
@@ -209,4 +209,4 @@ class modsModGroup {
   }
 }
 
-module.exports = modsModGroup;
+module.exports = ModsModGroup;
