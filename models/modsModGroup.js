@@ -68,7 +68,7 @@ class ModsModGroup {
                         mg.name AS "modGroupName"
                   FROM mods_mod_groups mmg
                   INNER JOIN mods m ON mmg.mod_id = m.id
-                  INNER JOIN mod_groups mg ON img.mod_group_id = mg.id`;
+                  INNER JOIN mod_groups mg ON mmg.mod_group_id = mg.id`;
     let whereExpressions = [];
     let queryValues = [];
 
@@ -93,7 +93,7 @@ class ModsModGroup {
     }
 
     if (modGroupName) {
-      queryValues.push(modGroupName);
+      queryValues.push(`%${modGroupName}%`);
       whereExpressions.push(`mg.name ILIKE $${queryValues.length}`);
     }
 
@@ -186,9 +186,6 @@ class ModsModGroup {
   // }
 
   /** Delete given mod from database; returns undefined.
-   * 
-   * Mods should not be deleted from database after entries have been posted
-   * Instead mod should be marked isActive=false
    *
    * Throws NotFoundError if item not found.
    **/

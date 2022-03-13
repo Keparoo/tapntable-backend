@@ -23,6 +23,7 @@ const modsRoutes = require('./routes/mods');
 const modItemRoutes = require('./routes/ordItemMods');
 const modGroupsRoutes = require('./routes/modGroups');
 const itemModGroups = require('./routes/itemModGroups');
+const modsModGroups = require('./routes/modsModGroups');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/mods', modsRoutes);
 app.use('/moditem', modItemRoutes);
 app.use('/modgroups', modGroupsRoutes);
 app.use('/itemmodgroups', itemModGroups);
+app.use('/modsmodgroups', modsModGroups);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {
