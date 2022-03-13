@@ -95,7 +95,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 router.get('/:ordItemId', ensureLoggedIn, async function(req, res, next) {
   try {
-    const ordItemMods = await OrdItemMod.get(req.params.id);
+    const ordItemMods = await OrdItemMod.get(req.params.ordItemId);
     return res.json({ ordItemMods });
   } catch (err) {
     return next(err);
@@ -142,8 +142,8 @@ router.get('/:ordItemId', ensureLoggedIn, async function(req, res, next) {
 
 router.delete('/:ordItemId', ensureManager, async function(req, res, next) {
   try {
-    await OrdItem.remove(req.params.ordItemId, req.body.modId);
-    return res.json({ deleted: req.params.id });
+    await OrdItemMod.remove(req.params.ordItemId, req.body.modId);
+    return res.json({ deleted: `${req.params.ordItemId}-${req.body.modId}` });
   } catch (err) {
     return next(err);
   }

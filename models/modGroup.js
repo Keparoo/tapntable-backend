@@ -32,11 +32,11 @@ class ModGroup {
 
     const result = await db.query(
       `INSERT INTO mod_groups (name, num_choices, is_required)
-           VALUES ($1, $2, $3)
-           RETURNING id,
-                      name,
-                      num_choices AS "numChoices,
-                      is_required AS "isRequired"`,
+       VALUES ($1, $2, $3)
+       RETURNING id,
+                 name,
+                 num_choices AS "numChoices",
+                 is_required AS "isRequired"`,
       [ name, numChoices, isRequired ]
     );
     const modGroup = result.rows[0];
@@ -81,7 +81,7 @@ class ModGroup {
 
     if (isRequired !== undefined) {
       queryValues.push(isRequired);
-      whereExpressions.push(`is_required $${queryValues.length}`);
+      whereExpressions.push(`is_required = $${queryValues.length}`);
     }
 
     if (whereExpressions.length > 0) {
@@ -178,14 +178,14 @@ class ModGroup {
   static async remove(id) {
     const result = await db.query(
       `DELETE
-             FROM items
+             FROM mod_groups
              WHERE id = $1
              RETURNING id`,
       [ id ]
     );
-    const mod = result.rows[0];
+    const modGroup = result.rows[0];
 
-    if (!mod) throw new NotFoundError(`No mod: ${id}`);
+    if (!modGroup) throw new NotFoundError(`No mod group: ${id}`);
   }
 }
 

@@ -154,11 +154,11 @@ class OrdItemMod {
       [ ordItemId ]
     );
 
-    const mod = modRes.rows[0];
+    const mods = modRes.rows[0];
 
-    if (!mod) throw new NotFoundError(`No ordered-item mod: ${id}`);
+    if (!mods) throw new NotFoundError(`No ordered-item mod: ${ordItemId}`);
 
-    return mod;
+    return mods;
   }
 
   /** Update mod data with `data`.
