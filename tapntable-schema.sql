@@ -199,8 +199,8 @@ COMMENT ON TABLE mod_groups IS 'Name and behavior of a mod group';
 --Many to many join table between items and mod_groups
 
 CREATE TABLE items_mod_groups (
-  item_id INTEGER REFERENCES items,
-  mod_group_id INTEGER REFERENCES mod_groups,
+  item_id INTEGER REFERENCES items ON DELETE CASCADE, 
+  mod_group_id INTEGER REFERENCES mod_groups ON DELETE CASCADE,
   PRIMARY KEY (item_id, mod_group_id)
 );
 COMMENT ON TABLE items_mod_groups IS 'Many to may join between items and mod_groups';
@@ -208,8 +208,8 @@ COMMENT ON TABLE items_mod_groups IS 'Many to may join between items and mod_gro
 --Many to many join table between mods and mod_groups
 
 CREATE TABLE mods_mod_groups (
-  mod_id INTEGER REFERENCES mods,
-  mod_group_id INTEGER REFERENCES mod_groups,
+  mod_id INTEGER REFERENCES mods ON DELETE CASCADE,
+  mod_group_id INTEGER REFERENCES mod_groups ON DELETE CASCADE,
   PRIMARY KEY (mod_id, mod_group_id)
 );
 COMMENT ON TABLE mods_mod_groups IS 'Many to many join table for mods & mod_groups';
