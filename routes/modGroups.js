@@ -17,7 +17,7 @@ const modGroupSearchSchema = require('../schemas/modGroupSearch.json');
 
 const router = express.Router();
 
-/** POST /modgroups { modGroup }  => {modGroup: { modGroup }}
+/** POST /mods/modgroups/details { modGroup }  => {modGroup: { modGroup }}
  *
  * Required fields: { name }
  * Optional fields: { numChoices, isRequired }
@@ -45,7 +45,7 @@ router.post('/', ensureManager, async function(req, res, next) {
   }
 });
 
-/** GET /modgroups  =>
+/** GET /mods/modgroups/details  =>
  *   { modGroups: [ { id, name, numChoices, isRequired }, ...] }
  *
  * Can filter on provided optional search filters:
@@ -79,7 +79,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** GET /modgroups/:id  =>  {modGroup: { modGroup }}
+/** GET /mods/modgroups/details/:id  =>  {modGroup: { modGroup }}
  *
  *  modGroup is { id, name, numChoices, isRequired }
  * 
@@ -97,7 +97,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** PATCH /modgroups/:id { fld1, fld2, ... } => {modGroup: { modGroup }}
+/** PATCH /mods/modgroups/details/:id { fld1, fld2, ... } => {modGroup: { modGroup }}
  *
  * Updates modGroup data.
  *
@@ -126,7 +126,7 @@ router.patch('/:id', ensureManager, async function(req, res, next) {
   }
 });
 
-/** DELETE /modgroups/:id  =>  { deleted: id }
+/** DELETE /mods/modgroups/details/:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner
  * 

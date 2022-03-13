@@ -20,7 +20,7 @@ const ordItemModSearchSchema = require('../schemas/ordItemModSearch.json');
 
 const router = express.Router();
 
-/** POST /moditem { ordItem }  => {ordItem: { ordItem }}
+/** POST /ordered/mods { ordItem }  => {ordItem: { ordItem }}
  *
  * Required Items: { ordItemId, modId }
  *
@@ -45,7 +45,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
   }
 });
 
-/** GET /moditem  =>
+/** GET /ordered/mods  =>
  *   { ordItems: [ { id, name, modCatId, modCat, modPrice, isActive }, ...] }
  *
  * Can filter on provided optional search filters:
@@ -82,7 +82,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** GET /moditem/:id  =>  {ordItemMods: { ordItemMods }}
+/** GET /ordered/mods/:id  =>  {ordItemMods: { ordItemMods }}
  *
  * Given an ordItemId, return a list of all mods
  * 
@@ -102,7 +102,7 @@ router.get('/:ordItemId', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** PATCH /moditem/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
+/** PATCH /ordered/mods/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
  *
  * Patches ordered item data.
  *
@@ -130,7 +130,7 @@ router.get('/:ordItemId', ensureLoggedIn, async function(req, res, next) {
 //   }
 // });
 
-/** DELETE /moditem/:id  =>  { deleted: id }
+/** DELETE /ordered/mods/:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner
  * The route takes the ordItemId, the modId is sent in the body

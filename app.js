@@ -38,17 +38,17 @@ app.use('/users/logs', logsRoutes);
 app.use('/users', usersRoutes);
 app.use('/items/categories', categoriesRoutes);
 app.use('/items/destinations', destinationsRoutes);
+app.use('/items/modgroups', itemModGroups);
 app.use('/items', itemsRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/ordered', orderedRoutes);
+app.use('/ordered/mods', modItemRoutes);
 app.use('/checks', checksRoutes);
 app.use('/payments', paymentsRoutes);
 app.use('/mods/categories', modCategories);
+app.use('/mods/modgroups/details', modGroupsRoutes);
+app.use('/mods/modgroups', modsModGroups);
 app.use('/mods', modsRoutes);
-app.use('/moditem', modItemRoutes);
-app.use('/modgroups', modGroupsRoutes);
-app.use('/itemmodgroups', itemModGroups);
-app.use('/modsmodgroups', modsModGroups);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function(req, res, next) {

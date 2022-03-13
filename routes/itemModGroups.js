@@ -20,7 +20,7 @@ const itemModGroupSearchSchema = require('../schemas/itemModGroupSearch.json');
 
 const router = express.Router();
 
-/** POST /itemmodgroup { itemModGroup }  => {itemModGroup: { itemModGroup }}
+/** POST /items/modgroups { itemModGroup }  => {itemModGroup: { itemModGroup }}
  *
  * Required itemModGroup: { itemId, modGroupId }
  *
@@ -45,7 +45,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
   }
 });
 
-/** GET /itemmodgroup  =>
+/** GET /items/modgroups  =>
  *   { ordItems: [ { itemId, itemName, modGroupId, modGroupName }, ...] }
  *
  * Can filter on provided optional search filters:
@@ -80,7 +80,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** GET /itemmodgroup/:id  =>  {itemModGroups: { itemModGroups }}
+/** GET /items/modgroups:id  =>  {itemModGroups: { itemModGroups }}
  *
  * Given an itemId, return a list of all itemModGroups
  * 
@@ -98,7 +98,7 @@ router.get('/:itemId', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** PATCH /itemmodgroup/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
+/** PATCH /items/modgroups/:id { fld1, fld2, ... } => {ordItem: { ordItem }}
  *
  * Patches ordered item data.
  *
@@ -126,7 +126,7 @@ router.get('/:itemId', ensureLoggedIn, async function(req, res, next) {
 //   }
 // });
 
-/** DELETE /itemmodgroup/:id  =>  { deleted: id }
+/** DELETE /items/modgroups/:id  =>  { deleted: id }
  *
  * Authorization required: manager or owner
  * The route takes the ordItemId, the modId is sent in the body
