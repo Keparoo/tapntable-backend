@@ -18,7 +18,7 @@ class Category {
    * 
    * */
 
-  static async create({ name }) {
+  static async create(name) {
     const duplicateCheck = await db.query(
       `SELECT name
 		   FROM item_categories

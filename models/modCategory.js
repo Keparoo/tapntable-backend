@@ -18,7 +18,7 @@ class ModCategory {
    * 
    * */
 
-  static async create({ name }) {
+  static async create(name) {
     const duplicateCheck = await db.query(
       `SELECT name
 		   FROM mod_categories
@@ -31,11 +31,12 @@ class ModCategory {
         `${duplicateCheck.rows[0]} already exists in database.`
       );
 
+    console.log('99999999', name);
+
     const result = await db.query(
-      `INSERT INTO mod_categories
-           (name)
-           VALUES ($1)
-           RETURNING id, name`,
+      `INSERT INTO mod_categories (name)
+       VALUES ($1)
+       RETURNING id, name`,
       [ name ]
     );
     const category = result.rows[0];

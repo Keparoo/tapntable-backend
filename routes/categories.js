@@ -38,7 +38,7 @@ router.post('/', ensureManager, async function(req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const newCat = req.body.trim();
+    const newCat = req.body.name.trim();
 
     const category = await Category.create(newCat);
     return res.status(201).json({ category });
