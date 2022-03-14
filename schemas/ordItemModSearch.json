@@ -11,6 +11,10 @@
       "type": "string",
       "minLength": 1
     },
+    "ordItemId": {
+      "type": "integer",
+      "minimum": 1
+    },
     "modCatId": {
       "type": "integer",
       "minimum": 1

@@ -49,12 +49,13 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  *   { ordItems: [ { id, name, modCatId, modCat, modPrice, isActive }, ...] }
  *
  * Can filter on provided optional search filters:
-   * - itemName  (will find case-insensitive, partial matches)
-   * - modName
-   * - modCatId
-   * - modPrice
-   * - isActive
-   * - desc
+ * - ordItemId
+ * - itemName  (will find case-insensitive, partial matches)
+ * - modName
+ * - modCatId
+ * - modPrice
+ * - isActive
+ * - desc
  *
  * Authorization required: logged into current user
  */
@@ -62,6 +63,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 router.get('/', ensureLoggedIn, async function(req, res, next) {
   const q = req.query;
   // Convert querystring to int
+  if (q.ordItemId) q.ordItemId = +q.ordItemId;
   if (q.modCatId) q.modCatId = +q.modCatId;
   if (q.modPrice) q.modPrice = +q.modPrice;
   // Convert querystring to boolean

@@ -52,6 +52,7 @@ class OrdItemMod {
   /** Find all orderedItemMods (optional filter on searchFilters).
    *
    * searchFilters (all optional):
+   * - ordItemId
    * - itemName  (will find case-insensitive, partial matches)
    * - modName
    * - modCatId
@@ -80,6 +81,7 @@ class OrdItemMod {
     let queryValues = [];
 
     const {
+      ordItemId,
       itemName,
       modName,
       modCatId,
@@ -104,6 +106,11 @@ class OrdItemMod {
     if (modCatId) {
       queryValues.push(modCatId);
       whereExpressions.push(`m.mod_cat_id = $${queryValues.length}`);
+    }
+
+    if (ordItemId) {
+      queryValues.push(ordItemId);
+      whereExpressions.push(`oim.ordered_item_id = $${queryValues.length}`);
     }
 
     if (modPrice) {
