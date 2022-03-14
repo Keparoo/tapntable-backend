@@ -58,14 +58,15 @@ class ModsModGroup {
    * - modGroupName
    * - desc
    *
-   * Returns [{ itemId, itemName, modGroupId, modGroupName }, ...]
+   * Returns [{ itemId, itemName, modGroupId, modGroupName, modPrice }, ...]
    * */
 
   static async findAll(searchFilters = {}) {
     let query = `SELECT mmg.mod_id AS "modId",
                         m.name AS "modName",
                         mmg.mod_group_id AS "modGroupId",
-                        mg.name AS "modGroupName"
+                        mg.name AS "modGroupName",
+                        m.mod_price AS "modPrice"
                   FROM mods_mod_groups mmg
                   INNER JOIN mods m ON mmg.mod_id = m.id
                   INNER JOIN mod_groups mg ON mmg.mod_group_id = mg.id`;
@@ -111,7 +112,7 @@ class ModsModGroup {
 
   /** Given a modGroupId, return a list of all related mods.
      *
-     * Returns { ordItemId, modId, modName, modCatId, modPrice, isActive, itemId, itemNote, itemName }
+     * Returns { itemId, itemName, modGroupId, modGroupName, modPrice }
      *
      * Throws NotFoundError if orderedItemId is not found.
      **/
@@ -121,7 +122,8 @@ class ModsModGroup {
       `SELECT mmg.mod_id AS "modId",
               m.name AS "modName",
               mmg.mod_group_id AS "modGroupId",
-              mg.name AS "modGroupName"
+              mg.name AS "modGroupName",
+              m.mod_price AS "modPrice"
         FROM mods_mod_groups mmg
         INNER JOIN mods m ON mmg.mod_id = m.id
         INNER JOIN mod_groups mg ON mmg.mod_group_id = mg.id

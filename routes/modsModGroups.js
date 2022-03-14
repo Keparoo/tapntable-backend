@@ -46,7 +46,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /mods/modgroups  =>
- *   { ordItems: [ { itemId, itemName, modGroupId, modGroupName }, ...] }
+ *   { ordItems: [ { itemId, itemName, modGroupId, modGroupName, modPrice }, ...] }
  *
  * Can filter on provided optional search filters:
    * - modId
@@ -84,7 +84,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  *
  * Given an modGroupId, return a list of all related mods
  * 
- * Returns: { ordItemId, modId, modName, modCatId, modPrice, isActive, itemId, itemNote, itemName }}
+ * Returns: {modsModGroups: { itemId, itemName, modGroupId, modGroupName, modPrice }}
  *
  * Authorization required: logged in
  */
