@@ -24,7 +24,7 @@ class OrdItem {
             seat_num,
             item_note)
            VALUES ($1, $2, $3, $4, $5)
-           RETURNING item_id AS "itemId", order_id AS "orderId", check_id AS "checkId", seat_num AS "seatNum", completed_at AS "completedAt", completed_by AS "completedBy", delivered_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
+           RETURNING id, item_id AS "itemId", order_id AS "orderId", check_id AS "checkId", seat_num AS "seatNum", completed_at AS "completedAt", completed_by AS "completedBy", delivered_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
       [ itemId, orderId, checkId, seatNum, itemNote ]
     );
     const ordItem = result.rows[0];
