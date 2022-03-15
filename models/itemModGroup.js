@@ -111,7 +111,7 @@ class ItemModGroup {
 
   /** Given an itemId, return a list of all related mods groups.
      *
-     * Returns { ordItemId, modId, modName, modCatId, modPrice, isActive, itemId, itemNote, itemName }
+     * Returns { itemId, itemName, modGroupId, modGroupName }
      *
      * Throws NotFoundError if orderedItemId is not found.
      **/
@@ -120,9 +120,11 @@ class ItemModGroup {
     const groupRes = await db.query(
       `SELECT img.item_id AS "itemId",
               i.name AS "itemName",
-              img.mod_group_id AS "modGroupId"
+              img.mod_group_id AS "modGroupId",
+              mg.name AS "modGroupName"
         FROM items_mod_groups img
         INNER JOIN items i ON img.item_id = i.id
+        INNER JOIN mod_groups mg ON img.mod_group_id = mg.id
         WHERE img.item_id = $1`,
       [ itemId ]
     );

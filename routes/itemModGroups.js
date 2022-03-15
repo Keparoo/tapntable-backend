@@ -84,7 +84,7 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
  *
  * Given an itemId, return a list of all itemModGroups
  * 
- * Returns: { ordItemId, modId, modName, modCatId, modPrice, isActive, itemId, itemNote, itemName }}
+ * Returns: { itemId, itemName, modGroupId, modGroupName }}
  *
  * Authorization required: logged in
  */
