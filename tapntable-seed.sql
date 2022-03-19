@@ -350,7 +350,7 @@ VALUES ('Rare', 1, NULL), --1
 
 INSERT INTO mod_groups (id, name, num_choices, is_required)
 VALUES (1, 'Temp', 1, TRUE),
-(2, 'Burger Add-Ons', 1, TRUE),
+(2, 'Burger Add-Ons', 1, FALSE),
 (3, 'Starch', 1, TRUE),
 (4, 'Vegetable', 1, TRUE),
 (5, 'Dressing', 1, TRUE),
@@ -377,7 +377,8 @@ VALUES(13, 1), --Angry Angus, Temp
 (10, 8), --Walnut Chicken Salad, Salad Mods
 (11, 8), --The Wedge Salad, Salad Mods
 (11, 6), --The Wedge Salad, Salad Dressing
-(12, 8); --Baby Duck, Salad Mods
+(12, 8), --Baby Duck, Salad Mods
+(13, 2);  --Angry Angus, Burger Add-Ons
 
 INSERT INTO mods_mod_groups(mod_id, mod_group_id)
 VALUES(1, 1), --Rare, Temp
