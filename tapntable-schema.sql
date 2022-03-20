@@ -133,7 +133,8 @@ completed_by INTEGER REFERENCES users,
 delivered_at TIMESTAMP,
 item_note VARCHAR(30),
 item_discount_id INTEGER, --This will eventually point to discount table
-is_void BOOLEAN DEFAULT FALSE
+is_void BOOLEAN DEFAULT FALSE,
+course_num INTEGER DEFAULT 1
 );
 COMMENT ON TABLE ordered_items IS 'Item ordered with modifications and info';
 
