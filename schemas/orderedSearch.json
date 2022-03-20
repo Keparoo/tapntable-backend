@@ -19,6 +19,14 @@
       "type": "string",
       "minLength": 1
     },
+    "seatNum": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "courseNum": {
+      "type": "integer",
+      "minimum": 1
+    },
     "start": {
       "type": "string",
       "minLength": 1

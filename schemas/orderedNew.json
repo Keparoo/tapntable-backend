@@ -19,6 +19,10 @@
       "type": "integer",
       "minimum": 1
     },
+    "courseNum": {
+      "type": "integer",
+      "minimum": 1
+    },
     "itemNote": {
       "type": "string",
       "minLength": 1,

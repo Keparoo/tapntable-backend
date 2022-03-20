@@ -52,6 +52,8 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
  * - userId
  * - sentAt (find orders after sentAt datetime)
  * - completedAt
+ * - fireCourse2
+ * - fireCourse3
  * - before (find orders where sentAt is before this datetime)
  * - isOpen=true returns orders where completedAt is null
  * - start (return orders where start <= sentAt)
@@ -89,7 +91,7 @@ router.get('/', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Order is { id, userId, sentAt}
  * 
- * Returns { id, userId, sentAt, items}
+ * Returns { id, userId, sentAt, fireCourse2, fireCourse3, items}
  * 
  * Where items is [{id, userId, sentAt, completedAt, name, orderedItemId, price, categoryId, isActive, orderId, itemId, checkId, completedAt, completedBy, deliveredAt, itemNote, discountId, isVoid }]
  *
@@ -109,9 +111,9 @@ router.get('/:id', ensureCorrectUserOrManager, async function(req, res, next) {
  *
  * Patches order data.
  *
- * fields can be: { completedAt }
+ * fields can be: { completedAt, fireCourse2, fireCourse3 }
  *
- * Returns {item: { id, userId, sentAt, completedAt}}
+ * Returns {item: { id, userId, sentAt, completedAt, fireCourse2, fireCourse3 }}
  *
  * Authorization required: Authorization required: manager or owner
  */

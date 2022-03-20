@@ -9,23 +9,31 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class OrdItem {
   /** Create an ordered_items entry (from data), update db, return new ordered_items data.
    *
-   * data should be { itemId, orderId, checkId, seatNum, itemNote }
+   * data should be { itemId, orderId, checkId, seatNum, courseNum, itemNote }
    *
-   * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
+   * Returns { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid  }
    *
    * */
 
-  static async create({ itemId, orderId, checkId, seatNum, itemNote }) {
+  static async create({
+    itemId,
+    orderId,
+    checkId,
+    seatNum,
+    courseNum,
+    itemNote
+  }) {
     const result = await db.query(
       `INSERT INTO ordered_items
            (item_id,
             order_id,
             check_id,
             seat_num,
+            course_num,
             item_note)
-           VALUES ($1, $2, $3, $4, $5)
-           RETURNING id, item_id AS "itemId", order_id AS "orderId", check_id AS "checkId", seat_num AS "seatNum", completed_at AS "completedAt", completed_by AS "completedBy", delivered_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
-      [ itemId, orderId, checkId, seatNum, itemNote ]
+           VALUES ($1, $2, $3, $4, $5, $6)
+           RETURNING id, item_id AS "itemId", order_id AS "orderId", check_id AS "checkId", seat_num AS "seatNum", course_num AS "courseNum", completed_at AS "completedAt", completed_by AS "completedBy", delivered_at AS "deliveredAt", item_note AS "itemNote", is_void AS "isVoid"`,
+      [ itemId, orderId, checkId, seatNum, courseNum, itemNote ]
     );
     const ordItem = result.rows[0];
 
@@ -39,12 +47,14 @@ class OrdItem {
    * - orderId
    * - checkId
    * - sentAt (return ordered_items sent after >= sentAt)
+   * - seatNum
+   * - courseNum
    * - isVoid
    * - start (return ordered_items sent after >= sentAt)
    * - end (return ordered_items sent before <= sentAt)
    * - desc
    *
-   * Returns [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
+   * Returns [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -57,6 +67,7 @@ class OrdItem {
                         o.order_id AS "orderId",
                         o.check_id AS "checkId",
                         o.seat_num AS "seatNum",
+                        o.course_num AS "courseNum",
                         orders.sent_at AS "sentAt",
                         o.completed_at AS "completedAt",
                         o.completed_by AS "completedBy",
@@ -74,6 +85,8 @@ class OrdItem {
       orderId,
       checkId,
       sentAt,
+      seatNum,
+      courseNum,
       start,
       end,
       desc,
@@ -103,6 +116,16 @@ class OrdItem {
       whereExpressions.push(
         `orders.sent_at >= $${queryValues.length}::timestamptz`
       );
+    }
+
+    if (seatNum) {
+      queryValues.push(seatNum);
+      whereExpressions.push(`o.seat_num = $${queryValues.length}`);
+    }
+
+    if (courseNum) {
+      queryValues.push(courseNum);
+      whereExpressions.push(`o.course_num = $${queryValues.length}`);
     }
 
     if (start) {
@@ -139,7 +162,7 @@ class OrdItem {
 
   /** Given a ordItem id, return the ordItem entry.
      *
-     * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
+     * Returns { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
      *
      * Throws NotFoundError if not found.
      **/
@@ -151,6 +174,7 @@ class OrdItem {
             order_id AS "orderId",
             check_id AS "checkId",
             seat_num AS "seatNum",
+            course_num AS "courseNum",
             completed_at AS "completedAt",
             completed_by AS "completedBy",
             delivered_at AS "deliveredAt",
@@ -174,9 +198,9 @@ class OrdItem {
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: { seatNum, itemNote, itemDiscountId, isVoid }
+   * Data can include: { seatNum, courseNum, itemNote, itemDiscountId, isVoid }
    *
-   * Returns { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
+   * Returns { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
    *
    * Throws NotFoundError if not found.
    */
@@ -184,6 +208,7 @@ class OrdItem {
   static async update(id, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {
       seatNum: 'seat_num',
+      courseNum: 'course_num',
       itemNote: 'item_note',
       itemDiscountId: 'item_discount_id',
       isVoid: 'is_void'
@@ -198,6 +223,7 @@ class OrdItem {
                                   order_id AS "orderId",
                                   check_id AS "checkId",
                                   seat_num AS "seatNum",
+                                  course_num AS "courseNum",
                                   completed_at AS "completedAt",
                                   completed_by AS "completedBy",
                                   delivered_at AS "deliveredAt",

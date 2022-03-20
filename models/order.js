@@ -36,13 +36,15 @@ class Order {
    * - userId
    * - sentAt (find orders after sentAt datetime)
    * - completedAt
+   * - fireCourse2
+   * - fireCourse3
    * - before (find orders where sentAt is before this datetime)
    * - isOpen=true returns orders where completedAt is null
    * - start (return orders where start <= sentAt)
    * - end (return orders where end >= sentAt)
    * - desc
    *
-   * Returns [ { id, userId, displayName, tableNum, checkId, numGuests, sentAt, completedAt}...]
+   * Returns [ { id, userId, displayName, tableNum, checkId, numGuests, sentAt, completedAt, fireCourse2, fireCourse3}...]
    * 
    * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
    * */
@@ -55,7 +57,9 @@ class Order {
                         c.id AS "checkId",
                         c.num_guests AS "numGuests",
                         o.sent_at AS "sentAt",
-                        o.completed_at AS "completedAt"
+                        o.completed_at AS "completedAt",
+                        o.fire_course_2 AS "fireCourse2",
+                        o.fire_course_3 AS "fireCourse3"
                  FROM ORDERS o INNER JOIN users u ON o.user_id = u.id
                  INNER JOIN ordered_items oi on o.id = oi.order_id
                  INNER JOIN checks c on oi.check_id = c.id`;
@@ -67,6 +71,8 @@ class Order {
       userId,
       sentAt,
       completedAt,
+      fireCourse2,
+      fireCourse3,
       before,
       start,
       end,
@@ -91,6 +97,20 @@ class Order {
       queryValues.push(completedAt);
       whereExpressions.push(
         `o.completed_at >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (fireCourse2) {
+      queryValues.push(fireCourse2);
+      whereExpressions.push(
+        `o.fire_course_2 >= $${queryValues.length}::timestamptz`
+      );
+    }
+
+    if (fireCourse3) {
+      queryValues.push(fireCourse3);
+      whereExpressions.push(
+        `o.fire_course_3 >= $${queryValues.length}::timestamptz`
       );
     }
 
@@ -127,7 +147,7 @@ class Order {
 
   /** Given a order id, return the order entry and related ordered_items.
      *
-     * Returns { id, userId, sentAt, items}
+     * Returns { id, userId, sentAt, fireCourse2, fireCourse3, items}
      * 
      * Where items is [{id, userId, sentAt, completedAt, name, orderedItemId, price, categoryId, isActive, orderId, itemId, checkId, completedAt, completedBy, deliveredAt, itemNote, discountId, isVoid }]
      *
@@ -154,6 +174,8 @@ class Order {
             o.user_id AS "userId",
             o.sent_at AS "sentAt",
             o.completed_at AS "completedAt",
+            o.fire_course_2 AS "fireCourse2",
+            o.fire_course_3 AS "fireCourse3",
             oi.id AS "orderedItemId",
             i.name,
             i.price,
@@ -185,9 +207,9 @@ class Order {
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: { completedAt }
+   * Data can include: { completedAt, fireCourse2, fireCourse3 }
    *
-   * Returns { id, userId, sentAt, completedAt}
+   * Returns { id, userId, sentAt, completedAt, fireCourse2, fireCourse3}
    *
    * Throws NotFoundError if not found.
    */
@@ -204,7 +226,9 @@ class Order {
                         RETURNING id, 
                                   user_id AS "userId", 
                                   sent_at AS "sentAt",
-                                  completed_at AS "completedAt"`;
+                                  completed_at AS "completedAt",
+                                  fire_course_2 AS "fireCourse2",
+                                  fire_course_3 AS "fireCourse3`;
 
     const result = await db.query(querySql, [ ...values, id ]);
     const order = result.rows[0];

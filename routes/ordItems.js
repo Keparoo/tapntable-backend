@@ -24,10 +24,10 @@ const router = express.Router();
 /** POST /ordered { ordItem }  => {ordItem: { ordItem }}
  *
  * Required Items: { itemId, orderId, checkId }
- * Optional Items: { seatNum, itemNote }
+ * Optional Items: { seatNum, courseNum, itemNote }
  *
  * This returns the newly created ordered item
- *  { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
+ *  { ordItem: { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid } }
  *
  * Authorization required: ensureCorrectUserOrManager
  **/
@@ -50,13 +50,15 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /ordered  =>
- *   { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+ *   { ordItems: [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
   * - itemId
   * - orderId
   * - checkId
   * - sentAt (return ordered_items sent after >= sentAt)
+  * - seatNum
+  * - courseNum
   * - isVoid
   * - start (return ordered_items sent after >= sentAt)
   * - end (return ordered_items sent before <= sentAt)
@@ -71,6 +73,8 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   if (q.itemId) q.itemId = +q.itemId;
   if (q.orderId) q.orderId = +q.orderId;
   if (q.checkId) q.checkId = +q.checkId;
+  if (q.seatNum) q.seatNum = +q.seatNum;
+  if (q.courseNum) q.courseNum = +q.courseNum;
   // Convert querystring to boolean
   if (q.isVoid) q.isVoid = q.isVoid.toLowerCase() === 'true';
   if (q.desc) q.desc = q.desc.toLowerCase() === 'true';
@@ -91,9 +95,9 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
 
 /** GET /ordered/:id  =>  {ordItem: { ordItem }}
  *
- * Item is  { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
+ * Item is  { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
  * 
- * Returns: {ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+ * Returns: {ordItem: { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
  * Authorization required: logged in
  */
@@ -111,9 +115,9 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * Patches ordered item data.
  *
- * fields can be: { seatNum, itemNote, itemDiscountId, isVoid }
+ * fields can be: { seatNum, courseNum, itemNote, itemDiscountId, isVoid }
  *
- * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
+ * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
  * Authorization required: Authorization required: manager or owner
  */

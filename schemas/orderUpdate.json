@@ -7,6 +7,16 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 30
+    },
+    "fireCourse2": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "fireCourse3": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
     }
   },
   "additionalProperties": false,
