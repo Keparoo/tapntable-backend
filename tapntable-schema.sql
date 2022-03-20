@@ -114,7 +114,9 @@ CREATE TABLE orders (
 id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users,
 sent_at TIMESTAMP DEFAULT NOW(),
-completed_at TIMESTAMP
+completed_at TIMESTAMP,
+fire_course_2 TIMESTAMP,
+fire_course_3 TIMESTAMP
 );
 COMMENT ON TABLE orders IS 'Batch of items ordered sent to destinations';
 
