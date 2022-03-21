@@ -16,8 +16,15 @@
       "minimum": 1
     },
     "seatNum": {
-      "type": "integer",
-      "minimum": 1
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "courseNum": {
       "type": "integer",

@@ -216,7 +216,9 @@ class Order {
 
   static async update(id, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {
-      completedAt: 'completed_at'
+      completedAt: 'completed_at',
+      fireCourse2: 'fire_course_2',
+      fireCourse3: 'fire_course_3'
     });
     const idVarIdx = '$' + (values.length + 1);
 
@@ -228,7 +230,7 @@ class Order {
                                   sent_at AS "sentAt",
                                   completed_at AS "completedAt",
                                   fire_course_2 AS "fireCourse2",
-                                  fire_course_3 AS "fireCourse3`;
+                                  fire_course_3 AS "fireCourse3"`;
 
     const result = await db.query(querySql, [ ...values, id ]);
     const order = result.rows[0];
