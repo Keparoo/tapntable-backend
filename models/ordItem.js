@@ -156,7 +156,7 @@ class OrdItem {
 
     // Finalize query and return results
 
-    query += ' ORDER BY o.id';
+    query += ' ORDER BY o.course_num, o.item_id';
     if (desc) query += ' DESC';
 
     const orderedRes = await db.query(query, queryValues);
