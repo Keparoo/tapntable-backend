@@ -46,7 +46,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /orders  =>
- *   { orders: [ { id, userId, sentAt, itemId, name, price, categoryId,  count, destination_id, check_id, seat_num, item_note, is_void}...] }
+ *   { orders: [ { id, userId, displayName, tableNum, sentAt, completedAt, fireCourse2, fireCourse3}...] }
  *
  * Can filter on provided optional search filters:
  * - userId

@@ -54,7 +54,7 @@ class OrdItem {
    * - end (return ordered_items sent before <= sentAt)
    * - desc
    *
-   * Returns [ { id, itemId, name, price, destinationId, count, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
+   * Returns [ { id, itemId, name, price, destinationId, count, tableNum, numGuests, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -64,6 +64,8 @@ class OrdItem {
                         i.price,
                         i.destination_id AS "destinationId",
                         i.count,
+                        c.table_num AS "tableNum",
+                        c.num_guests AS "numGuests",
                         o.order_id AS "orderId",
                         o.check_id AS "checkId",
                         o.seat_num AS "seatNum",
@@ -76,7 +78,8 @@ class OrdItem {
                         o.item_discount_id AS "itemDiscountId",
                         o.is_void AS "isVoid"
                  FROM ordered_items o INNER JOIN items i ON o.item_id = i.id
-                 INNER JOIN orders ON o.order_id = orders.id`;
+                 INNER JOIN orders ON o.order_id = orders.id
+                 INNER JOIN checks c ON o.check_id = c.id`;
     let whereExpressions = [];
     let queryValues = [];
 

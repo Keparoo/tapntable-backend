@@ -44,7 +44,7 @@ class Order {
    * - end (return orders where end >= sentAt)
    * - desc
    *
-   * Returns [ { id, userId, displayName, tableNum, checkId, numGuests, sentAt, completedAt, fireCourse2, fireCourse3}...]
+   * Returns [ { id, userId, displayName, tableNum, sentAt, completedAt, fireCourse2, fireCourse3}...]
    * 
    * Default sort order is sent_by ascending. query filter desc=true will sort by sent_by descending
    * */
@@ -53,16 +53,11 @@ class Order {
     let query = `SELECT o.id,
                         o.user_id AS "userId",
                         u.display_name AS "displayName",
-                        c.table_num AS "tableNum",
-                        c.id AS "checkId",
-                        c.num_guests AS "numGuests",
                         o.sent_at AS "sentAt",
                         o.completed_at AS "completedAt",
                         o.fire_course_2 AS "fireCourse2",
-                        o.fire_course_3 AS "fireCourse3"
-                 FROM ORDERS o INNER JOIN users u ON o.user_id = u.id
-                 INNER JOIN ordered_items oi on o.id = oi.order_id
-                 INNER JOIN checks c on oi.check_id = c.id`;
+                        o.fire_course_3 AS "fireCourse3"     
+                 FROM orders o JOIN users u ON u.id = o.user_id`;
 
     let whereExpressions = [];
     let queryValues = [];
@@ -142,6 +137,7 @@ class Order {
     if (desc) query += ' DESC';
 
     const ordersRes = await db.query(query, queryValues);
+
     return ordersRes.rows;
   }
 
