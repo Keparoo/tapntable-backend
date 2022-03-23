@@ -54,7 +54,7 @@ class OrdItem {
    * - end (return ordered_items sent before <= sentAt)
    * - desc
    *
-   * Returns [ { id, itemId, name, price, destinationId, count, tableNum, numGuests, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
+   * Returns [ { id, itemId, name, price, destinationId, count, tableNum, numGuests, orderId, checkId, seatNum, courseNum, fireCourse2, fireCourse3, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }...]
    * */
 
   static async findAll(searchFilters = {}) {
@@ -70,6 +70,8 @@ class OrdItem {
                         o.check_id AS "checkId",
                         o.seat_num AS "seatNum",
                         o.course_num AS "courseNum",
+                        orders.fire_course_2 AS "fireCourse2",
+                        orders.fire_course_3 AS "fireCourse3",
                         orders.sent_at AS "sentAt",
                         o.completed_at AS "completedAt",
                         o.completed_by AS "completedBy",

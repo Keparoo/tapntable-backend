@@ -50,7 +50,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /ordered  =>
- *   { ordItems: [ { id, itemId, name, price, destinationId, count, tableNum, numGuests, orderId, checkId, seatNum, courseNum, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
+ *   { ordItems: [ { id, itemId, name, price, destinationId, count, tableNum, numGuests, orderId, checkId, seatNum, courseNum, fireCourse2, fireCourse3, sentAt, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }, ...] }
  *
  * Can filter on provided optional search filters:
   * - itemId
