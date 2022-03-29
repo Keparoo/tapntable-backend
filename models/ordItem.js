@@ -204,7 +204,7 @@ class OrdItem {
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: { seatNum, courseNum, itemNote, itemDiscountId, isVoid }
+   * Data can include: { seatNum, checkId, courseNum, itemNote, itemDiscountId, isVoid }
    *
    * Returns { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }
    *
@@ -214,6 +214,7 @@ class OrdItem {
   static async update(id, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {
       seatNum: 'seat_num',
+      checkId: 'check_id',
       courseNum: 'course_num',
       itemNote: 'item_note',
       itemDiscountId: 'item_discount_id',

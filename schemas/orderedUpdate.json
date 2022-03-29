@@ -7,6 +7,10 @@
       "type": "integer",
       "minimum": 1
     },
+    "checkId": {
+      "type": "integer",
+      "minimum": 1
+    },
     "courseNum": {
       "type": "integer",
       "minimum": 1

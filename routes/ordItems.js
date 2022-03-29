@@ -115,7 +115,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * Patches ordered item data.
  *
- * fields can be: { seatNum, courseNum, itemNote, itemDiscountId, isVoid }
+ * fields can be: { seatNum, checkId, courseNum, itemNote, itemDiscountId, isVoid }
  *
  * Returns { ordItem: { id, itemId, orderId, checkId, seatNum, courseNum, completedAt, completedBy, deliveredAt, itemNote, itemDiscountId, isVoid }}
  *
