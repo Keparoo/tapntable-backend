@@ -17,7 +17,7 @@ CREATE TABLE users (
   username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   pin INTEGER NOT NULL UNIQUE,
-  display_name VARCHAR(15) NOT NULL, --User data. Display name is name shown on POS
+  display_name VARCHAR(20) NOT NULL, --User data. Display name is name shown on POS
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   --role_id INTEGER REFERENCES user_roles,
