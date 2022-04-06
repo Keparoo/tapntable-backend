@@ -441,7 +441,7 @@ $ heroku config:set PGSSLMODE=no-verify
 $ heroku open
 ```
 
-To update API and delete and upload new version of database
+To update API, delete and upload new version of database
 ```
 $ git push heroku main
 $ heroku pg:reset
