@@ -441,4 +441,14 @@ $ heroku config:set PGSSLMODE=no-verify
 $ heroku open
 ```
 
+To update API and delete and upload new version of database
+```
+$ git push heroku main
+$ heroku pg:reset
+$ heroku addons:create heroku-postgresql:hobby-dev -a NAME_OF_APP
+$ heroku pg:push tapntable DATABASE_URL -a NAME_OF_APP
+$ heroku config:set PGSSLMODE=no-verify
+$ heroku open
+
+```
 If there are any errors, run heroku logs -t -a NAME_OF_APP
