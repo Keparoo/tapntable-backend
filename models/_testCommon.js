@@ -21,13 +21,9 @@ async function commonBeforeAll() {
   await db.query("SELECT setval('checks_id_seq', 1)");
   // await db.query('ALTER SEQUENCE checks_id_seq RESTART WITH 1');
 
-  // // noinspection SqlWithoutWhere
-  // await db.query('DELETE FROM mod_categories');
-  // await db.query("SELECT setval('mod_categories_seq', 1)");
-
-  // // noinspection SqlWithoutWhere
-  // await db.query('DELETE FROM mods');
-  // await db.query("SELECT setval('mods_seq', 1)");
+  // noinspection SqlWithoutWhere
+  await db.query('DELETE FROM mods');
+  await db.query("SELECT setval('mods_id_seq', 1)");
 
   await db.query(`
 	  INSERT INTO items (name, description, price, category_id, destination_id, is_active)
@@ -35,18 +31,11 @@ async function commonBeforeAll() {
             ('n2', 'Desc2', 2.99, 5, 3, false),
             ('n3', 'Desc3', 3.99, 5, 3, false)`);
 
-  // await db.query(`
-  //   INSERT INTO mod_categories (name)
-  //   VALUES ('Food')
-  //          ('Drink')
-  //          ('Misc')
-  // `);
-
-  // await db.query(`
-  // INSERT INTO mods (name, mod_cat_id, mod_price, is_active)
-  // VALUES  ('m1', 1, 1.99, true),
-  //         ('m2', 2, 2.99, true),
-  //         ('m3', 3, 3.99, false)`);
+  await db.query(`
+  INSERT INTO mods (name, mod_cat_id, mod_price, is_active)
+  VALUES  ('m1', 1, 1.99, true),
+          ('m2', 2, 2.99, true),
+          ('m3', 3, 3.99, false)`);
 
   await db.query(
     `
