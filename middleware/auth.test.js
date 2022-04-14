@@ -3,151 +3,151 @@
 const jwt = require('jsonwebtoken');
 const { UnauthorizedError } = require('../expressError');
 const {
-	authenticateJWT,
-	ensureLoggedIn,
-	ensureManager,
-	ensureCorrectUserOrManager
+  authenticateJWT,
+  ensureLoggedIn,
+  ensureManager,
+  ensureCorrectUserOrManager
 } = require('./auth');
 
 const { SECRET_KEY } = require('../config');
-const testJwt = jwt.sign({ username: 'test', roleId: 1 }, SECRET_KEY);
-const badJwt = jwt.sign({ username: 'test', roleId: 1 }, 'wrong');
+const testJwt = jwt.sign({ username: 'test', role: 'trainee' }, SECRET_KEY);
+const badJwt = jwt.sign({ username: 'test', role: 'trainee' }, 'wrong');
 
 describe('authenticateJWT', function() {
-	test('works: via header', function() {
-		expect.assertions(2);
-		//there are multiple ways to pass an authorization token, this is how you pass it in the header.
-		//this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
-		const req = { headers: { authorization: `Bearer ${testJwt}` } };
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		authenticateJWT(req, res, next);
-		expect(res.locals).toEqual({
-			user: {
-				iat: expect.any(Number),
-				username: 'test',
-				roleId: 1
-			}
-		});
-	});
+  test('works: via header', function() {
+    expect.assertions(2);
+    //there are multiple ways to pass an authorization token, this is how you pass it in the header.
+    //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
+    const req = { headers: { authorization: `Bearer ${testJwt}` } };
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    authenticateJWT(req, res, next);
+    expect(res.locals).toEqual({
+      user: {
+        iat: expect.any(Number),
+        username: 'test',
+        role: 'trainee'
+      }
+    });
+  });
 
-	test('works: no header', function() {
-		expect.assertions(2);
-		const req = {};
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		authenticateJWT(req, res, next);
-		expect(res.locals).toEqual({});
-	});
+  test('works: no header', function() {
+    expect.assertions(2);
+    const req = {};
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    authenticateJWT(req, res, next);
+    expect(res.locals).toEqual({});
+  });
 
-	test('works: invalid token', function() {
-		expect.assertions(2);
-		const req = { headers: { authorization: `Bearer ${badJwt}` } };
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		authenticateJWT(req, res, next);
-		expect(res.locals).toEqual({});
-	});
+  test('works: invalid token', function() {
+    expect.assertions(2);
+    const req = { headers: { authorization: `Bearer ${badJwt}` } };
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    authenticateJWT(req, res, next);
+    expect(res.locals).toEqual({});
+  });
 });
 
 describe('ensureLoggedIn', function() {
-	test('works', function() {
-		expect.assertions(1);
-		const req = {};
-		const res = { locals: { user: { username: 'test', roleId: 1 } } };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		ensureLoggedIn(req, res, next);
-	});
+  test('works', function() {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: 'test', role: 'trainee' } } };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    ensureLoggedIn(req, res, next);
+  });
 
-	test('unauth if no login', function() {
-		expect.assertions(1);
-		const req = {};
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err instanceof UnauthorizedError).toBeTruthy();
-		};
-		ensureLoggedIn(req, res, next);
-	});
+  test('unauth if no login', function() {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureLoggedIn(req, res, next);
+  });
 });
 
 describe('ensureManager', function() {
-	test('works', function() {
-		expect.assertions(1);
-		const req = {};
-		const res = { locals: { user: { username: 'test', roleId: 10 } } };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		ensureManager(req, res, next);
-	});
+  test('works', function() {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: 'test', role: 'manager' } } };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    ensureManager(req, res, next);
+  });
 
-	test('unauth if not manager', function() {
-		expect.assertions(1);
-		const req = {};
-		const res = { locals: { user: { username: 'test', roleId: 1 } } };
-		const next = function(err) {
-			expect(err instanceof UnauthorizedError).toBeTruthy();
-		};
-		ensureManager(req, res, next);
-	});
+  test('unauth if not manager', function() {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: 'test', role: 'trainee' } } };
+    const next = function(err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureManager(req, res, next);
+  });
 
-	test('unauth if anon', function() {
-		expect.assertions(1);
-		const req = {};
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err instanceof UnauthorizedError).toBeTruthy();
-		};
-		ensureManager(req, res, next);
-	});
+  test('unauth if anon', function() {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureManager(req, res, next);
+  });
 });
 
 describe('ensureCorrectUserOrManager', function() {
-	test('works: admin', function() {
-		expect.assertions(1);
-		const req = { params: { username: 'test' } };
-		const res = { locals: { user: { username: 'admin', roleId: 10 } } };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		ensureCorrectUserOrManager(req, res, next);
-	});
+  test('works: admin', function() {
+    expect.assertions(1);
+    const req = { params: { username: 'test' } };
+    const res = { locals: { user: { username: 'admin', role: 'manager' } } };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    ensureCorrectUserOrManager(req, res, next);
+  });
 
-	test('works: same user', function() {
-		expect.assertions(1);
-		const req = { params: { username: 'test' } };
-		const res = { locals: { user: { username: 'test', roleId: 1 } } };
-		const next = function(err) {
-			expect(err).toBeFalsy();
-		};
-		ensureCorrectUserOrManager(req, res, next);
-	});
+  test('works: same user', function() {
+    expect.assertions(1);
+    const req = { params: { username: 'test' } };
+    const res = { locals: { user: { username: 'test', role: 'trainee' } } };
+    const next = function(err) {
+      expect(err).toBeFalsy();
+    };
+    ensureCorrectUserOrManager(req, res, next);
+  });
 
-	test('unauth: mismatch', function() {
-		expect.assertions(1);
-		const req = { params: { username: 'wrong' } };
-		const res = { locals: { user: { username: 'test', roleId: 1 } } };
-		const next = function(err) {
-			expect(err instanceof UnauthorizedError).toBeTruthy();
-		};
-		ensureCorrectUserOrManager(req, res, next);
-	});
+  test('unauth: mismatch', function() {
+    expect.assertions(1);
+    const req = { params: { username: 'wrong' } };
+    const res = { locals: { user: { username: 'test', role: 'trainee' } } };
+    const next = function(err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCorrectUserOrManager(req, res, next);
+  });
 
-	test('unauth: if anon', function() {
-		expect.assertions(1);
-		const req = { params: { username: 'test' } };
-		const res = { locals: {} };
-		const next = function(err) {
-			expect(err instanceof UnauthorizedError).toBeTruthy();
-		};
-		ensureCorrectUserOrManager(req, res, next);
-	});
+  test('unauth: if anon', function() {
+    expect.assertions(1);
+    const req = { params: { username: 'test' } };
+    const res = { locals: {} };
+    const next = function(err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCorrectUserOrManager(req, res, next);
+  });
 });
