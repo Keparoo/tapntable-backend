@@ -4,10 +4,10 @@ const db = require('../db.js');
 const { BadRequestError, NotFoundError } = require('../expressError');
 const Check = require('./check.js');
 const {
-	commonBeforeAll,
-	commonBeforeEach,
-	commonAfterEach,
-	commonAfterAll
+  commonBeforeAll,
+  commonBeforeEach,
+  commonAfterEach,
+  commonAfterAll
 } = require('./_testCommon');
 
 beforeAll(commonBeforeAll);
@@ -18,41 +18,41 @@ afterAll(commonAfterAll);
 /**** create *********************************************/
 
 describe('create', () => {
-	const newCheck = {
-		id: 2,
-		userId: 2,
-		tableNum: 1,
-		customer: 'Test Customer',
-		numGuests: 2,
-		printedAt: null,
-		closedAt: null,
-		subtotal: null,
-		discountId: null,
-		discountTotal: null,
-		localTax: null,
-		stateTax: null,
-		federalTax: null,
-		isVoid: false
-	};
+  const newCheck = {
+    id: 2,
+    userId: 2,
+    tableNum: 1,
+    customer: 'Test Customer',
+    numGuests: 2,
+    printedAt: null,
+    closedAt: null,
+    discountId: null,
+    subtotal: null,
+    discountTotal: null,
+    localTax: null,
+    stateTax: null,
+    federalTax: null,
+    isVoid: false
+  };
 
-	test('works', async () => {
-		let check = await Check.create(newCheck);
+  test('works', async () => {
+    let check = await Check.create(newCheck);
 
-		expect(check.createdAt instanceof Date).toBe(true);
-		delete check.createdAt;
+    expect(check.createdAt instanceof Date).toBe(true);
+    delete check.createdAt;
 
-		expect(check).toEqual(newCheck);
+    expect(check).toEqual(newCheck);
 
-		const result = await db.query(
-			`SELECT user_id AS "userId",
+    const result = await db.query(
+      `SELECT user_id AS "userId",
               table_num AS "tableNum",
-              num_guests AS "numGuests",
               customer,
+              num_guests AS "numGuests",
               created_at AS "createdAt",
               printed_at AS "printedAt",
               closed_at AS "closedAt",
-              subtotal,
               discount_id AS "discountId",
+              subtotal,
               discount_total AS "discountTotal",
               local_tax AS "localTax",
               state_tax AS "stateTax",
@@ -60,29 +60,29 @@ describe('create', () => {
               is_void AS "isVoid"
         FROM checks
         WHERE customer = 'Test Customer'`
-		);
+    );
 
-		expect(result.rows[0].createdAt instanceof Date).toBe(true);
-		delete result.rows[0].createdAt;
+    expect(result.rows[0].createdAt instanceof Date).toBe(true);
+    delete result.rows[0].createdAt;
 
-		expect(result.rows).toEqual([
-			{
-				userId: 2,
-				tableNum: 1,
-				numGuests: 2,
-				customer: 'Test Customer',
-				printedAt: null,
-				closedAt: null,
-				subtotal: null,
-				discountId: null,
-				discountTotal: null,
-				localTax: null,
-				stateTax: null,
-				federalTax: null,
-				isVoid: false
-			}
-		]);
-	});
+    expect(result.rows).toEqual([
+      {
+        userId: 2,
+        tableNum: 1,
+        customer: 'Test Customer',
+        numGuests: 2,
+        printedAt: null,
+        closedAt: null,
+        discountId: null,
+        subtotal: null,
+        discountTotal: null,
+        localTax: null,
+        stateTax: null,
+        federalTax: null,
+        isVoid: false
+      }
+    ]);
+  });
 });
 
 /**** findAll **********************************************/
