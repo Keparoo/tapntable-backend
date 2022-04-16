@@ -2,6 +2,7 @@
 **Tapntable** is a web-based restaurant point of sale system (POS): This is the backend for the system. It implements a postgresql database with a RESTful API.
 
 The Front end is a React-Redux web-based user interface that creates user terminals for servers and bartenders as well as destination points for sent orders (kitchen and service bar)
+The front end can be found at https://github.com/Keparoo/tapntable
 
 ## Deployment
 The backend is currently deployed to:
