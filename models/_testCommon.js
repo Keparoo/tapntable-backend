@@ -25,6 +25,13 @@ async function commonBeforeAll() {
   await db.query('DELETE FROM mods');
   await db.query("SELECT setval('mods_id_seq', 1)");
 
+  // await db.query('TRUNCATE item_categories');
+  // await db.query(`
+  //   INSERT INTO item_categories (id, name)
+  //   VALUES (1, 'Appetizer'),  (2, 'Soup'), (3, 'Salad'), (4, 'Sandwich'), (5, 'Entree'), (6, 'Addition'), (7, 'Dessert'), (8, 'Favorites'), (9, 'Beverage'), (10, 'Beer'), (11, 'Wine'), (12, 'Liquor'),(13, 'Children'), (14, 'Carryout'), (15, 'Delivery');
+  // `);
+  await db.query("SELECT setval('item_categories_id_seq', 15)");
+
   await db.query(`
 	  INSERT INTO items (name, description, price, category_id, destination_id, is_active)
 	  VALUES  ('n1', 'Desc1', 1.99, 1, 3, true),
@@ -84,3 +91,9 @@ module.exports = {
   commonAfterEach,
   commonAfterAll
 };
+
+// describe('Always passes', () => {
+//   test('true', async () => {
+//     expect(true).toEqual(true);
+//   });
+// });
