@@ -2,7 +2,7 @@
 
 const db = require('../db.js');
 const { BadRequestError, NotFoundError } = require('../expressError');
-const Category = require('./category.js');
+const ModCategory = require('./modCategory.js');
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -17,18 +17,18 @@ afterAll(commonAfterAll);
 
 /**** create *********************************************/
 
-describe('create new category', () => {
+describe('create new mod category', () => {
   test('works', async () => {
-    let category = await Category.create('New Category');
+    let category = await ModCategory.create('New Category');
 
     expect(category).toEqual({
-      id: 16,
+      id: 4,
       name: 'New Category'
     });
 
     const result = await db.query(
       `SELECT name
-       FROM item_categories
+       FROM mod_categories
        WHERE name = 'New Category'`
     );
 
@@ -44,85 +44,37 @@ describe('create new category', () => {
 
 describe('findAll', () => {
   test('works: find all categories', async () => {
-    let categories = await Category.findAll();
+    let categories = await ModCategory.findAll();
 
     expect(categories).toEqual([
       {
-        id: 6,
-        name: 'Addition'
+        id: 2,
+        name: 'Drink'
       },
       {
         id: 1,
-        name: 'Appetizer'
-      },
-      {
-        id: 10,
-        name: 'Beer'
-      },
-      {
-        id: 9,
-        name: 'Beverage'
-      },
-      {
-        id: 14,
-        name: 'Carryout'
-      },
-      {
-        id: 13,
-        name: 'Children'
-      },
-      {
-        id: 15,
-        name: 'Delivery'
-      },
-      {
-        id: 7,
-        name: 'Dessert'
-      },
-      {
-        id: 5,
-        name: 'Entree'
-      },
-      {
-        id: 8,
-        name: 'Favorites'
-      },
-      {
-        id: 12,
-        name: 'Liquor'
+        name: 'Food'
       },
       {
         id: 3,
-        name: 'Salad'
-      },
-      {
-        id: 4,
-        name: 'Sandwich'
-      },
-      {
-        id: 2,
-        name: 'Soup'
-      },
-      {
-        id: 11,
-        name: 'Wine'
+        name: 'Misc'
       }
     ]);
   });
 
   test('works: filter query by name', async () => {
-    let categories = await Category.findAll({ name: 'ent' });
+    let categories = await ModCategory.findAll({ name: 'dr' });
 
     expect(categories).toEqual([
       {
-        id: 5,
-        name: 'Entree'
+        id: 2,
+        name: 'Drink'
       }
     ]);
   });
 
   test('works: empty list on nothing found', async () => {
-    let categories = await Category.findAll({ name: 'nope' });
+    let categories = await ModCategory.findAll({ name: 'nope' });
     expect(categories).toEqual([]);
   });
 });
@@ -131,17 +83,17 @@ describe('findAll', () => {
 
 describe('get a category', () => {
   test('works', async () => {
-    let category = await Category.get(2);
+    let category = await ModCategory.get(2);
 
     expect(category).toEqual({
       id: 2,
-      name: 'Soup'
+      name: 'Drink'
     });
   });
 
   test('not found if no such category', async () => {
     try {
-      await Category.get(99999999);
+      await ModCategory.get(99999999);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -151,13 +103,13 @@ describe('get a category', () => {
 
 /**** update ***********************************************/
 
-describe('update item category', () => {
+describe('update mod category', () => {
   const updateData = {
     name: 'New'
   };
 
   test('works', async () => {
-    let category = await Category.update(2, updateData);
+    let category = await ModCategory.update(2, updateData);
 
     expect(category).toEqual({
       id: 2,
@@ -166,7 +118,7 @@ describe('update item category', () => {
 
     const res = await db.query(
       `SELECT id, name
-	     FROM item_categories
+	     FROM mod_categories
 	     WHERE id = 2`
     );
 
@@ -180,7 +132,7 @@ describe('update item category', () => {
 
   test('not found if no such category', async () => {
     try {
-      await Category.update(9999999, updateData);
+      await ModCategory.update(9999999, updateData);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -189,7 +141,7 @@ describe('update item category', () => {
 
   test('bad request with no data', async () => {
     try {
-      await Category.update(2, {});
+      await ModCategory.update(2, {});
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -197,19 +149,21 @@ describe('update item category', () => {
   });
 });
 
+/**** remove **************************************************/
+
 describe('remove', () => {
   test('works', async () => {
-    await Category.remove(2);
+    await ModCategory.remove(3);
 
     const res = await db.query(
-      "SELECT id FROM mod_categories WHERE name='Soup'"
+      "SELECT id FROM mod_categories WHERE name='Misc'"
     );
     expect(res.rows.length).toEqual(0);
   });
 
   test('not found if no such item', async () => {
     try {
-      await Category.remove(99999999);
+      await ModCategory.remove(99999999);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();

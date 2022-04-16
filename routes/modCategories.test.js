@@ -18,16 +18,16 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-/**** POST /items/categories ********************************************/
+/**** POST /mods/categories ********************************************/
 
-describe('POST /items/categories', () => {
+describe('POST /mods/categories', () => {
   const newCategory = {
     name: 'New'
   };
 
   test('works for admin', async () => {
     const resp = await request(app)
-      .post('/items/categories')
+      .post('/mods/categories')
       .send(newCategory)
       .set('authorization', `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -44,7 +44,7 @@ describe('POST /items/categories', () => {
 
   test('unauth for non-admin', async () => {
     const resp = await request(app)
-      .post('/items/categories')
+      .post('/mods/categories')
       .send(newCategory)
       .set('authorization', `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
@@ -52,7 +52,7 @@ describe('POST /items/categories', () => {
 
   test('bad request with missing data', async () => {
     const resp = await request(app)
-      .post('/items/categories')
+      .post('/mods/categories')
       .send({})
       .set('authorization', `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -60,7 +60,7 @@ describe('POST /items/categories', () => {
 
   test('bad request with invalid data', async () => {
     const resp = await request(app)
-      .post('/items/categories')
+      .post('/mods/categories')
       .send({
         name: 5
       })
@@ -69,75 +69,27 @@ describe('POST /items/categories', () => {
   });
 });
 
-/**** GET /items/categories *******************************************/
+/**** GET /mods/categories *******************************************/
 
 describe('GET /mods/categories', () => {
   test('ok for logged in user', async () => {
     const resp = await request(app)
-      .get('/items/categories')
+      .get('/mods/categories')
       .set('authorization', `Bearer ${u1Token}`);
 
     expect(resp.body).toEqual({
       categories: [
         {
-          id: 6,
-          name: 'Addition'
+          id: 2,
+          name: 'Drink'
         },
         {
           id: 1,
-          name: 'Appetizer'
-        },
-        {
-          id: 10,
-          name: 'Beer'
-        },
-        {
-          id: 9,
-          name: 'Beverage'
-        },
-        {
-          id: 14,
-          name: 'Carryout'
-        },
-        {
-          id: 13,
-          name: 'Children'
-        },
-        {
-          id: 15,
-          name: 'Delivery'
-        },
-        {
-          id: 7,
-          name: 'Dessert'
-        },
-        {
-          id: 5,
-          name: 'Entree'
-        },
-        {
-          id: 8,
-          name: 'Favorites'
-        },
-        {
-          id: 12,
-          name: 'Liquor'
+          name: 'Food'
         },
         {
           id: 3,
-          name: 'Salad'
-        },
-        {
-          id: 4,
-          name: 'Sandwich'
-        },
-        {
-          id: 2,
-          name: 'Soup'
-        },
-        {
-          id: 11,
-          name: 'Wine'
+          name: 'Misc'
         }
       ]
     });
@@ -145,15 +97,15 @@ describe('GET /mods/categories', () => {
 
   test('works: filtering', async () => {
     const resp = await request(app)
-      .get('/items/categories')
-      .query({ name: 'ent' })
+      .get('/mods/categories')
+      .query({ name: 'dr' })
       .set('authorization', `Bearer ${u1Token}`);
 
     expect(resp.body).toEqual({
       categories: [
         {
-          id: 5,
-          name: 'Entree'
+          id: 2,
+          name: 'Drink'
         }
       ]
     });
@@ -161,42 +113,42 @@ describe('GET /mods/categories', () => {
 
   test('bad request if invalid filter key', async () => {
     const resp = await request(app)
-      .get('/items/categories')
-      .query({ name: 'Entree', nope: 'nope' })
+      .get('/mods/categories')
+      .query({ name: 'Drink', nope: 'nope' })
       .set('authorization', `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 });
 
-/**** GET /items/categories/:id ************************************/
+/**** GET /mods/categories/:id ************************************/
 
-describe('GET /items/categories/:id', () => {
+describe('GET /mods/categories/:id', () => {
   test('works for logged-in user', async () => {
     const resp = await request(app)
-      .get(`/items/categories/2`)
+      .get(`/mods/categories/2`)
       .set('authorization', `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
       category: {
         id: 2,
-        name: 'Soup'
+        name: 'Drink'
       }
     });
   });
 
   test('not found or no such category', async () => {
     const resp = await request(app)
-      .get(`/items/categories/9999999`)
+      .get(`/mods/categories/9999999`)
       .set('authorization', `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(404);
   });
 });
 
-/**** PATCH /items/categories/:id **************************************/
+/**** PATCH /mods/categories/:id **************************************/
 
-describe('PATCH /items/categories/:id', () => {
+describe('PATCH /mods/categories/:id', () => {
   test('works for admin', async function() {
     const resp = await request(app)
-      .patch(`/items/categories/2`)
+      .patch(`/mods/categories/2`)
       .send({
         name: 'Category-new'
       })
@@ -211,7 +163,7 @@ describe('PATCH /items/categories/:id', () => {
 
   test('unauth for non-admin', async () => {
     const resp = await request(app)
-      .patch(`/items/categories/2`)
+      .patch(`/mods/categories/2`)
       .send({
         name: 'Category-new'
       })
@@ -220,7 +172,7 @@ describe('PATCH /items/categories/:id', () => {
   });
 
   test('unauth for anon', async () => {
-    const resp = await request(app).patch(`/items/categories/2`).send({
+    const resp = await request(app).patch(`/mods/categories/2`).send({
       name: 'Category-new'
     });
     expect(resp.statusCode).toEqual(401);
@@ -228,7 +180,7 @@ describe('PATCH /items/categories/:id', () => {
 
   test('not found or no such category', async () => {
     const resp = await request(app)
-      .patch(`/items/category/999999`)
+      .patch(`/mods/category/999999`)
       .send({
         name: 'new nope'
       })
@@ -238,7 +190,7 @@ describe('PATCH /items/categories/:id', () => {
 
   test('bad request on id change attempt', async () => {
     const resp = await request(app)
-      .patch(`/items/categories/2`)
+      .patch(`/mods/categories/2`)
       .send({
         id: 'Category-new'
       })
@@ -248,7 +200,7 @@ describe('PATCH /items/categories/:id', () => {
 
   test('bad request on invalid data', async () => {
     const resp = await request(app)
-      .patch(`/items/categories/2`)
+      .patch(`/mods/categories/2`)
       .send({
         name: 5
       })
@@ -257,31 +209,31 @@ describe('PATCH /items/categories/:id', () => {
   });
 });
 
-/**** DELETE /items/categories/:id ********************************/
+/**** DELETE /mods/categories/:id ********************************/
 
-describe('DELETE /items/categories/:id', () => {
+describe('DELETE /mods/categories/:id', () => {
   test('works for admin', async () => {
     const resp = await request(app)
-      .delete(`/items/categories/2`)
+      .delete(`/mods/categories/2`)
       .set('authorization', `Bearer ${adminToken}`);
     expect(resp.body).toEqual({ deleted: '2' });
   });
 
   test('unauth for logged-in user', async () => {
     const resp = await request(app)
-      .delete(`/items/categories/2`)
+      .delete(`/mods/categories/2`)
       .set('authorization', `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test('unauth for anon', async () => {
-    const resp = await request(app).delete(`/items/categories/2`);
+    const resp = await request(app).delete(`/mods/categories/2`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test('not found for no such company', async () => {
     const resp = await request(app)
-      .delete(`/items/categories/999999`)
+      .delete(`/mods/categories/999999`)
       .set('authorization', `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
   });

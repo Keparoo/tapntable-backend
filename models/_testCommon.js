@@ -31,6 +31,7 @@ async function commonBeforeAll() {
   //   VALUES (1, 'Appetizer'),  (2, 'Soup'), (3, 'Salad'), (4, 'Sandwich'), (5, 'Entree'), (6, 'Addition'), (7, 'Dessert'), (8, 'Favorites'), (9, 'Beverage'), (10, 'Beer'), (11, 'Wine'), (12, 'Liquor'),(13, 'Children'), (14, 'Carryout'), (15, 'Delivery');
   // `);
   await db.query("SELECT setval('item_categories_id_seq', 15)");
+  await db.query("SELECT setval('mod_categories_id_seq', 3)");
 
   await db.query(`
 	  INSERT INTO items (name, description, price, category_id, destination_id, is_active)
@@ -38,11 +39,11 @@ async function commonBeforeAll() {
             ('n2', 'Desc2', 2.99, 5, 3, false),
             ('n3', 'Desc3', 3.99, 5, 3, false)`);
 
-  await db.query(`
-  INSERT INTO mods (name, mod_cat_id, mod_price, is_active)
-  VALUES  ('m1', 1, 1.99, true),
-          ('m2', 2, 2.99, true),
-          ('m3', 3, 3.99, false)`);
+  // await db.query(`
+  // INSERT INTO mods (name, mod_cat_id, mod_price, is_active)
+  // VALUES  ('m1', 1, 1.99, true),
+  //         ('m2', 2, 2.99, true),
+  //         ('m3', 3, 3.99, false)`);
 
   await db.query(
     `
