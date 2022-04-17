@@ -3,8 +3,8 @@
 const db = require('../db.js');
 const User = require('../models/user');
 const Item = require('../models/item');
+// const Check = require('../models/check.js');
 // const Company = require('../models/company');
-// const Job = require('../models/job');
 const { createToken } = require('../helpers/tokens');
 
 async function commonBeforeAll() {
@@ -99,3 +99,9 @@ module.exports = {
   u2Token,
   adminToken
 };
+
+// describe('Always passes', () => {
+//   test('true', async () => {
+//     expect(true).toEqual(true);
+//   });
+// });

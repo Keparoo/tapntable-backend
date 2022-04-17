@@ -63,14 +63,14 @@ async function commonBeforeAll() {
     ]
   );
 
-  // 	await db.query(`
+  // await db.query(`
   //     INSERT INTO checks(user_id,
   //                        table_num,
   //                        num_guests,
   //                        customer)
-  //     VALUES  (2, 1, 2, 'Test Cust 1'),
-  //             (3, 2, 4, 'Test Cust 2'),
-  //             (3, 3, 6, 'Test Cust 3')
+  //     VALUES  (4, 1, 2, 'Test Cust 1'),
+  //             (4, 2, 4, 'Test Cust 2'),
+  //             (4, 3, 6, 'Test Cust 3')
   // `);
 }
 
