@@ -20,6 +20,8 @@ const router = express.Router();
 /** POST / { item }  => {item: { item }}
  *
  * item should be { name, description, price, category_id, destination_id } 
+ * 
+ * item description limited to 500 characters max (no limit in db schema)
  *
  * This returns the newly created item
  *  {item: { id, name, description, price, category_id, destination_id, count, is_active }}
@@ -109,6 +111,8 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  *
  * Returns {item: { id, name, description, price, category_id, destination_id, count, is_active }}
  *
+ * item description limited to 500 characters max (no limit in db schema)
+ * 
  * Throws BadRequestError if name (case insensitive) is already in db
  * Authorization required: Authorization required: manager or owner
  */

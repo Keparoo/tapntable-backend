@@ -187,14 +187,16 @@ class Item {
   static async update(id, data) {
     if (data.name) {
       const duplicateCheck = await db.query(
-        `SELECT id
+        `SELECT id, name
              FROM items
              WHERE name ILIKE $1`,
         [ data.name ]
       );
 
-      if (duplicateCheck.rows[0])
-        throw new BadRequestError(`${duplicateCheck.rows[0]} already exists`);
+      if (duplicateCheck.rows[0] && duplicateCheck.rows[0].id !== +id)
+        throw new BadRequestError(
+          `${duplicateCheck.rows[0].name} already exists`
+        );
     }
 
     const { setCols, values } = sqlForPartialUpdate(data, {
