@@ -9,9 +9,16 @@
       "maxLength": 40
     },
     "description": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 500
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "price": {
       "type": "number",
