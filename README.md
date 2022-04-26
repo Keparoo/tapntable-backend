@@ -43,6 +43,8 @@ Usually a manager/owner accesses the system from an office computer (usually for
 
 Each terminal must be logged into once a day with username and password. This will set a token which expires in 23 hours. Employees using the terminals will be identified by their pin to determine what they see and can do on a terminal. The token that was set (probably by a manger) will be the token used for all db queries from that terminal. In practice, a manager could refresh the tokens when performing the nightly "close-day" functions so that the terminals are ready to go in the morning without the need of the manager to be there.
 
+There is a dashboard for the manager to create new or update existing items as well as a dedicated dashboard for specifically managing and updating the item count (This is aimed at the chef or a kitchen worker to access. A manager can manage item count from the manager's dashboard as well as all other item fields)
+
 ## Routes
 ### Auth Routes
 POST /auth/token {username, password} => { token }  
