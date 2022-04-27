@@ -406,9 +406,44 @@ PATCH /payments/:id => { payment: { id, checkId, type, tipAmt, subtotal, isVoid 
 DELETE /payments/:id => { deleted: id }
 * Returns the id of deleted payment
 * Throws NotFoundError if item not found
-* Authorization required: manager or owner (roleId = 10 or 11)  
+* Authorization required: manager or owner
 **(Payments should not be deleted, instead is_void=false)**
 
+### Mods Routes
+POST /mods { mod }  => {mod: { mod }} }  
+* Required fields: { name, modCatId }
+* Returns { mod: { id, name, modCatId, modPrice, isActive} }
+* Authorization required: manager or owner
+
+GET /mods => { mods: [ { id, name, modCatId, modCat, modPrice, isActive }, ...] }
+* Returns a list of all mods
+ * Can filter on provided optional search filters:
+   * - name (will find case-insensitive, partial matches)
+   * - categoryId
+   * - modCat
+   * - modPrice
+   * - isActive
+   * - desc
+* Returns { mods: [ { id, name, modCatId, modCat, modPrice, isActive }, ...] }
+* Authorization required: user is logged in
+
+GET /mods/:id => {mod: { id, name, modCatId, modCat, modPrice, isActive }}
+* Returns {mod: { id, name, modCatId, modCat, modPrice, isActive }}
+* Throws NotFoundError if mod not found
+* Authorization required: user is logged in
+
+PATCH /mods/:id => { mod: { name, modCatId, modPrice, isActive } }
+* Data can include: { name, modCatId, modPrice, isActive }
+* Returns {mod: { name, modCatId, modPrice, isActive }}
+* Throws NotFoundError if mod not found
+* Throws BadRequestError if mod (case insensitive) is already in db
+* Authorization required: manager or owner
+
+DELETE /mods/:id => { deleted: id }
+* Returns the id of deleted mod
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner
+**(Mods should not be deleted, instead is_void=false)**
 ---
 
 ##
