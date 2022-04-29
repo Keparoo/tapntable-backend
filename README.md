@@ -445,6 +445,40 @@ DELETE /mods/:id => { deleted: id }
 * Authorization required: manager or owner
 **(Mods should not be deleted, instead is_void=false)**
 
+### Mods Categories Routes
+POST /mods/categories { category }  => {category: { id, name}}  
+* Required fields: { name }
+* Returns { category: { id, name }
+* Throws BadRequestError if category exists in database.
+* Throws BadRequestError if a category exists with same spelling but different capitalization
+* Authorization required: manager or owner
+
+GET /mods/categories  => { categories: [ { id, name }, ...] }
+* Returns a list of all mod categories
+ * Can filter on provided optional search filters:
+    - name (will find case-insensitive, partial matches)
+* Returns { categories: [ { id, name }, ...] }
+* Authorization required: user is logged in
+
+GET /mods/categories/:id => {category: { id, name }}
+* Returns {category: { id, name }}
+* Throws NotFoundError if mod not found
+* Authorization required: user is logged in
+
+PATCH /mods/categories/:id => { fld1, fld2, ... } => { category }
+* Data can include: { name }
+* Returns {category: { id, name }}
+* Throws NotFoundError if mod not found
+* Throws BadRequestError if mod (case insensitive) is already in db
+* Authorization required: manager or owner
+
+DELETE /mods/categories /:id => { deleted: id }
+* Returns the id of deleted mod category
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner
+* Note: Categories should not be deleted once they have been used in any way. If needed, implement is_active
+* This route should only run if an item is created accidentally and needs to be immediately deleted before any database insertions.
+
 ### Mods Groups Routes
 POST /mods/modgroups { modsModGroup }  => {modsModGroup: { modsModGroup }} 
 * Required fields: { modId, modGroupId }
@@ -471,7 +505,6 @@ DELETE /mods/modgroups/:modGroupId => { deleted: id }
 * Returns the id of deleted mod group
 * Throws NotFoundError if item not found
 * Authorization required: manager or owner
-**(Mods should not be deleted, instead is_void=false)**
 ---
 
 ##

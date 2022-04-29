@@ -100,7 +100,7 @@ router.get('/:id', ensureLoggedIn, async function(req, res, next) {
  * 
  * If data.name (or case insensitive version of data.name) exists in db, throw BadRequestError
  *
- * Authorization required: Authorization required: manager or owner (RoleId = 10 or 11)
+ * Authorization required: Authorization required: manager or owner
  */
 
 router.patch('/:id', ensureManager, async function(req, res, next) {
