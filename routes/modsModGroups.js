@@ -25,7 +25,7 @@ const router = express.Router();
  * Required modsModGroup: { modId, modGroupId }
  *
  * This returns the newly created ordered modsModGroup
- *  { modsModGroup: { modId, modGroupId } }
+ *  { modGroup: { modId, modGroupId } }
  *
  * Authorization required: ensureCorrectUserOrManager
  **/
@@ -46,7 +46,7 @@ router.post('/', ensureCorrectUserOrManager, async function(req, res, next) {
 });
 
 /** GET /mods/modgroups  =>
- *   { ordItems: [ { itemId, itemName, modGroupId, modGroupName, modPrice }, ...] }
+ *   { modGroups: [ { itemId, itemName, modGroupId, modGroupName, modPrice }, ...] }
  *
  * Can filter on provided optional search filters:
    * - modId
@@ -80,18 +80,18 @@ router.get('/', ensureLoggedIn, async function(req, res, next) {
   }
 });
 
-/** GET /mods/modgroups/:id  =>  {mods: {mods }}
+/** GET /mods/modgroups/:id  =>  {modGroup: {modGroup }}
  *
  * Given an modGroupId, return a list of all related mods
  * 
- * Returns: {modsModGroups: { itemId, itemName, modGroupId, modGroupName, modPrice }}
+ * Returns: {modGroup: { itemId, itemName, modGroupId, modGroupName, modPrice }}
  *
  * Authorization required: logged in
  */
 
-router.get('/:itemId', ensureLoggedIn, async function(req, res, next) {
+router.get('/:modGroupId', ensureLoggedIn, async function(req, res, next) {
   try {
-    const modsModGroups = await ModsModGroup.get(req.params.itemId);
+    const modsModGroups = await ModsModGroup.get(req.params.modGroupId);
     return res.json({ modsModGroups });
   } catch (err) {
     return next(err);

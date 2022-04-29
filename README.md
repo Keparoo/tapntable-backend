@@ -444,6 +444,34 @@ DELETE /mods/:id => { deleted: id }
 * Throws NotFoundError if item not found
 * Authorization required: manager or owner
 **(Mods should not be deleted, instead is_void=false)**
+
+### Mods Groups Routes
+POST /mods/modgroups { modsModGroup }  => {modsModGroup: { modsModGroup }} 
+* Required fields: { modId, modGroupId }
+* Returns { modGroup: { modId, modGroupId } }
+* Authorization required: ensureCorrectUserOrManager
+
+GET /mods/modgroups => { modGroups: [ { itemId, itemName, modGroupId, modGroupName, modPrice }, ...] }
+* Returns a list of all mod groups
+ * Can filter on provided optional search filters:
+   * - modId
+   * - modName
+   * - modGroupdId
+   * - modGroupName
+   * - desc
+* Returns { modGroups: [ { itemId, itemName, modGroupId, modGroupName, modPrice }, ...] }
+* Authorization required: user is logged in
+
+GET /mods/modgroups/:id => {modGroup: { itemId, itemName, modGroupId, modGroupName, modPrice }}
+* Returns {modGroup: { itemId, itemName, modGroupId, modGroupName, modPrice }}
+* Throws NotFoundError if mod not found
+* Authorization required: user is logged in
+
+DELETE /mods/modgroups/:modGroupId => { deleted: id }
+* Returns the id of deleted mod group
+* Throws NotFoundError if item not found
+* Authorization required: manager or owner
+**(Mods should not be deleted, instead is_void=false)**
 ---
 
 ##
