@@ -30,7 +30,19 @@ const app = express();
 
 app.use(express.json());
 app.use(authenticateJWT);
-app.use(morgan('tiny'));
+app.use(morgan('tiny')); // 'dev' for development logging
+
+/*
+*
+*    app.use(cors()): Allow all cross-origin requests: 
+*   {
+*    "origin": "*",
+*    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+*    "preflightContinue": false,
+*    "optionsSuccessStatus": 204
+*   }
+*
+*/
 app.use(cors());
 
 app.use('/auth', authRoutes);
