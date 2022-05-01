@@ -10,10 +10,18 @@ https://tapntable.herokuapp.com/
 
 ---  
 ## Database Schema  
-The current version of the database schema (v1.9) is below.
-* payments, users, user_logs, checks, items, item_categories, orders, and ordered_items represent phase 1 and are currently implemented.
-* discounts, discount_details, mods, mod_categories, item_mods, item_ordered_mod, and mod_groups are for phase 2.  
-* Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
+The current version of the database schema (v2.2) is below.
+* users, user_logs, checks, orders, items, ordered_items, item_categories, destinations, payments, represent phase 1 and are currently implemented.
+* mods, mod_categories, ordered_items_mods, mod_groupsm mods_mod_groups, and items_mod_groups represent phase 2 and are currently implemented.  
+* discounts, discount_details will be implemented next in phase 3
+* Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 3 is implemented.  
+* 3 enum tables have been defined:
+  * user_role
+    * 'trainee', 'employee', 'cook', 'host', 'server', 'bartender', 'head-server', 'bar-manager', 'chef', 'manager', 'owner'
+  * log_event
+    * 'clock-in', 'clock-out', 'cash-out', 'declare-cash-tips', 'open-shift', 'close-shift', 'open-day', 'close-day', 'discount-item', 'discount-check', 'create-item', 'update-item','delete-item-ordered', 'void-item', 'void-check'
+  * payment_type
+    * 'Cash', 'MC', 'Visa', 'Amex', 'Disc', 'Google', 'Apple','Venmo'
 
 ![Database Schema v2.2](tapntable-schema-v2.2.png)
 
