@@ -15,7 +15,7 @@ The current version of the database schema (v1.9) is below.
 * discounts, discount_details, mods, mod_categories, item_mods, item_ordered_mod, and mod_groups are for phase 2.  
 * Note: the `checks` and the `item_ordered` tables contain a `discount_id` column. This column is currently unused and will reference the table `discounts` when phase 2 is implemented.
 
-![Database Schema v2.1](tapntable-schema-v2.1.png)
+![Database Schema v2.2](tapntable-schema-v2.2.png)
 
 ### Regarding users, login and auth:
 
