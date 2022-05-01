@@ -10,7 +10,7 @@ https://tapntable.herokuapp.com/
 
 ---  
 ## Database Schema  
-The current version of the database schema (v2.2) is below.
+The current version of the database schema (v2.2.2) is below.
 * users, user_logs, checks, orders, items, ordered_items, item_categories, destinations, payments, represent phase 1 and are currently implemented.
 * mods, mod_categories, ordered_items_mods, mod_groupsm mods_mod_groups, and items_mod_groups represent phase 2 and are currently implemented.  
 * discounts, discount_details will be implemented next in phase 3
@@ -23,7 +23,7 @@ The current version of the database schema (v2.2) is below.
   * payment_type
     * 'Cash', 'MC', 'Visa', 'Amex', 'Disc', 'Google', 'Apple','Venmo'
 
-![Database Schema v2.2](tapntable-schema-v2.2.png)
+![Database Schema v2.2.2](tapntable-schema-v2.2.2.png)
 
 ### Regarding users, login and auth:
 
