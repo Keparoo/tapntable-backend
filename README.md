@@ -69,9 +69,6 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 * Returns JWT token which can be used to authenticate further requests  
 * Authorization required: none
 
-
-**All auth tests currently pass**
-
 ### Auth Middleware
 * authenticateJWT
 * ensureLoggedIn
