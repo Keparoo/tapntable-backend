@@ -1,6 +1,6 @@
 {
   "name": "tapntable-backend",
-  "version": "1.0.0",
+  "version": "2.2.2",
   "description": "A Restaurant POS RESTful backend",
   "main": "app.js",
   "scripts": {
