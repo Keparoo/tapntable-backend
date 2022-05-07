@@ -1,4 +1,4 @@
-# **tapntable - backend**
+# Tapntable - backend
 
 **Tapntable** is a web-based restaurant point of sale system (POS): This is the backend for the system. It implements a postgresql database with a RESTful API.
 
