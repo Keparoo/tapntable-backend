@@ -637,3 +637,11 @@ If there are any errors, run
 ```bash
 heroku logs -t -a NAME_OF_APP
 ```
+
+## Author
+
+Kep Kaeppeler is the author of this project, code, documentation, test suite, and test data.
+
+## License
+
+Copyright © 2022 Kep Kaeppeler
