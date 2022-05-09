@@ -638,6 +638,8 @@ If there are any errors, run
 heroku logs -t -a NAME_OF_APP
 ```
 
+----
+
 ## Author
 
 Kep Kaeppeler is the author of this project, code, documentation, test suite, and test data.
