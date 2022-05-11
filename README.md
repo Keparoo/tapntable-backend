@@ -1,14 +1,16 @@
 # Tapntable - backend
 
-**Tapntable** is a web-based restaurant point of sale system (POS): This is the backend for the system. It implements a postgresql database with a RESTful API.
+## Description
 
-The Front end is a React-Redux web-based user interface that creates user terminals for servers and bartenders as well as destination points for sent orders (kitchen and service bar)
-The front end can be found at https://github.com/Keparoo/tapntable
+**Tapntable** is a web app implementing a restaurant Point of Sale (POS). It is a web-based app designed to manage the operations of a restaurant: Employee timeclock, manage checks and orders, track payments, track servers sales &  cash bank, track and manage items sold and availability. This would be used as a terminal or terminals in a restaurant for servers & bartenders to use or with tableside tablets.
+
+At a high level, the app's backend is implemented with a PostgreSQL database and a RESTful API implemented in Javascript and Express. The frontend is implemented in React, using a Redux store and Google’s Material UI for design elements.
+
+The front end repository: <https://github.com/Keparoo/tapntable>
 
 ## Deployment
 
-The backend is currently deployed to:
-https://tapntable.herokuapp.com/
+The backend is currently deployed to: <https://tapntable.herokuapp.com/>
 
 ----
 
@@ -218,7 +220,7 @@ DELETE /items/:id => { deleted: id }
 
 * Returns the id of deleted item
 * Throws NotFoundError if item not found
-* Authorization required: manager or owner 
+* Authorization required: manager or owner
 **(Items should not be deleted, instead is_active=false)**
 
 ### Categories routes
@@ -305,7 +307,7 @@ GET /checks => { checks: [{ id, userId, employee, tableNum, numGuests, customer,
 * Optional filter queries:
   * userId: Filters for items with user_id that matches
   * employee, Filters for checks like displayName, case insensitive
-  * tableNum: Filters for items with tableNum that matches 
+  * tableNum: Filters for items with tableNum that matches
   * numGuests: Filters for items with numGuests that matches
   * customer, Filters for checks like customer, case insensitive
   * createdAt: Filters for items with createdAt that matches
@@ -646,4 +648,4 @@ Kep Kaeppeler is the author of this project, code, documentation, test suite, an
 
 ## License
 
-Copyright © 2022 Kep Kaeppeler
+Copyright © February 2022 Kep Kaeppeler
