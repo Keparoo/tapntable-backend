@@ -43,17 +43,17 @@ User currently includes these fields:
 * display_name (Name displayed on frontend interface and printed checks)
 * first_name
 * last_name
-* role (role determining POS response and allowed actions: This is an enum)
+* role (role determining POS response and user's allowed actions: This is an enum)
 * is_clocked_in
 * is_active (Boolean, to mark employees no longer active)
 
-Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. The way that it is implemented in every system I've ever seen is by using a PIN. A user "logs in" upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders.
+Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. A user "logs in" upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders (if their user role indicates they can create/edit orders).
 
 To enter an order, the user enters their pin at a terminal. (A restaurant may have more than one terminal and the result should be the same regardless of which terminal is used.) If the user is clocked-in already, they now see the view showing their current checks if any (and edit them) and allows them to create new checks.
 
 At the end of a shift the server must "cash-out" reconciling their checks and money and then punch out.
 
-Users that don't create orders (cooks for instance) only punch in and out. They would never be shown a view to create a check.
+Users that don't create orders (cooks for instance) only punch in and out. Their user role would inform the front-end and they would only be shown clock-in and clock-out pages.
 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
 
