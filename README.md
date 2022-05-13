@@ -47,7 +47,7 @@ User currently includes these fields:
 * is_clocked_in
 * is_active (Boolean, to mark employees no longer active)
 
-Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. A user "logs in" upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders (if their user role indicates they can create/edit orders).
+Logging in and out of a typical Restaurant POS is typically different than a standard web app. Access to the POS during a shift needs to be a fast action. A user "identifies" themselves upon arrival to work by typing in a unique (usually 4 digit) PIN. (No username) This action clocks in the user and enables them to then create orders (if their user role indicates they can create/edit orders).
 
 To enter an order, the user enters their pin at a terminal. (A restaurant may have more than one terminal and the result should be the same regardless of which terminal is used.) If the user is clocked-in already, they now see the view showing their current checks if any (and edit them) and allows them to create new checks.
 
@@ -56,6 +56,11 @@ At the end of a shift the server must "cash-out" reconciling their checks and mo
 Users that don't create orders (cooks for instance) only punch in and out. Their user role would inform the front-end and they would only be shown clock-in and clock-out pages.
 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
+
+This app will differentiate between **logging in** and **identification**.
+
+* Authentication is handled by logging in: username and password generating a token which is used in queries to authenticate to the database.
+* Identification is handled by entering a user's pin. This simply identifies which user is using a device. (This does not authenticate with the backend. This is a front-end only identification)
 
 Each terminal must be logged into once a day with username and password. This will set a token which expires in 23 hours. Employees using the terminals will be identified by their pin to determine what they see and can do on a terminal. The token that was set (probably by a manger) will be the token used for all db queries from that terminal. In practice, a manager could refresh the tokens when performing the nightly "close-day" functions so that the terminals are ready to go in the morning without the need of the manager to be there.
 
