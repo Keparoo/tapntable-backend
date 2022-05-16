@@ -53,7 +53,7 @@ To enter an order, the user enters their pin at a terminal. (A restaurant may ha
 
 At the end of a shift the server must "cash-out" reconciling their checks and money and then punch out.
 
-Users that don't create orders (cooks for instance) only punch in and out. Their user role would inform the front-end and they would only be shown clock-in and clock-out pages.
+Users that don't create orders (cooks for instance) only punch in and out. Their user role informs the front-end and they are only shown clock-in and clock-out pages.
 
 Usually a manager/owner accesses the system from an office computer (usually for viewing/printing reports, adding/editing menu items, adding/editing users etc) in addition to logging into the server/bartender terminals as needed.
 
