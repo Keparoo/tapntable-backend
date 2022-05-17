@@ -6,7 +6,7 @@
 
 At a high level, the app's backend is implemented with a PostgreSQL database and a RESTful API implemented in Javascript and Express. The frontend is implemented in React, using a Redux store and Google’s Material UI for design elements.
 
-The front end repository: <https://github.com/Keparoo/tapntable>
+The repository for the frontend can be found at: <https://github.com/Keparoo/tapntable>
 
 ## Deployment
 
