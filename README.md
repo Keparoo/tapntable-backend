@@ -93,7 +93,7 @@ POST /auth/register { username, password, pin, displayName, firstName, lastName,
 * ensureManager
   * must have role (Manager or Owner)
 * ensureCorrectUserOrManager
-  * must be same user or have roleId >= 10 (Manager or Owner)
+  * must be same user or be manager or owner
   
 ### User Routes
 
