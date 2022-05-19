@@ -253,13 +253,13 @@ PATCH /items/categories/:id => { category }
 * Data can include { name }
 * Returns { id, name }
 * Throws NotFoundError if category not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 DELETE /items/categories/:id => {deleted: id}
 
 * Returns the id of deleted item
 * Throws NotFoundError if category not found
-* Authorization required: manager or owner (roleId = 10 or 11)  
+* Authorization required: manager or owner 
 **(Categories should not be deleted, if needed, implement is_active)**
 
 ### Destination routes
@@ -268,7 +268,7 @@ POST /items/destinations  { name } => { id, name }
 
 * Creates a new destination
 * Required fields: name
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 GET /items/destinations  => { destinations: [ { id, name }, ...] }
 
@@ -287,13 +287,13 @@ PATCH /items/destinations/:id => { category }
 * Data can include { name }
 * Returns { id, name }
 * Throws NotFoundError if user not found
-* Authorization required: manager or owner (roleId = 10 or 11)
+* Authorization required: manager or owner
 
 DELETE /items/destinations/:id => {deleted: id}
 
 * Returns the id of deleted destination
 * Throws NotFoundError if destination not found
-* Authorization required: manager or owner (roleId = 10 or 11)  
+* Authorization required: manager or owner
 **(Destinations should not be deleted, if needed, implement is_active)**
 
 ### Checks routes
