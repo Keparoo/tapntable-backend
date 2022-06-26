@@ -92,7 +92,15 @@ VALUES (1,
 'Jude (host)',
 'Jude',
 'Janson',
-'host');
+'host'),
+(12,
+'demo-user',
+'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+12345,
+'Harper (Demo-User)',
+'Harper',
+'Janson',
+'server');
 
 -- INSERT INTO log_events (id, type)
 -- VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'open-shift'), (5, 'close-shift'), (6, 'open-day'), (7, 'close-day'), (8, 'discount-item'), (9, 'discount-check');
