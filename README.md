@@ -627,6 +627,7 @@ git commit -m "ready to deploy backend"
 These commands will create a web application and the Procfile which tells Heroku what command to run to start the server.
 
 Now that the remote is named, run the following commands in the tapntable-backend folder. Next, push the code to Heroku and copy the local database (which is named tapntable) to the production one (so that there will be seed data in production)
+The name DATABASE_URL is correct. Only insert the name of the app
 
 ```bash
 git push heroku main
@@ -637,6 +638,7 @@ heroku open
 ```
 
 To update API, delete and upload new version of database
+The name DATABASE_URL is correct. Only insert the name of the app
 
 ```bash
 git push heroku main
