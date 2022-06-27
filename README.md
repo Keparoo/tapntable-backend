@@ -631,8 +631,8 @@ The name DATABASE_URL is correct. Only insert the name of the app
 
 ```bash
 git push heroku main
-heroku addons:create heroku-postgresql:hobby-dev -a NAME_OF_APP
-heroku pg:push tapntable DATABASE_URL -a NAME_OF_APP
+heroku addons:create heroku-postgresql:hobby-dev -a <NAME_OF_APP>
+heroku pg:push tapntable DATABASE_URL -a <NAME_OF_APP>
 heroku config:set PGSSLMODE=no-verify
 heroku open
 ```
@@ -643,8 +643,8 @@ The name DATABASE_URL is correct. Only insert the name of the app
 ```bash
 git push heroku main
 heroku pg:reset
-heroku addons:create heroku-postgresql:hobby-dev -a NAME_OF_APP
-heroku pg:push tapntable DATABASE_URL -a NAME_OF_APP
+heroku addons:create heroku-postgresql:hobby-dev -a <NAME_OF_APP>
+heroku pg:push tapntable DATABASE_URL -a <NAME_OF_APP>
 heroku config:set PGSSLMODE=no-verify
 heroku open
 ```
@@ -653,6 +653,12 @@ If there are any errors, run
 
 ```bash
 heroku logs -t -a NAME_OF_APP
+```
+
+To interact with the database in psql
+
+```bash
+heroku pg:psql DATABASE_URL -a <NAME_OF_APP>
 ```
 
 ----
