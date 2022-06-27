@@ -32,6 +32,14 @@ The current version of the database schema (v2.2.2) is below.
 
 ![Database Schema v2.2.2](tapntable-schema-v2.2.2.png)
 
+### Seeding the database
+
+To seed the database with test data
+
+```bash
+psql < tapntable.sql
+```
+
 ### Regarding users, login and auth
 
 User currently includes these fields:
@@ -618,7 +626,7 @@ git commit -m "ready to deploy backend"
 
 These commands will create a web application and the Procfile which tells Heroku what command to run to start the server.
 
-Now that the remote is named, run the following commands in the tapntable-backend folder. Next, push the code to Heroku and copy the local database (which is named tapntable) to the production one (so that there will be  seed data in production)
+Now that the remote is named, run the following commands in the tapntable-backend folder. Next, push the code to Heroku and copy the local database (which is named tapntable) to the production one (so that there will be seed data in production)
 
 ```bash
 git push heroku main
