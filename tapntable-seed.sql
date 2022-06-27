@@ -100,7 +100,7 @@ VALUES (1,
 'Harper (Demo-User)',
 'Harper',
 'Leeland',
-'trainee');
+'server');
 
 -- INSERT INTO log_events (id, type)
 -- VALUES (1, 'clock-in'), (2, 'clock-out'), (3, 'cash-out'),(4, 'open-shift'), (5, 'close-shift'), (6, 'open-day'), (7, 'close-day'), (8, 'discount-item'), (9, 'discount-check');
