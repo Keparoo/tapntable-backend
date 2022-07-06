@@ -10,7 +10,7 @@ The repository for the React frontend can be found at: <https://github.com/Kepar
 
 ## Deployment
 
-The backend is currently deployed to: <https://tapntable.herokuapp.com/>
+The backend is currently deployed to: <https://tapntable.herokuapp.com/>  
 The frontend is currently deployed to: <https://tapntable.surge.sh/>
 
 ---
